@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Raio-X de Margem</title>
+<style>
+  :root {
+    --fundo: #0e0d0b; --painel: #1a1814; --borda: #2e2a23; --texto: #ece6da; --suave: #a59c8c;
+    --ambar: #f2a93b; --ambar-escuro: #b8761a; --verde: #6fcf8e; --vermelho: #ef6f5e;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fundo); color: var(--texto); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { padding: 20px 16px; border-bottom: 1px solid var(--borda); display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+  header h1 { margin: 0; font-size: 22px; } header h1 span { color: var(--ambar); }
+  header small { color: var(--suave); }
+  .acoes { display: flex; flex-wrap: wrap; gap: 8px; }
+  button, .botao { background: var(--painel); color: var(--texto); border: 1px solid var(--borda); border-radius: 8px; padding: 8px 12px; font: inherit; cursor: pointer; }
+  button:hover, .botao:hover { border-color: var(--ambar); }
+  button.principal { background: var(--ambar); color: #1a1206; border-color: var(--ambar); font-weight: 600; }
+  main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 420px); gap: 20px; padding: 20px 16px; max-width: 1280px; margin: 0 auto; }
+  @media (max-width: 900px) { main { grid-template-columns: minmax(0, 1fr); } }
+  .cartao { background: var(--painel); border: 1px solid var(--borda); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+  .cartao h2 { margin: 0 0 12px; font-size: 17px; }
+  details.cartao > summary { cursor: pointer; font-weight: 600; font-size: 16px; list-style: none; }
+  details.cartao > summary::before { content: '▸ '; color: var(--ambar); }
+  details[open].cartao > summary::before { content: '▾ '; }
+  .campos { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-top: 12px; }
+  label { display: block; font-size: 13px; color: var(--suave); }
+  label b { display: block; color: var(--texto); font-weight: 500; margin-bottom: 4px; }
+  .entrada { display: flex; align-items: center; border: 1px solid var(--borda); border-radius: 8px; background: var(--fundo); }
+  .entrada:focus-within { border-color: var(--ambar); }
+  .entrada span { padding: 0 8px; color: var(--suave); font-size: 13px; white-space: nowrap; }
+  .entrada input { flex: 1; min-width: 0; background: transparent; border: 0; color: var(--texto); padding: 8px; font: inherit; outline: none; }
+  .ajuda { font-size: 12px; margin-top: 4px; }
+  input[type=text], input[type=date] { width: 100%; background: var(--fundo); border: 1px solid var(--borda); border-radius: 8px; color: var(--texto); padding: 8px; font: inherit; }
+  aside { position: sticky; top: 12px; align-self: start; }
+  .total { font-size: 34px; font-weight: 700; color: var(--ambar); line-height: 1.1; }
+  .linha { display: flex; justify-content: space-between; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--borda); font-size: 14px; }
+  .barra { height: 6px; background: var(--borda); border-radius: 3px; margin: 2px 0 8px; overflow: hidden; }
+  .barra i { display: block; height: 100%; background: linear-gradient(90deg, var(--ambar-escuro), var(--ambar)); }
+  .suave { color: var(--suave); }
+  .verde { color: var(--verde); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--borda); vertical-align: top; }
+  th { color: var(--suave); font-weight: 500; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+  td.num, th.num { text-align: right; white-space: nowrap; }
+  .tabela-rolavel { overflow-x: auto; }
+  .tabela-rolavel table { min-width: 680px; }
+  .aviso { border-left: 3px solid var(--ambar); padding: 8px 12px; background: rgba(242,169,59,.08); border-radius: 0 8px 8px 0; font-size: 13px; }
+  .manchete { font-size: 20px; line-height: 1.35; margin: 0 0 12px; }
+  .manchete strong { color: var(--ambar); }
+  #relatorio { grid-column: 1 / -1; }
+  .so-impressao { display: none; }
+  @media print {
+    :root { --fundo: #fff; --painel: #fff; --borda: #ddd; --texto: #111; --suave: #555; --ambar: #a05a00; --ambar-escuro: #a05a00; }
+    header, #formulario, aside, .nao-imprimir { display: none !important; }
+    .ponto-vazio { color: #ccc !important; }
+    main { display: block; padding: 0; }
+    .so-impressao { display: block; }
+    .cartao { border: 0; padding: 0; }
+    body { font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Raio-X de <span>Margem</span></h1>
+    <small>Onde está indo embora o dinheiro que o cliente já faturou · v<span id="versao"></span> · pacote <span id="nome-pacote"></span></small>
+  </div>
+  <div class="acoes">
+    <button id="bt-exemplo">Preencher exemplo</button>
+    <button id="bt-limpar">Limpar</button>
+    <button id="bt-salvar">Salvar diagnóstico (.json)</button>
+    <label class="botao">Abrir diagnóstico<input id="bt-abrir" type="file" accept="application/json" hidden></label>
+    <button id="bt-imprimir" class="principal">Imprimir relatório / PDF</button>
+  </div>
+</header>
+
+<main>
+  <section id="formulario">
+    <div class="cartao">
+      <h2>Cliente</h2>
+      <div class="campos">
+        <label><b>Nome do negócio</b><input type="text" id="cli-nome" placeholder="Restaurante Exemplo"></label>
+        <label><b>Cidade / bairro</b><input type="text" id="cli-cidade"></label>
+        <label><b>Data do diagnóstico</b><input type="date" id="cli-data"></label>
+        <label><b>Responsável pelo diagnóstico</b><input type="text" id="cli-implantador"></label>
+      </div>
+      <p class="aviso" style="margin-top:14px">Preencha com o dono, com extrato e relatórios abertos. Campo vazio = "não sei": o vazamento fica fora da soma e vai para a lista de dados a levantar. Nada sai deste navegador.</p>
+    </div>
+    <div id="grupos"></div>
+  </section>
+
+  <aside>
+    <div class="cartao">
+      <h2>Vazamento estimado</h2>
+      <div class="total" id="r-total">R$ 0</div>
+      <div class="suave">por mês · <span id="r-anual">R$ 0</span> por ano · <span id="r-pct">—</span> do faturamento</div>
+      <div style="margin-top:12px">Recuperável em 6 meses: <strong class="verde" id="r-recuperavel">R$ 0</strong>/mês</div>
+      <div id="r-lista" style="margin-top:16px"></div>
+      <div id="r-sem-dados" class="suave" style="margin-top:12px;font-size:13px"></div>
+    </div>
+  </aside>
+
+  <section id="relatorio" class="cartao">
+    <div class="so-impressao">
+      <h1 style="margin:0">Raio-X de Margem</h1>
+      <p class="suave" id="p-cliente"></p>
+    </div>
+    <p class="manchete" id="p-manchete"></p>
+    <div class="tabela-rolavel">
+      <table>
+        <thead><tr><th>#</th><th>Vazamento</th><th class="num">Perda/mês</th><th class="num">Recuperável/mês</th><th>Dificuldade</th><th>1º efeito</th><th>Como corrigir</th></tr></thead>
+        <tbody id="p-tabela"></tbody>
+      </table>
+    </div>
+    <h2 style="margin-top:20px">Como vamos medir o resultado</h2>
+    <div class="tabela-rolavel">
+      <table>
+        <thead><tr><th>Vazamento</th><th>Base (antes)</th><th>Métrica (depois)</th><th>Janela</th></tr></thead>
+        <tbody id="p-medicao"></tbody>
+      </table>
+    </div>
+    <p class="aviso" style="margin-top:16px" id="p-premissas"></p>
+  </section>
+</main>
+
+<script src="../setores/restaurante.js"></script>
+<script src="motor.js"></script>
+<script>
+(function () {
+  var pacote = window.RXM_SETORES.restaurante;
+  var CHAVE = 'rxm:diagnostico:' + pacote.id;
+  var dinheiro = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: pacote.moeda, maximumFractionDigits: 0 });
+  var porId = function (id) { return document.getElementById(id); };
+  var escapar = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var rotuloEntrada = {};
+  pacote.entradas.forEach(function (e) { rotuloEntrada[e.id] = e.rotulo; });
+  var camposCliente = ['cli-nome', 'cli-cidade', 'cli-data', 'cli-implantador'];
+
+  porId('versao').textContent = window.RXM.VERSAO;
+  porId('nome-pacote').textContent = pacote.nome + ' · ' + pacote.mercado;
+
+  // ── monta o formulário a partir do pacote ──
+  var html = pacote.grupos.map(function (g, i) {
+    var campos = pacote.entradas.filter(function (e) { return e.grupo === g.id; }).map(function (e) {
+      return '<label><b>' + escapar(e.rotulo) + '</b><div class="entrada">' +
+        (e.unidade === 'R$' ? '<span>R$</span>' : '') +
+        '<input type="number" step="any" inputmode="decimal" data-entrada="' + e.id + '" placeholder="ex.: ' + e.exemplo + '">' +
+        (e.unidade !== 'R$' ? '<span>' + escapar(e.unidade) + '</span>' : '') +
+        '</div>' + (e.ajuda ? '<div class="ajuda">' + escapar(e.ajuda) + '</div>' : '') + '</label>';
+    }).join('');
+    return '<details class="cartao"' + (i < 2 ? ' open' : '') + '><summary>' + escapar(g.titulo) + '</summary><div class="campos">' + campos + '</div></details>';
+  }).join('');
+  porId('grupos').innerHTML = html;
+  var inputs = Array.prototype.slice.call(document.querySelectorAll('[data-entrada]'));
+
+  function lerValores() {
+    var v = {};
+    inputs.forEach(function (i) { v[i.dataset.entrada] = i.value; });
+    return v;
+  }
+  function lerCliente() {
+    var c = {};
+    camposCliente.forEach(function (id) { c[id] = porId(id).value; });
+    return c;
+  }
+  function estado() { return { pacote: pacote.id, versaoPacote: pacote.versao, cliente: lerCliente(), valores: lerValores(), salvoEm: new Date().toISOString() }; }
+  function aplicar(e) {
+    inputs.forEach(function (i) { i.value = (e.valores && e.valores[i.dataset.entrada] != null) ? e.valores[i.dataset.entrada] : ''; });
+    camposCliente.forEach(function (id) { porId(id).value = (e.cliente && e.cliente[id]) || ''; });
+    atualizar();
+  }
+
+  function atualizar() {
+    var d = window.RXM.diagnosticar(pacote, lerValores());
+    porId('r-total').textContent = dinheiro.format(d.totalMensal);
+    porId('r-anual').textContent = dinheiro.format(d.totalAnual);
+    porId('r-pct').textContent = d.pctFaturamento === null ? '—' : d.pctFaturamento.toFixed(1).replace('.', ',') + '%';
+    porId('r-recuperavel').textContent = dinheiro.format(d.recuperavelMensal);
+
+    var maior = d.ranking.reduce(function (m, r) { return Math.max(m, r.perda); }, 0) || 1;
+    porId('r-lista').innerHTML = d.ranking.slice().sort(function (a, b) { return b.perda - a.perda; }).map(function (r) {
+      return '<div class="linha" style="border:0;padding-bottom:0"><span>' + escapar(r.vazamento.nome) + '</span><strong>' + dinheiro.format(r.perda) + '</strong></div>' +
+        '<div class="barra"><i style="width:' + (r.perda / maior * 100).toFixed(1) + '%"></i></div>';
+    }).join('');
+    porId('r-sem-dados').innerHTML = d.semDados.length
+      ? '<b>Sem dados (' + d.semDados.length + '):</b> ' + d.semDados.map(function (r) { return escapar(r.vazamento.nome); }).join(' · ')
+      : '';
+
+    // relatório
+    var cli = lerCliente();
+    var nome = cli['cli-nome'] || 'o negócio';
+    porId('p-cliente').textContent = [cli['cli-nome'], cli['cli-cidade'], cli['cli-data'], cli['cli-implantador'] && ('por ' + cli['cli-implantador'])].filter(Boolean).join(' · ');
+    var top = d.ranking.slice(0, 4);
+    var somaTop = top.reduce(function (s, r) { return s + r.perda; }, 0);
+    var recTop = top.reduce(function (s, r) { return s + r.recuperavel; }, 0);
+    porId('p-manchete').innerHTML = d.ranking.length
+      ? escapar(nome.charAt(0).toUpperCase() + nome.slice(1)) + ' está deixando aproximadamente <strong>' + dinheiro.format(d.totalMensal) + ' por mês</strong> em ' + d.ranking.length + (d.ranking.length > 1 ? ' pontos' : ' ponto') +
+        '. Começando pelas ' + top.length + ' prioridades (' + dinheiro.format(somaTop) + '/mês de vazamento), nossa proposta é recuperar <strong class="verde">' + dinheiro.format(recTop) + ' por mês</strong> (' + dinheiro.format(recTop * 12) + ' por ano).'
+      : 'Preencha os números com o dono para gerar o diagnóstico.';
+    var nomeReceitas = function (v) {
+      return v.receitas.map(function (id) { return escapar(pacote.receitas[id].nome); }).join(', ') || '<span class="suave">processo interno</span>';
+    };
+    porId('p-tabela').innerHTML = d.ranking.map(function (r, i) {
+      var v = r.vazamento;
+      return '<tr><td>' + (i + 1) + '</td><td><b>' + escapar(v.nome) + '</b><div class="suave" style="font-size:12px">' + escapar(v.explicacao) + '</div></td>' +
+        '<td class="num">' + dinheiro.format(r.perda) + '</td><td class="num verde">' + dinheiro.format(r.recuperavel) + '</td>' +
+        '<td>' + '●'.repeat(v.dificuldade) + '<span class="suave ponto-vazio">' + '●'.repeat(5 - v.dificuldade) + '</span></td>' +
+        '<td>' + v.prazo_semanas + ' sem.</td><td>' + nomeReceitas(v) + '</td></tr>';
+    }).join('');
+    porId('p-medicao').innerHTML = d.ranking.map(function (r) {
+      var m = r.vazamento.como_medir;
+      return '<tr><td>' + escapar(r.vazamento.nome) + '</td><td>' + escapar(m.base) + '</td><td>' + escapar(m.metrica) + '</td><td>' + escapar(m.janela) + '</td></tr>';
+    }).join('');
+    var naoVerificados = d.ranking.filter(function (r) { return !r.vazamento.fonte.verificado; });
+    porId('p-premissas').innerHTML = '<b>Premissas.</b> Valores são estimativas a partir dos números informados. ' +
+      (naoVerificados.length ? 'Confirmar com documento (extrato, relatório de vendas, cotação) antes de fechar meta: ' + naoVerificados.map(function (r) { return escapar(r.vazamento.nome); }).join('; ') + '. ' : '') +
+      '"Recuperável" é o que é realista em 6 meses, não o vazamento inteiro.' +
+      (d.semDados.length ? ' Pontos ainda sem dados: ' + d.semDados.map(function (r) { return escapar(r.vazamento.nome); }).join('; ') + '.' : '');
+
+    try { localStorage.setItem(CHAVE, JSON.stringify(estado())); } catch (e) { /* navegador sem storage: segue sem rascunho */ }
+  }
+
+  document.addEventListener('input', atualizar);
+  porId('bt-exemplo').onclick = function () {
+    var v = {};
+    pacote.entradas.forEach(function (e) { v[e.id] = e.exemplo; });
+    aplicar({ valores: v, cliente: { 'cli-nome': 'Restaurante Exemplo', 'cli-cidade': '', 'cli-data': new Date().toISOString().slice(0, 10) } });
+  };
+  porId('bt-limpar').onclick = function () { aplicar({}); };
+  porId('bt-imprimir').onclick = function () { window.print(); };
+  porId('bt-salvar').onclick = function () {
+    var e = estado();
+    var nome = (e.cliente['cli-nome'] || 'diagnostico').toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(e, null, 2)], { type: 'application/json' }));
+    a.download = 'raio-x-' + nome + '.json';
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+  };
+  porId('bt-abrir').onchange = function (ev) {
+    var arq = ev.target.files[0];
+    if (!arq) return;
+    arq.text().then(function (t) {
+      var e = JSON.parse(t);
+      if (e.pacote && e.pacote !== pacote.id) throw new Error('Diagnóstico de outro setor: ' + e.pacote);
+      aplicar(e);
+    }).catch(function (err) { porId('p-manchete').textContent = 'Não consegui abrir o arquivo: ' + err.message; });
+    ev.target.value = '';
+  };
+
+  var salvo = null;
+  try { salvo = JSON.parse(localStorage.getItem(CHAVE) || 'null'); } catch (e) { salvo = null; }
+  if (salvo) aplicar(salvo); else atualizar();
+})();
+</script>
+</body>
+</html>
