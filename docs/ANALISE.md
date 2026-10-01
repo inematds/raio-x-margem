@@ -1,7 +1,7 @@
 # Análise profunda — a tese "encontre clientes que estão perdendo dinheiro"
 
 > Base: os dois documentos em [`origem/`](origem/). Pesquisa feita em 01/10/2026 com busca na web.
-> **Como ler os números:** cada valor traz fonte e grau de confiança — **oficial** (órgão/empresa dona do dado), **imprensa**, **fornecedor** (blog de quem vende software para restaurante, logo tem interesse) ou **estimativa**. Nenhum número aqui substitui o extrato do cliente: no diagnóstico, vale o que está no papel dele.
+> **Como ler os números:** cada valor traz fonte e grau de confiança — **oficial** (órgão/empresa dona do dado), **imprensa**, **fornecedor** (blog de quem vende software para restaurante, logo tem interesse) ou **estimativa**. Nenhum número aqui substitui o extrato do cliente: no diagnóstico, vale o que está no papel dele. **Atenção:** a pesquisa leu os resumos dos resultados de busca, não as páginas na íntegra — confira na fonte antes de citar um número ao cliente.
 
 ---
 

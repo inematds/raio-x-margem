@@ -67,6 +67,9 @@ test('exemplo completo do pacote calcula todos os vazamentos', () => {
   const semDados = d.semDados.map((r) => r.id);
   assert.deepEqual(semDados, [], 'todo vazamento deve ter exemplo completo');
   assert.ok(d.totalMensal > 0 && d.pctFaturamento > 0 && d.pctFaturamento < 100);
+  // valores citados em README/kit-comercial/precificacao.md — se mudar o exemplo, atualize os docs
+  assert.equal(Math.round(d.totalMensal), 19238);
+  assert.equal(Math.round(d.ranking.slice(0, 4).reduce((s, r) => s + r.recuperavel, 0)), 4974);
 });
 
 test('integridade do pacote restaurante', () => {

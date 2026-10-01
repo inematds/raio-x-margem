@@ -193,7 +193,7 @@
     // relatório
     var cli = lerCliente();
     var nome = cli['cli-nome'] || 'o negócio';
-    porId('p-cliente').textContent = [cli['cli-nome'], cli['cli-cidade'], cli['cli-data'], cli['cli-implantador'] && ('por ' + cli['cli-implantador'])].filter(Boolean).join(' · ');
+    porId('p-cliente').textContent = [cli['cli-nome'], cli['cli-cidade'], cli['cli-data'] && cli['cli-data'].split('-').reverse().join('/'), cli['cli-implantador'] && ('por ' + cli['cli-implantador'])].filter(Boolean).join(' · ');
     var top = d.ranking.slice(0, 4);
     var somaTop = top.reduce(function (s, r) { return s + r.perda; }, 0);
     var recTop = top.reduce(function (s, r) { return s + r.recuperavel; }, 0);
