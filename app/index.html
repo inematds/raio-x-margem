@@ -134,6 +134,16 @@
 <script src="../setores/servicos.js"></script>
 <script src="../setores/clinica.js"></script>
 <script src="../setores/salao.js"></script>
+<script src="../setores/es/restaurante.js"></script>
+<script src="../setores/es/hotel.js"></script>
+<script src="../setores/es/servicos.js"></script>
+<script src="../setores/es/clinica.js"></script>
+<script src="../setores/es/salao.js"></script>
+<script src="../setores/en/restaurante.js"></script>
+<script src="../setores/en/hotel.js"></script>
+<script src="../setores/en/servicos.js"></script>
+<script src="../setores/en/clinica.js"></script>
+<script src="../setores/en/salao.js"></script>
 <script src="setor.js"></script>
 <script src="motor.js"></script>
 <script>
@@ -142,7 +152,7 @@
   I.aplicar();
   var pacote = window.RXM_ESCOLHER_SETOR();
   var CHAVE = 'rxm:diagnostico:' + pacote.id;
-  var dinheiro = new Intl.NumberFormat(I.locale, { style: 'currency', currency: pacote.moeda, maximumFractionDigits: 0 });
+  var dinheiro = new Intl.NumberFormat({ BRL: 'pt-BR', MXN: 'es-MX', USD: 'en-US', COP: 'es-CO', ARS: 'es-AR', CLP: 'es-CL', PEN: 'es-PE', GBP: 'en-GB', EUR: 'de-DE' }[pacote.moeda] || I.locale, { style: 'currency', currency: pacote.moeda, maximumFractionDigits: 0 });
   var simbolo = (dinheiro.formatToParts(0).filter(function (x) { return x.type === 'currency'; })[0] || {}).value || pacote.moeda;
   var ehMoeda = function (u) { return u === 'R$' || u === 'moeda'; };
   var porId = function (id) { return document.getElementById(id); };

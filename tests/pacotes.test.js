@@ -7,12 +7,18 @@ const RXM = require('../app/motor.js');
 const RXC = require('../app/cacador-motor.js');
 
 const raiz = path.join(__dirname, '..');
-const pacotes = fs.readdirSync(path.join(raiz, 'setores')).filter((f) => f.endsWith('.js') && !f.startsWith('_'))
-  .map((f) => require(path.join(raiz, 'setores', f)));
+// setores/*.js (Brasil) + setores/es/*.js (LATAM) + setores/en/*.js (GLOBAL)
+const pacotes = ['', 'es', 'en'].flatMap((sub) => {
+  const dir = path.join(raiz, 'setores', sub);
+  if (!fs.existsSync(dir)) return [];
+  return fs.readdirSync(dir).filter((f) => f.endsWith('.js') && !f.startsWith('_')).map((f) => require(path.join(dir, f)));
+});
 
 for (const p of pacotes) {
   test(`pacote ${p.id}: integridade`, () => {
     assert.ok(p.id && p.nome && p.versao && p.mercado && p.moeda);
+    // idioma = mercado: pt → BR, es → LATAM, en → GLOBAL
+    assert.equal({ pt: 'BR', es: 'LATAM', en: 'GLOBAL' }[p.idioma.slice(0, 2)], p.mercado, `${p.id}: idioma ${p.idioma} × mercado ${p.mercado}`);
     const ids = new Set(p.entradas.map((e) => e.id));
     const grupos = new Set(p.grupos.map((g) => g.id));
     assert.equal(ids.size, p.entradas.length, 'entrada duplicada');

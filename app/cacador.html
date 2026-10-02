@@ -99,6 +99,16 @@
 <script src="../setores/servicos.js"></script>
 <script src="../setores/clinica.js"></script>
 <script src="../setores/salao.js"></script>
+<script src="../setores/es/restaurante.js"></script>
+<script src="../setores/es/hotel.js"></script>
+<script src="../setores/es/servicos.js"></script>
+<script src="../setores/es/clinica.js"></script>
+<script src="../setores/es/salao.js"></script>
+<script src="../setores/en/restaurante.js"></script>
+<script src="../setores/en/hotel.js"></script>
+<script src="../setores/en/servicos.js"></script>
+<script src="../setores/en/clinica.js"></script>
+<script src="../setores/en/salao.js"></script>
 <script src="setor.js"></script>
 <script src="cacador-motor.js"></script>
 <script>
@@ -114,7 +124,7 @@
   I.aplicar();
   document.getElementById('link-raiox').href = 'index.html?setor=' + pacote.id;
   var nomeStatus = {}; STATUS.forEach(function (s) { nomeStatus[s[0]] = s[1]; });
-  var dinheiro = new Intl.NumberFormat(I.locale, { style: 'currency', currency: pacote.moeda, maximumFractionDigits: 0 });
+  var dinheiro = new Intl.NumberFormat({ BRL: 'pt-BR', MXN: 'es-MX', USD: 'en-US', COP: 'es-CO', ARS: 'es-AR', CLP: 'es-CL', PEN: 'es-PE', GBP: 'en-GB', EUR: 'de-DE' }[pacote.moeda] || I.locale, { style: 'currency', currency: pacote.moeda, maximumFractionDigits: 0 });
   var porId = function (id) { return document.getElementById(id); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
   var abertos = {};

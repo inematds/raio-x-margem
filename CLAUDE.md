@@ -20,3 +20,6 @@ When I correct you, or you catch yourself making a mistake: before continuing, a
 
 - Teste de UI que gera PDF com `emulateMedia('print')` precisa voltar para `screen` antes de clicar em botões escondidos no print. (01/10/2026)
 - `Intl.NumberFormat` em BRL usa espaço não separável ("R$ 0"): normalizar `\s` antes de comparar texto. (01/10/2026)
+- Não editar um script bash enquanto ele roda (o bash lê o arquivo aos poucos): copiar para um novo nome ou esperar terminar. Editei `scripts/adaptar-docs.sh` com a adaptação EN em andamento. (02/10/2026)
+- CNES: a "esfera administrativa" é de GESTÃO do cadastro, não de propriedade — filtrar empresa pela natureza jurídica (1º dígito 2). Filtrei pela esfera e saíram 0 leads. (02/10/2026)
+- Pacotes de outros idiomas não citam o Brasil (Pix, iFood, LGPD) nem como contraste: o prompt de adaptação precisa proibir explicitamente, não só dizer "não existe Pix". (02/10/2026)

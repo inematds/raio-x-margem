@@ -11,7 +11,8 @@
  *  - perfil.remover = { entradas: [...], vazamentos: [...], ... } tira itens da base;
  *  - objetos (receitas, cacador.textos, cacador.potencial) são mesclados;
  *  - perfil.termos = { cliente: 'paciente', ... } troca {cliente}/{Cliente} em todos
- *    os textos (o que não estiver em termos usa base.termos).
+ *    os textos (o que não estiver em termos usa base.termos);
+ *  - herdar(base, perfil, { resolver: false }) não troca os termos (base para outro perfil).
  */
 (function (g) {
   var LISTAS = ['grupos', 'entradas', 'vazamentos'];
@@ -50,7 +51,8 @@
     return valor;
   }
 
-  function herdar(base, perfil) {
+  // opcoes.resolver === false devolve o pacote ainda com {termos} (para servir de base a outros perfis)
+  function herdar(base, perfil, opcoes) {
     var rem = perfil.remover || {};
     var p = copiar(base);
     Object.keys(perfil).forEach(function (k) {
@@ -70,7 +72,7 @@
     p.termos = termos;
     if (perfil.id !== base.id) p.base = base.id;
     delete p.remover;
-    return trocarTermos(p, termos);
+    return opcoes && opcoes.resolver === false ? p : trocarTermos(p, termos);
   }
 
   g.RXM_HERDAR = herdar;

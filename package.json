@@ -1,6 +1,6 @@
 {
   "name": "raio-x-margem",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Kit aberto para diagnosticar vazamentos de dinheiro (Raio-X), corrigir e medir — restaurantes no Brasil",
   "private": true,
   "license": "MIT",
