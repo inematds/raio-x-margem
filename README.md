@@ -50,4 +50,4 @@ Nada sai do navegador. Os números do cliente ficam no rascunho local e no `.jso
 
 ---
 
-Projeto aberto do [INEMA.CLUB](https://inema.club) · versão 0.1.0
+Projeto aberto do [INEMA.CLUB](https://inema.club) · licença [MIT](LICENSE) · versão 0.1.0
