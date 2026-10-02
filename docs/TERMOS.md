@@ -18,6 +18,22 @@
 | Penalidades iFood | rebaixamento 1–30 dias, desativação 1–30 dias, até rescisão, "a exclusivo critério do iFood" | iFood cl. 13.1 |
 | Exclusividade com uma plataforma | TJ-SP (29/09/2026) derrubou cláusulas da 99Food que proibiam operar com a Keeta, decisão válida para todo o Brasil | [Mobile Time](https://www.mobiletime.com.br/noticias/29/09/2026/tjsp-exclusivo-99food/) |
 
+## Hotéis e hospedagem
+
+| Pergunta | Resposta | Base |
+|---|---|---|
+| Site próprio mais barato que a Booking? | **Não** — Brasil é país de "paridade restrita" | Booking GDT v2601, definição "Narrow Parity Countries" e cl. 2.2.1 |
+| Tarifa fechada para hóspede (e-mail, WhatsApp, balcão)? | **Sim**, se não for publicada nem divulgada online | Booking cl. 2.2.2 (canais offline e tarifas "Unpublished") — validar com advogado |
+| Usar o contato do hóspede que veio da Booking? | **Não** para comunicação não solicitada | Booking cl. 2.9.3; Anexo 1, 2.2.4 (base legal/consentimento) |
+| Marketing para hóspede da Expedia? | **Só** "general marketing" com opt-in, sem mover reserva ativa | Expedia Off-Platform Booking Policy |
+| Convidar hóspede do Airbnb a reservar direto? | **Não** dentro da plataforma (sem links, sem desconto fora) | Airbnb Termos 5.4, política 2799, 11.1 |
+| Anúncio com a marca da OTA? | **Não** | Booking cl. 4.3.3 |
+| Raspar Booking, Airbnb, Tripadvisor? | **Não** | Booking termos ao cliente A15.2 (15/09/2025); Airbnb 11.1; Tripadvisor |
+| Paridade ampla no Brasil? | Encerrada por acordo com o CADE (TCC homologado em 27/03/2018: Booking, Decolar, Expedia) | [CADE](https://www.gov.br/cade/pt-br/assuntos/noticias/booking-decolar-e-expedia-celebram-acordo-de-cessacao-com-o-cade) |
+| Cadastur (lista de hospedagens) | **Pode usar**, licença ODbL com atribuição; o coletor descarta CPF, responsável e e-mails | [dados.turismo.gov.br](https://dados.turismo.gov.br/dataset/meios-de-hospedagem) |
+
+Fontes: [Booking GDT](https://admin.booking.com/hotelreg/terms-and-conditions.html?language=en) · [paridade Booking](https://partner.booking.com/en-us/help/legal-security/how-does-parity-work) · [Expedia](https://www.expediagroup.com/en-us/marketplace-policies/offline-booking-policy) · [Airbnb 2908](https://www.airbnb.com.br/help/article/2908), [2799](https://www.airbnb.com.br/help/article/2799) · [Booking, termos ao cliente](https://www.booking.com/content/terms.pt-br.html) · DMA/UE: [Comissão Europeia 28/09/2026](https://digital-markets-act.ec.europa.eu/factsheet-how-dma-ensures-businesses-using-bookingcom-are-free-set-their-prices-and-bookingcom-2026-09-28_en) (na UE a Booking não pode mais exigir paridade — não vale para o Brasil).
+
 ## LGPD na prospecção
 
 - **Dado da empresa** (nome fantasia, telefone comercial, nota) não é dado pessoal.

@@ -64,7 +64,14 @@
     var alertas = c.alertas.filter(function (a) {
       try { return !!funcao('l', a.teste)(lead); } catch (e) { return false; }
     }).map(function (a) { return a.texto; });
-    var faixa = c.potencial.faturamento_por_porte[lead.porte];
+    var potencial = null;
+    if (c.potencial.formula) {
+      // fórmula do pacote: recebe o lead, devolve [mín, máx] em R$/mês ou null
+      try { potencial = funcao('l', c.potencial.formula)(lead) || null; } catch (e) { potencial = null; }
+    } else {
+      var faixa = c.potencial.faturamento_por_porte[lead.porte];
+      potencial = faixa ? [faixa[0] * c.potencial.fator, faixa[1] * c.potencial.fator] : null;
+    }
     return {
       pontos: pontos,
       max: max,
@@ -74,7 +81,7 @@
       criterios: criterios,
       aConferir: criterios.filter(function (x) { return x.ok === null; }).map(function (x) { return x.rotulo; }),
       alertas: alertas,
-      potencial: faixa ? [faixa[0] * c.potencial.fator, faixa[1] * c.potencial.fator] : null
+      potencial: potencial
     };
   }
 
@@ -89,22 +96,22 @@
 
   function formatarNumero(n) { return String(n).replace('.', ','); }
 
-  // Abordagem personalizada: só cita o que foi conferido.
+  // Abordagem personalizada: só cita o que foi conferido. Textos vêm do pacote
+  // (cacador.textos), com {nome}, {nota}, {avaliacoes}, {local} substituídos.
   function abordagem(pacote, lead) {
-    var s = lead.sinais, partes = [];
-    var nome = lead.nome || 'seu restaurante';
-    if (s.nota != null && s.avaliacoes != null && s.nota >= 4.3) {
-      partes.push('Vi que o ' + nome + ' tem nota ' + formatarNumero(s.nota) + ' com ' + s.avaliacoes.toLocaleString('pt-BR') + ' avaliações no Google — demanda vocês têm.');
-    } else {
-      partes.push('Conheço o ' + nome + (lead.bairro ? ' aqui no ' + lead.bairro : '') + '.');
-    }
-    if (s.marketplace === true && s.pedido_proprio === false) {
-      partes.push(pacote.cacador.abordagem);
-    } else if (s.pedido_proprio === false) {
-      partes.push('Não encontrei um jeito de pedir direto com vocês sem passar por aplicativo — cada cliente que volta poderia voltar por um canal de vocês.');
-    }
-    if (s.fidelidade === false) partes.push('Também não vi programa de fidelidade: cliente que compra uma vez não tem motivo para voltar.');
-    partes.push('Faço um diagnóstico de 40 minutos que mostra, em reais por mês, quanto está escapando em taxa de marketplace, cartão e cliente que não volta. Sem custo: se não aparecer pelo menos R$ 2 mil por mês, eu mesmo digo que não vale mexer. Qual dia é mais tranquilo?');
+    var s = lead.sinais, t = pacote.cacador.textos, partes = [];
+    var trocar = function (txt) {
+      return txt.replace(/\{nome\}/g, lead.nome || '')
+        .replace(/\{nota\}/g, s.nota != null ? formatarNumero(s.nota) : '')
+        .replace(/\{avaliacoes\}/g, s.avaliacoes != null ? s.avaliacoes.toLocaleString('pt-BR') : '')
+        .replace(/\{local\}/g, lead.bairro || lead.cidade || '');
+    };
+    if (s.nota != null && s.avaliacoes != null && s.nota >= 4.3) partes.push(trocar(t.demanda));
+    else partes.push(trocar((lead.bairro || lead.cidade) ? t.conheco_local : t.conheco));
+    if (s.marketplace === true && s.pedido_proprio === false) partes.push(trocar(pacote.cacador.abordagem));
+    else if (s.pedido_proprio === false) partes.push(trocar(t.sem_canal));
+    if (s.fidelidade === false) partes.push(trocar(t.sem_fidelidade));
+    partes.push(trocar(t.convite));
     return partes.join(' ');
   }
 

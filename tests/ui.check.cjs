@@ -72,6 +72,31 @@ const path = require('path');
     ok((await cac.textContent('#r-total')).replace(/\s/g, ' ') === 'R$ 0', `${nome}: Raio-X do lead novo deveria começar zerado`);
     await cac.close();
   }
+  // ── Setor hotel (mesmas telas, outro pacote) ──
+  {
+    const page = await browser.newPage({ viewport: { width: 1366, height: 900 } });
+    page.on('pageerror', (e) => erros.push(`hotel: ${e.message}`));
+    await page.goto('file://' + path.resolve(__dirname, '..', 'app', 'index.html') + '?setor=hotel');
+    ok((await page.inputValue('#seletor-setor')) === 'hotel', 'hotel: seletor não ficou em hotel');
+    await page.click('#bt-exemplo');
+    const linhas = await page.$$eval('#p-tabela tr', (t) => t.length);
+    ok(linhas === 9, `hotel: esperava 9 vazamentos com perda, veio ${linhas}`);
+    ok(/Booking|OTA/.test(await page.textContent('#p-tabela')), 'hotel: relatório sem vazamento de OTA');
+    await page.screenshot({ path: path.join(saida, 'raio-x-hotel.png'), fullPage: true });
+    await page.goto('file://' + path.resolve(__dirname, '..', 'app', 'cacador.html') + '?setor=hotel');
+    await page.setInputFiles('#bt-importar', path.join(__dirname, 'fixtures', 'leads-hotel.json'));
+    await page.waitForSelector('details.lead');
+    const primeiro = page.locator('details.lead').first();
+    ok((await primeiro.locator('.nome').textContent()) === 'Pousada Exemplo da Serra', 'hotel caçador: ordem');
+    ok((await primeiro.locator('.placar b').textContent()) === '90', 'hotel caçador: pontos (instagram a conferir → 90)');
+    ok(/R\$/.test(await primeiro.locator('.placar').textContent()), 'hotel caçador: potencial por UHs não apareceu');
+    await primeiro.locator('summary').click();
+    ok(await primeiro.locator('a', { hasText: 'Booking' }).count() === 1, 'hotel caçador: link de conferência da Booking');
+    ok(/Booking/.test(await primeiro.locator('textarea').inputValue()), 'hotel caçador: abordagem sem paridade/Booking');
+    ok((await page.$$('details.lead:nth-child(2) .chip.alerta')).length === 1, 'hotel caçador: alerta de pousada pequena');
+    await page.screenshot({ path: path.join(saida, 'cacador-hotel.png'), fullPage: true });
+    await page.close();
+  }
   await browser.close();
   const tudo = erros.concat(falhas);
   if (tudo.length) { console.error('FALHOU:\n- ' + tudo.join('\n- ')); process.exit(1); }

@@ -67,7 +67,7 @@
 <header>
   <div>
     <h1>Raio-X de <span>Margem</span></h1>
-    <small>Onde está indo embora o dinheiro que o cliente já faturou · v<span id="versao"></span> · pacote <span id="nome-pacote"></span> · <a href="cacador.html" style="color:var(--ambar)">Caçador de leads</a></small>
+    <small>Onde está indo embora o dinheiro que o cliente já faturou · v<span id="versao"></span> · <select id="seletor-setor" aria-label="Setor" style="background:var(--painel);color:var(--texto);border:1px solid var(--borda);border-radius:6px;padding:2px 4px;font:inherit"></select> · <a id="link-cacador" href="cacador.html" style="color:var(--ambar)">Caçador de leads</a></small>
   </div>
   <div class="acoes">
     <button id="bt-exemplo">Preencher exemplo</button>
@@ -83,7 +83,7 @@
     <div class="cartao">
       <h2>Cliente</h2>
       <div class="campos">
-        <label><b>Nome do negócio</b><input type="text" id="cli-nome" placeholder="Restaurante Exemplo"></label>
+        <label><b>Nome do negócio</b><input type="text" id="cli-nome" placeholder="Nome do negócio"></label>
         <label><b>Cidade / bairro</b><input type="text" id="cli-cidade"></label>
         <label><b>Data do diagnóstico</b><input type="date" id="cli-data"></label>
         <label><b>Responsável pelo diagnóstico</b><input type="text" id="cli-implantador"></label>
@@ -128,10 +128,12 @@
 </main>
 
 <script src="../setores/restaurante.js"></script>
+<script src="../setores/hotel.js"></script>
+<script src="setor.js"></script>
 <script src="motor.js"></script>
 <script>
 (function () {
-  var pacote = window.RXM_SETORES.restaurante;
+  var pacote = window.RXM_ESCOLHER_SETOR();
   var CHAVE = 'rxm:diagnostico:' + pacote.id;
   var dinheiro = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: pacote.moeda, maximumFractionDigits: 0 });
   var porId = function (id) { return document.getElementById(id); };
@@ -141,7 +143,7 @@
   var camposCliente = ['cli-nome', 'cli-cidade', 'cli-data', 'cli-implantador'];
 
   porId('versao').textContent = window.RXM.VERSAO;
-  porId('nome-pacote').textContent = pacote.nome + ' · ' + pacote.mercado;
+  porId('link-cacador').href = 'cacador.html?setor=' + pacote.id;
 
   // ── monta o formulário a partir do pacote ──
   var html = pacote.grupos.map(function (g, i) {
@@ -228,7 +230,7 @@
   porId('bt-exemplo').onclick = function () {
     var v = {};
     pacote.entradas.forEach(function (e) { v[e.id] = e.exemplo; });
-    aplicar({ valores: v, cliente: { 'cli-nome': 'Restaurante Exemplo', 'cli-cidade': '', 'cli-data': new Date().toISOString().slice(0, 10) } });
+    aplicar({ valores: v, cliente: { 'cli-nome': pacote.nome.split(' ')[0] + ' Exemplo', 'cli-cidade': '', 'cli-data': new Date().toISOString().slice(0, 10) } });
   };
   porId('bt-limpar').onclick = function () { aplicar({}); };
   porId('bt-imprimir').onclick = function () { window.print(); };

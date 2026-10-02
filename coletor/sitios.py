@@ -38,7 +38,7 @@ MARKETPLACES = {"ifood.com.br": "iFood", "99app.com": "99Food", "99food": "99Foo
                 "rappi.com": "Rappi", "aiqfome.com": "aiqfome", "ubereats.com": "Uber Eats"}
 PEDIDO_PROPRIO = ["anota.ai", "goomer", "cardapioweb", "cardapio.web", "menudino", "neemo", "olaclick",
                   "saipos", "consumer.com.br", "deliverymuch", "instadelivery", "pedido.app", "app.cardapio",
-                  "delivery.direto", "takeat", "ceofood"]
+                  "delivery.direto", "takeat", "ceofood", "lexsis", "menuvem"]
 PEDIDO_TEXTO = ["faça seu pedido", "faca seu pedido", "peça online", "peca online", "pedido online",
                 "peça agora", "peca agora", "pedir agora", "adicionar ao carrinho", "finalizar pedido", "delivery próprio"]
 FIDELIDADE = ["fidelidade", "cashback", "clube de vantagens", "clube do", "programa de pontos", "acumule pontos", "seja membro", "assinatura"]
@@ -206,24 +206,55 @@ def regras(paginas):
     return s, ev, insta
 
 
-PROMPT_IA = """Você avalia o site de um restaurante para um consultor. Responda SÓ um JSON, sem texto fora dele:
+PROMPT_IA = """Você avalia o site de um {tipo} para um consultor. Responda SÓ um JSON, sem texto fora dele:
 {{"pedido_proprio": true|false|null, "whatsapp_manual": true|false|null, "fidelidade": true|false|null,
   "marketplace": true|false|null, "porque": {{"pedido_proprio": "...", "whatsapp_manual": "...", "fidelidade": "...", "marketplace": "..."}}}}
-Definições: pedido_proprio = há pedido online do próprio restaurante (cardápio com carrinho/checkout, ainda que de um SaaS) — reserva de mesa NÃO conta.
-whatsapp_manual = pedidos de delivery são feitos mandando mensagem no WhatsApp, sem carrinho. fidelidade = programa de pontos/clube/cashback.
-marketplace = o restaurante divulga iFood/99Food/Keeta/Rappi. Use null quando o texto não permitir concluir. "porque" em até 15 palavras, PT-BR.
+Definições: {definicoes} Use null quando o texto não permitir concluir. "porque" em até 15 palavras, PT-BR.
 
-Restaurante: {nome}
+Nome: {nome}
 Regras automáticas já marcaram: {regras}
 Links do site (amostra): {links}
 Texto do site (amostra): {texto}
 """
 
+DEFINICOES = ("pedido_proprio = há pedido online do próprio restaurante (cardápio com carrinho/checkout, ainda que de um SaaS) — reserva de mesa NÃO conta. "
+              "whatsapp_manual = pedidos de delivery são feitos mandando mensagem no WhatsApp, sem carrinho. fidelidade = programa de pontos/clube/cashback. "
+              "marketplace = o restaurante divulga iFood/99Food/Keeta/Rappi.")
+TIPO = "restaurante"
+
+# Listas por setor: mesmos sinais, outro vocabulário.
+SETORES = {
+    "alimentacao": None,  # usa as listas do topo do arquivo
+    "hospedagem": {
+        "MARKETPLACES": {"booking.com": "Booking", "expedia": "Expedia", "hoteis.com": "Hoteis.com", "hotels.com": "Hoteis.com",
+                         "decolar.com": "Decolar", "airbnb.": "Airbnb", "trivago": "Trivago", "hurb.com": "Hurb", "vrbo.com": "Vrbo"},
+        "PEDIDO_PROPRIO": ["omnibees", "hsystem", "silbeck", "cloudbeds", "hospedin", "letsbook", "hotelflow", "synxis",
+                           "travelclick", "simplebooking", "be.hqbeds", "hqbeds", "booking-engine", "motor-de-reserva",
+                           "reservas.", "/reserva", "/booking", "stays.net"],
+        "PEDIDO_TEXTO": ["reserve agora", "reservar agora", "reserva online", "faça sua reserva", "faca sua reserva",
+                         "verificar disponibilidade", "consultar disponibilidade", "melhor tarifa garantida", "melhor preço garantido"],
+        "FIDELIDADE": ["fidelidade", "programa de pontos", "acumule pontos", "clube de vantagens", "hóspede frequente",
+                       "hospede frequente", "member", "membro", "cashback", "rewards"],
+        "TIPO": "hotel ou pousada",
+        "DEFINICOES": ("pedido_proprio = o site tem MOTOR DE RESERVA direta (escolher datas, ver tarifa e reservar/pagar no próprio site, ainda que de um fornecedor como Omnibees/HSystem/Silbeck) — formulário de contato ou link para Booking NÃO conta. "
+                       "whatsapp_manual = a reserva direta é feita mandando mensagem no WhatsApp/e-mail, sem motor. "
+                       "fidelidade = programa de hóspede frequente, pontos, clube ou tarifa de membro. "
+                       "marketplace = o site divulga Booking/Expedia/Decolar/Airbnb/Hurb."),
+    },
+}
+
+
+def usar_setor(nome):
+    """Troca as listas globais pelo vocabulário do setor (alimentação é o padrão)."""
+    conf = SETORES.get(nome)
+    if conf:
+        globals().update(conf)
+
 
 def julgar_ia(motor, lead, paginas, sinais):
     links = sorted({l for p in paginas for l in p["links"] if not l.startswith("mailto")})[:80]
     texto = " ".join(p["texto"] for p in paginas)[:6000]
-    prompt = PROMPT_IA.format(nome=lead.get("nome"), regras=json.dumps(sinais, ensure_ascii=False), links="\n".join(links), texto=texto)
+    prompt = PROMPT_IA.format(tipo=TIPO, definicoes=DEFINICOES, nome=lead.get("nome"), regras=json.dumps(sinais, ensure_ascii=False), links="\n".join(links), texto=texto)
     if motor == "claude":
         cmd = ["claude", "-p", "--output-format", "text"]
     else:
@@ -253,9 +284,11 @@ def main():
     ap.add_argument("--confirmar", action="store_true", help="sem isto, só mostra a estimativa de crédito")
     ap.add_argument("--env", default=os.path.expanduser("~/projetos/openpcbotv2/.env"))
     ap.add_argument("--ia", choices=["claude", "codex"])
+    ap.add_argument("--setor", choices=sorted(SETORES), default="alimentacao")
     ap.add_argument("--cache", default="dados/cache-sitios")
     a = ap.parse_args()
 
+    usar_setor(a.setor)
     dados = json.load(open(a.entrada, encoding="utf-8"))
     leads = dados["leads"] if isinstance(dados, dict) else dados
     alvo = leads[: a.limite]

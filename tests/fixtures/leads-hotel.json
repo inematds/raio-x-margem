@@ -1,0 +1,5 @@
+{ "pacote": "hotel", "leads": [
+  { "nome": "Pousada Exemplo da Serra", "cnpj": "44.444.444/0001-44", "cidade": "Gramado", "uhs": 30, "porte": "ME", "fontes": ["cadastur"],
+    "sinais": { "nota": 4.8, "avaliacoes": 900, "marketplace": true, "pedido_proprio": false, "whatsapp_manual": true, "fidelidade": false } },
+  { "nome": "Chalés Teste", "cidade": "Canela", "uhs": 5, "fontes": ["cadastur"] }
+] }

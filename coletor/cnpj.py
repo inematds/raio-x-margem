@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lista restaurantes de um bairro pelos dados abertos do CNPJ (Receita Federal).
+"""Lista empresas de um setor (restaurantes, hotéis…) por município/bairro pelos dados abertos do CNPJ (Receita Federal).
 
 Dados públicos oficiais, reuso livre. Baixa os arquivos e filtra DURANTE o
 download (não grava os zips): ~7 GB de tráfego na 1ª vez por município; depois
@@ -8,6 +8,9 @@ usa o cache de dados/ (só as linhas de alimentação do município).
 Uso:
   python3 coletor/cnpj.py --uf PR --municipio 7535 --cidade Curitiba --bairro BATEL \
       --saida dados/cnpj-batel.json
+  # vários municípios numa passada, outro setor, sem bairro:
+  python3 coletor/cnpj.py --uf RS --municipio 8681,8585 --cidade Gramado,Canela \
+      --grupo hospedagem --cnaes 5510801,5510802,5590601,5590603,5590699 --saida dados/cnpj-serra.json
 
 Código de município é o da RECEITA (não IBGE): Curitiba = 7535. Ver Municipios.zip.
 LGPD: guarda só dados da empresa (nome fantasia, CNPJ, endereço, telefone
@@ -92,13 +95,13 @@ def titulo(s):
     return " ".join(p if (i and p.lower() in pequenas) else p.capitalize() for i, p in enumerate((s or "").lower().split()))
 
 
-def cache_municipio(mes, uf, municipio, cnaes, pasta):
-    """Estabelecimentos de alimentação do município (todas as situações) → CSV em cache."""
-    caminho = os.path.join(pasta, f"cnpj-{mes}-{uf}-{municipio}-alimentacao.csv")
+def cache_municipio(mes, uf, municipios, cnaes, pasta, grupo):
+    """Estabelecimentos do grupo de CNAEs nos municípios (todas as situações) → CSV em cache."""
+    caminho = os.path.join(pasta, f"cnpj-{mes}-{uf}-{'-'.join(municipios)}-{grupo}.csv")
     if os.path.exists(caminho):
         log(f"cache: {caminho}")
         return caminho
-    alvo_mun = f'"{municipio}"'.encode()
+    alvos_mun = [f'"{m}"'.encode() for m in municipios]
     alvo_uf = f'"{uf}"'.encode()
     cnaes_b = [c.encode() for c in cnaes]
     tmp = caminho + ".parcial"
@@ -108,15 +111,15 @@ def cache_municipio(mes, uf, municipio, cnaes, pasta):
         for i in range(10):
             for linha in linhas_do_zip(f"{BASE}{mes}/Estabelecimentos{i}.zip"):
                 # filtro barato antes do parse
-                if alvo_mun not in linha or alvo_uf not in linha or not any(c in linha for c in cnaes_b):
+                if not any(m in linha for m in alvos_mun) or alvo_uf not in linha or not any(c in linha for c in cnaes_b):
                     continue
                 col = ler_csv(linha)
-                if len(col) < 30 or col[20] != municipio or col[19] != uf or col[11] not in cnaes:
+                if len(col) < 30 or col[20] not in municipios or col[19] != uf or col[11] not in cnaes:
                     continue
                 w.writerow(col)
                 n += 1
     os.replace(tmp, caminho)
-    log(f"{n} estabelecimentos de alimentação no município → {caminho}")
+    log(f"{n} estabelecimentos do grupo {grupo} → {caminho}")
     return caminho
 
 
@@ -155,9 +158,10 @@ def data_br(s):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--uf", required=True)
-    ap.add_argument("--municipio", required=True, help="código da Receita (Curitiba = 7535)")
-    ap.add_argument("--cidade", required=True, help="nome para exibir")
-    ap.add_argument("--bairro", required=True, help="texto do bairro como a Receita grava (ex.: BATEL)")
+    ap.add_argument("--municipio", required=True, help="código(s) da Receita, separados por vírgula (Curitiba = 7535)")
+    ap.add_argument("--cidade", required=True, help="nome(s) para exibir, na mesma ordem dos códigos")
+    ap.add_argument("--bairro", help="texto do bairro como a Receita grava (ex.: BATEL); sem ele, a cidade toda")
+    ap.add_argument("--grupo", default="alimentacao", help="nome do grupo de CNAEs (só para o cache)")
     ap.add_argument("--cnaes", default=",".join(CNAES_PADRAO))
     ap.add_argument("--mes", help="AAAA-MM (padrão: mais recente)")
     ap.add_argument("--todas-situacoes", action="store_true", help="inclui baixadas/inaptas")
@@ -168,20 +172,22 @@ def main():
     os.makedirs(a.cache, exist_ok=True)
     mes = a.mes or mes_mais_recente()
     log(f"dados abertos do CNPJ, mês {mes}")
-    arq = cache_municipio(mes, a.uf, a.municipio, a.cnaes.split(","), a.cache)
+    municipios = a.municipio.split(",")
+    cidades = dict(zip(municipios, a.cidade.split(",")))
+    arq = cache_municipio(mes, a.uf, municipios, a.cnaes.split(","), a.cache, a.grupo)
 
-    bairro = normalizar(a.bairro)
+    bairro = normalizar(a.bairro) if a.bairro else None
     linhas = []
     with open(arq, encoding="utf-8") as f:
         for col in csv.reader(f, delimiter=";"):
-            if normalizar(col[17]) != bairro:
+            if bairro and normalizar(col[17]) != bairro:
                 continue
             if not a.todas_situacoes and SITUACAO.get(col[5]) != "ATIVA":
                 continue
             linhas.append(col)
-    log(f"{len(linhas)} estabelecimentos no bairro {bairro}")
+    log(f"{len(linhas)} estabelecimentos em {bairro or a.cidade}")
 
-    info = complementar(mes, {c[0] for c in linhas}, a.cache, f"cnpj-{mes}-{a.uf}-{a.municipio}-empresas.json")
+    info = complementar(mes, {c[0] for c in linhas}, a.cache, f"cnpj-{mes}-{a.uf}-{'-'.join(municipios)}-{a.grupo}-empresas.json")
     leads = []
     for c in linhas:
         e = info.get(c[0], {})
@@ -196,7 +202,7 @@ def main():
             "nome": titulo(nome),
             "cnpj": cnpj,
             "bairro": titulo(c[17]),
-            "cidade": a.cidade,
+            "cidade": cidades.get(c[20], c[20]),
             "endereco": endereco + (f" — {titulo(c[16])}" if c[16].strip() else ""),
             "cep": c[18],
             "telefone": tel,
@@ -210,7 +216,7 @@ def main():
     leads.sort(key=lambda l: l["nome"])
     with open(a.saida, "w", encoding="utf-8") as f:
         json.dump({"fonte": f"Dados abertos do CNPJ — Receita Federal ({mes})", "consulta": vars(a), "leads": leads}, f, ensure_ascii=False, indent=2)
-    print(f"{len(leads)} empresas ativas de alimentação no bairro → {a.saida}")
+    print(f"{len(leads)} empresas ativas ({a.grupo}) em {a.bairro or a.cidade} → {a.saida}")
 
 
 if __name__ == "__main__":

@@ -256,6 +256,18 @@
         fator: 0.58 * 0.54 * 0.30 * 0.10,
         aviso: 'Estimativa grosseira pelo porte da Receita e médias do setor. Só serve para ordenar; o número real sai do Raio-X.'
       },
+      conferir: [
+        { rotulo: 'iFood', busca: 'site:ifood.com.br {onde}' },
+        { rotulo: '99Food / Keeta', busca: '{nome} {cidade} 99food OR keeta' }
+      ],
+      textos: {
+        demanda: 'Vi que {nome} tem nota {nota} com {avaliacoes} avaliações no Google — demanda vocês têm.',
+        conheco_local: 'Conheço {nome} aqui no {local}.',
+        conheco: 'Conheço {nome}.',
+        sem_canal: 'Não encontrei um jeito de pedir direto com vocês sem passar por aplicativo — cada cliente que volta poderia voltar por um canal de vocês.',
+        sem_fidelidade: 'Também não vi programa de fidelidade: cliente que compra uma vez não tem motivo para voltar.',
+        convite: 'Faço um diagnóstico de 40 minutos que mostra, em reais por mês, quanto está escapando em taxa de marketplace, cartão e cliente que não volta. Sem custo: se não aparecer pelo menos R$ 2 mil por mês, eu mesmo digo que não vale mexer. Qual dia é mais tranquilo?'
+      },
       abordagem: 'Seu restaurante claramente já tem demanda. O problema não parece ser conseguir clientes. É que, cada vez que seu cliente volta pelo marketplace, você paga de novo para falar com alguém que já conhece sua marca.'
     }
   };

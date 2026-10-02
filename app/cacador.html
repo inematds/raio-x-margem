@@ -56,7 +56,7 @@
 <header>
   <div>
     <h1>Caçador de <span>Margem</span></h1>
-    <small>Quem já tem demanda e está perdendo dinheiro · <a href="index.html">abrir Raio-X</a></small>
+    <small>Quem já tem demanda e está perdendo dinheiro · <select id="seletor-setor" aria-label="Setor" style="background:var(--painel);color:var(--texto);border:1px solid var(--borda);border-radius:6px;padding:2px 4px;font:inherit"></select> · <a id="link-raiox" href="index.html">abrir Raio-X</a></small>
   </div>
   <div class="acoes">
     <label class="botao principal">Importar leads (.json do coletor ou .csv)<input id="bt-importar" type="file" accept=".json,.csv,application/json,text/csv" hidden></label>
@@ -68,7 +68,7 @@
 </header>
 
 <main>
-  <p class="aviso">Pontos = critérios já conferidos. A barra clara mostra até onde o lead pode chegar quando você conferir o que falta. <b>Potencial</b> é faixa grosseira pelo porte da Receita — serve para ordenar, nunca para prometer; o número real sai do Raio-X. Instagram e marketplace se conferem à mão (os termos proíbem coleta automática — ver docs/TERMOS.md).</p>
+  <p class="aviso" id="aviso">Pontos = critérios já conferidos. A barra clara mostra até onde o lead pode chegar quando você conferir o que falta. <b>Potencial:</b> <span id="aviso-potencial"></span> Avaliações, Instagram e presença em plataformas se conferem à mão (os termos proíbem coleta automática — ver docs/TERMOS.md).</p>
   <div class="filtros">
     <input id="f-busca" type="search" placeholder="Buscar nome, endereço, CNPJ…">
     <select id="f-status"><option value="">Todos os status</option></select>
@@ -93,13 +93,17 @@
 </dialog>
 
 <script src="../setores/restaurante.js"></script>
+<script src="../setores/hotel.js"></script>
+<script src="setor.js"></script>
 <script src="cacador-motor.js"></script>
 <script>
 (function () {
-  var pacote = window.RXM_SETORES.restaurante;
+  var pacote = window.RXM_ESCOLHER_SETOR();
   var RXC = window.RXC;
   var CHAVE = 'rxc:leads:' + pacote.id;
   var STATUS = [['a_contatar', 'A contatar'], ['contatado', 'Contatado'], ['raio_x', 'Raio-X marcado'], ['proposta', 'Proposta enviada'], ['fechado', 'Fechado'], ['descartado', 'Descartado']];
+  document.getElementById('aviso-potencial').textContent = pacote.cacador.potencial.aviso;
+  document.getElementById('link-raiox').href = 'index.html?setor=' + pacote.id;
   var nomeStatus = {}; STATUS.forEach(function (s) { nomeStatus[s[0]] = s[1]; });
   var dinheiro = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
   var porId = function (id) { return document.getElementById(id); };
@@ -118,9 +122,9 @@
     var links = [
       ['Google Maps', 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(onde)],
       ['Instagram', l.instagram ? (/^https?:/.test(l.instagram) ? l.instagram : 'https://www.instagram.com/' + String(l.instagram).replace(/^@/, '') + '/') : buscaGoogle('site:instagram.com ' + onde)],
-      ['iFood', buscaGoogle('site:ifood.com.br ' + onde)],
-      ['99Food / Keeta', buscaGoogle(l.nome + ' ' + (l.cidade || '') + ' 99food OR keeta')]
-    ];
+    ].concat((pacote.cacador.conferir || []).map(function (c) {
+      return [c.rotulo, buscaGoogle(c.busca.replace('{onde}', onde).replace('{nome}', l.nome || '').replace('{cidade}', l.cidade || ''))];
+    }));
     if (l.site) links.unshift(['Site', /^https?:/.test(l.site) ? l.site : 'https://' + l.site]);
     return links.map(function (x) { return '<a class="botao" target="_blank" rel="noopener" href="' + esc(x[1]) + '">' + esc(x[0]) + ' ↗</a>'; }).join('');
   }
@@ -176,9 +180,9 @@
       var chips = p.criterios.map(function (c) {
         return '<span class="chip ' + (c.ok === true ? 'ok' : c.ok === false ? 'nao' : '') + '" title="' + esc(c.rotulo) + ' (' + c.peso + ')">' + (c.ok === true ? '✓ ' : c.ok === false ? '' : '? ') + esc(c.rotulo) + '</span>';
       }).join('') + p.alertas.map(function (a) { return '<span class="chip alerta">⚠ ' + esc(a) + '</span>'; }).join('');
-      var sub = [l.bairro, l.porte, l.cnae && ('CNAE ' + l.cnae), l.fontes.join('+')].filter(Boolean).map(esc).join(' · ');
+      var sub = [l.bairro || l.cidade, l.uhs && (l.uhs + ' UHs'), l.tipo, l.porte, l.cnae && ('CNAE ' + l.cnae), l.fontes.join('+')].filter(Boolean).map(esc).join(' · ');
       var pot = p.potencial ? dinheiro.format(p.potencial[0]) + '–' + dinheiro.format(p.potencial[1]) + '/mês' : 'sem porte';
-      var raiox = 'index.html?nome=' + encodeURIComponent(l.nome || '') + '&cidade=' + encodeURIComponent([l.bairro, l.cidade].filter(Boolean).join(', '));
+      var raiox = 'index.html?setor=' + pacote.id + '&nome=' + encodeURIComponent(l.nome || '') + '&cidade=' + encodeURIComponent([l.bairro, l.cidade].filter(Boolean).join(', '));
       return '<details class="lead" data-id="' + esc(l.id) + '"' + (abertos[l.id] ? ' open' : '') + '>' +
         '<summary><div class="pos">' + (i + 1) + '</div><div><div class="nome">' + esc(l.nome || '(sem nome)') + '</div><div class="sub">' + sub + ' · ' + esc(nomeStatus[l.status] || l.status) + '</div><div class="chips">' + chips + '</div></div>' +
         '<div class="placar"><b>' + p.pontos + '</b><small>teto ' + p.teto + ' · ' + p.conferido + '% conferido</small><div class="barra"><i class="teto" style="width:' + p.teto + '%"></i><i class="pts" style="width:' + p.pontos + '%"></i></div><small>' + pot + '</small></div></summary>' +
