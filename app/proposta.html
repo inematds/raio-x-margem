@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gerador de proposta</title>
+<style>
+  :root {
+    --fundo: #0e0d0b; --painel: #1a1814; --borda: #2e2a23; --texto: #ece6da; --suave: #a59c8c;
+    --ambar: #f2a93b; --ambar-escuro: #b8761a; --verde: #6fcf8e; --vermelho: #ef6f5e;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fundo); color: var(--texto); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { padding: 20px 16px; border-bottom: 1px solid var(--borda); display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+  header h1 { margin: 0; font-size: 22px; } header h1 span { color: var(--ambar); }
+  header small { color: var(--suave); } header small a { color: var(--ambar); }
+  .acoes { display: flex; flex-wrap: wrap; gap: 8px; }
+  button, .botao, select, input { font: inherit; color: var(--texto); }
+  button, .botao { background: var(--painel); border: 1px solid var(--borda); border-radius: 8px; padding: 8px 12px; cursor: pointer; display: inline-block; }
+  button.principal { background: var(--ambar); color: #1a1206; border-color: var(--ambar); font-weight: 600; }
+  select.mini { background: var(--painel); border: 1px solid var(--borda); border-radius: 6px; padding: 2px 4px; }
+  main { max-width: 1100px; margin: 0 auto; padding: 20px 16px; }
+  .cartao { background: var(--painel); border: 1px solid var(--borda); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+  .cartao h2 { margin: 0 0 10px; font-size: 17px; }
+  .vazio { text-align: center; padding: 40px 16px; color: var(--suave); border: 1px dashed var(--borda); border-radius: 12px; }
+  .campos { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+  .campo label { display: block; font-size: 12px; color: var(--suave); margin-bottom: 2px; }
+  .campo input { width: 100%; background: var(--fundo); border: 1px solid var(--borda); border-radius: 8px; padding: 7px; }
+  .mods { margin-top: 12px; display: grid; gap: 8px; }
+  .mod { display: grid; grid-template-columns: auto minmax(0, 1fr) 140px; gap: 10px; align-items: center; border: 1px solid var(--borda); border-radius: 10px; padding: 8px 10px; }
+  .mod input[type=number] { width: 100%; background: var(--fundo); border: 1px solid var(--borda); border-radius: 8px; padding: 6px; }
+  .mod small { color: var(--suave); display: block; }
+  /* o documento da proposta: claro, como papel */
+  .doc { background: #fbf8f2; color: #1d1a15; border-radius: 12px; padding: 32px; }
+  .doc h1 { font-size: 24px; margin: 0 0 4px; } .doc h2 { font-size: 17px; margin: 26px 0 8px; color: #8a4f00; }
+  .doc .meta { color: #6b6357; font-size: 13px; }
+  .doc table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin-top: 6px; }
+  .doc th, .doc td { text-align: left; padding: 7px 6px; border-bottom: 1px solid #e3dccf; vertical-align: top; }
+  .doc th { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: #6b6357; }
+  .doc td.num, .doc th.num { text-align: right; white-space: nowrap; }
+  .doc .total td { font-weight: 700; }
+  .doc table.invest td:first-child { width: 55%; }
+  .doc .nota { font-size: 12.5px; color: #6b6357; }
+  .doc .alerta { background: #fde8e4; border-left: 3px solid #c0392b; padding: 8px 10px; font-size: 13px; }
+  .doc .assin { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 46px; font-size: 13px; color: #6b6357; }
+  .doc .assin div { border-top: 1px solid #1d1a15; padding-top: 6px; }
+  .tabela-rolavel { overflow-x: auto; } .tabela-rolavel table { min-width: 560px; }
+  @media (max-width: 600px) { .doc { padding: 18px; } .mod { grid-template-columns: auto minmax(0, 1fr); } .mod input[type=number] { grid-column: 2; } }
+  @media print {
+    header, #controles, #vazio { display: none !important; }
+    body { background: #fff; } main { padding: 0; max-width: none; }
+    .doc { border-radius: 0; padding: 0; background: #fff; }
+    .tabela-rolavel table { min-width: 0; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1 data-i18n-html="pr.titulo">Gerador de <span>proposta</span></h1>
+    <small><span data-i18n="pr.sub"></span> · <select id="seletor-idioma" class="mini" data-i18n-title="idioma"></select> · <select id="seletor-setor" class="mini" data-i18n-title="setor"></select> · <a id="l-raiox" href="index.html" data-i18n-html="rx.titulo">Raio-X</a> · <a id="l-painel" href="painel.html" data-i18n="pn.painel">Painel</a></small>
+  </div>
+  <div class="acoes">
+    <label class="botao"><span data-i18n="pr.abrir">Abrir diagnóstico</span><input id="bt-abrir" type="file" accept="application/json,.json" hidden></label>
+    <button id="bt-imprimir" class="principal" data-i18n="bt.imprimir">Imprimir / PDF</button>
+  </div>
+</header>
+
+<main>
+  <div id="vazio" class="vazio" data-i18n="pr.vazio" hidden></div>
+
+  <div id="controles" class="cartao" hidden>
+    <h2 data-i18n="pr.ajustes">Ajuste a proposta</h2>
+    <div class="campos">
+      <div class="campo"><label data-i18n="pr.consultor"></label><input id="c-nome"></div>
+      <div class="campo"><label data-i18n="pr.doc"></label><input id="c-doc"></div>
+      <div class="campo"><label data-i18n="pr.contato"></label><input id="c-contato"></div>
+      <div class="campo"><label data-i18n="pr.validade"></label><input id="c-validade" type="number" min="1" value="15"></div>
+      <div class="campo"><label data-i18n="pr.mensalidade"></label><input id="c-mensal" type="number" min="0" step="any"></div>
+      <div class="campo"><label data-i18n="pr.bonus"></label><input id="c-bonus" type="number" min="0" max="50" value="15"></div>
+      <div class="campo"><label data-i18n="pr.bonus_meses"></label><input id="c-bonus-meses" type="number" min="0" max="24" value="6"></div>
+    </div>
+    <div class="mods" id="mods"></div>
+  </div>
+
+  <article id="doc" class="doc" hidden></article>
+</main>
+
+<script src="i18n.js"></script>
+<script src="../setores/_herdar.js"></script>
+<script src="../setores/restaurante.js"></script>
+<script src="../setores/hotel.js"></script>
+<script src="../setores/servicos.js"></script>
+<script src="../setores/clinica.js"></script>
+<script src="../setores/salao.js"></script>
+<script src="../setores/es/restaurante.js"></script>
+<script src="../setores/es/hotel.js"></script>
+<script src="../setores/es/servicos.js"></script>
+<script src="../setores/es/clinica.js"></script>
+<script src="../setores/es/salao.js"></script>
+<script src="../setores/en/restaurante.js"></script>
+<script src="../setores/en/hotel.js"></script>
+<script src="../setores/en/servicos.js"></script>
+<script src="../setores/en/clinica.js"></script>
+<script src="../setores/en/salao.js"></script>
+<script src="setor.js"></script>
+<script src="motor.js"></script>
+<script src="proposta-motor.js"></script>
+<script>
+(function () {
+  var I = window.RXM_I18N, t = I.t, RXPR = window.RXPR;
+  I.aplicar();
+  var pacote = window.RXM_ESCOLHER_SETOR();
+  var porId = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var LOCALE_MOEDA = { BRL: 'pt-BR', MXN: 'es-MX', USD: 'en-US', COP: 'es-CO', ARS: 'es-AR', CLP: 'es-CL', PEN: 'es-PE', GBP: 'en-GB', EUR: 'de-DE' };
+  var dinheiro = new Intl.NumberFormat(LOCALE_MOEDA[pacote.moeda] || I.locale, { style: 'currency', currency: pacote.moeda, maximumFractionDigits: 0 });
+  var num = new Intl.NumberFormat(I.locale, { maximumFractionDigits: 1 });
+  ['l-raiox', 'l-painel'].forEach(function (id) { porId(id).href += '?lang=' + I.lang + '&setor=' + pacote.id; });
+
+  var diag = null, proposta = null, selecionados = [];
+  var CONSULTOR = 'rxpr:consultor';
+
+  function carregarConsultor() {
+    var c = {};
+    try { c = JSON.parse(localStorage.getItem(CONSULTOR) || '{}') || {}; } catch (e) { c = {}; }
+    porId('c-nome').value = c.nome || ''; porId('c-doc').value = c.doc || ''; porId('c-contato').value = c.contato || '';
+  }
+  function salvarConsultor() {
+    try { localStorage.setItem(CONSULTOR, JSON.stringify({ nome: porId('c-nome').value, doc: porId('c-doc').value, contato: porId('c-contato').value })); } catch (e) { /* sem storage */ }
+  }
+
+  function usar(d) {
+    diag = d;
+    proposta = RXPR.montar(pacote, d.valores || {});
+    if (!proposta.prioridades.length) { porId('vazio').hidden = false; porId('controles').hidden = true; porId('doc').hidden = true; return; }
+    selecionados = proposta.modulos.map(function (m) { return m.id; });
+    porId('c-mensal').value = proposta.mensalidade;
+    porId('mods').innerHTML = proposta.modulos.map(function (m) {
+      return '<label class="mod"><input type="checkbox" data-mod="' + esc(m.id) + '" checked><span><b>' + esc(m.id === 'processo-interno' ? t('pr.processo') : m.nome) + '</b><small>' + esc(m.vazamentos.join(' · ')) + '</small></span>' +
+        (m.id === 'processo-interno' ? '<span></span>' : '<input type="number" min="0" step="any" data-preco="' + esc(m.id) + '" value="' + m.preco + '">') + '</label>';
+    }).join('');
+    porId('vazio').hidden = true; porId('controles').hidden = false; porId('doc').hidden = false;
+    desenhar();
+  }
+
+  function desenhar() {
+    proposta.mensalidade = parseFloat(porId('c-mensal').value) || 0;
+    var a = RXPR.avaliar(proposta, selecionados);
+    var cli = (diag && diag.cliente) || {};
+    var hoje = new Date().toLocaleDateString(I.locale);
+    var dataDiag = diag && diag.salvoEm ? new Date(diag.salvoEm).toLocaleDateString(I.locale) : hoje;
+    var mods = proposta.modulos.filter(function (m) { return selecionados.indexOf(m.id) >= 0; });
+    // bônus só sobre vazamento atribuível cujo módulo foi contratado
+    var nomesSel = {}; mods.forEach(function (m) { m.vazamentos.forEach(function (v) { nomesSel[v] = 1; }); });
+    var nomesAtrib = proposta.prioridades.filter(function (r) { return proposta.atribuiveis.indexOf(r.id) >= 0 && nomesSel[r.vazamento.nome]; }).map(function (r) { return r.vazamento.nome; });
+    var bonusPct = parseFloat(porId('c-bonus').value) || 0, bonusMeses = parseInt(porId('c-bonus-meses').value, 10) || 0;
+    var consultor = [porId('c-nome').value, porId('c-doc').value, porId('c-contato').value].filter(Boolean).map(esc).join(' · ');
+    var h = '';
+    h += (consultor ? '<p class="meta"><b>' + consultor + '</b></p>' : '');
+    h += '<h1>' + esc(t('pr.doc_titulo')) + '</h1>';
+    h += '<p class="meta">' + esc(t('pr.para')) + ': <b>' + esc(cli['cli-nome'] || '—') + '</b>' + (cli['cli-cidade'] ? ' · ' + esc(cli['cli-cidade']) : '') +
+      ' · ' + esc(t('pr.data')) + ': ' + esc(hoje) + ' · ' + esc(t('pr.valida', { n: porId('c-validade').value || 15 })) + '<br>' + esc(t('pr.base', { d: dataDiag })) + '</p>';
+    // 1
+    h += '<h2>' + esc(t('pr.s1')) + '</h2><p>' + t('pr.s1_txt', { total: esc(dinheiro.format(proposta.diagnostico.totalMensal)), n: proposta.diagnostico.ranking.length }) + '</p>';
+    h += '<div class="tabela-rolavel"><table><thead><tr><th>' + esc(t('p.vazamento')) + '</th><th class="num">' + esc(t('p.perda')) + '</th><th class="num">' + esc(t('p.recuperavel')) + '</th><th>' + esc(t('pr.prazo')) + '</th></tr></thead><tbody>' +
+      proposta.prioridades.map(function (r) {
+        return '<tr><td>' + esc(r.vazamento.nome) + '</td><td class="num">' + dinheiro.format(r.perda) + '</td><td class="num">' + dinheiro.format(r.recuperavel) + '</td><td>' + esc(t('p.semanas', { n: r.vazamento.prazo_semanas })) + '</td></tr>';
+      }).join('') +
+      '<tr class="total"><td>' + esc(t('pr.total_prior')) + '</td><td class="num">' + dinheiro.format(proposta.perda) + '</td><td class="num">' + dinheiro.format(proposta.recuperavel) + '</td><td></td></tr></tbody></table></div>';
+    h += '<p class="nota">' + esc(t('pr.recuperavel_nota')) + '</p>';
+    // 2
+    h += '<h2>' + esc(t('pr.s2')) + '</h2><div class="tabela-rolavel"><table><thead><tr><th>' + esc(t('pr.modulo')) + '</th><th>' + esc(t('pr.ataca')) + '</th><th>' + esc(t('pr.prazo')) + '</th><th class="num">' + esc(t('pr.valor')) + '</th></tr></thead><tbody>' +
+      mods.map(function (m) {
+        return '<tr><td><b>' + esc(m.id === 'processo-interno' ? t('pr.processo') : m.nome) + '</b>' + (m.resumo ? '<br><span class="nota">' + esc(m.resumo) + '</span>' : '') + '</td><td>' + esc(m.vazamentos.join('; ')) + '</td><td>' + esc(t('p.semanas', { n: m.prazo })) + '</td><td class="num">' + (m.id === 'processo-interno' ? '—' : dinheiro.format(m.preco || 0)) + '</td></tr>';
+      }).join('') + '</tbody></table></div><p class="nota">' + esc(t('pr.nao_incluso')) + '</p>';
+    // 3
+    h += '<h2>' + esc(t('pr.s3')) + '</h2><table class="invest"><tbody>' +
+      '<tr><td>' + esc(t('pr.implantacao')) + '</td><td class="num">' + dinheiro.format(a.implantacao) + '</td></tr>' +
+      '<tr><td>' + esc(t('pr.mensal')) + '</td><td class="num">' + dinheiro.format(proposta.mensalidade) + '/' + esc(t('r.mes')) + '</td></tr>' +
+      '<tr><td>' + esc(t('pn.bonus')) + '</td><td class="num">' + (bonusPct && bonusMeses && nomesAtrib.length ? esc(t('pr.bonus_txt', { pct: num.format(bonusPct), itens: nomesAtrib.join(', '), meses: bonusMeses })) : esc(t('pr.sem_bonus'))) + '</td></tr>' +
+      '</tbody></table>';
+    h += '<p>' + t('pr.regra', { custo: esc(dinheiro.format(a.custoMensal)), teto: esc(dinheiro.format(a.teto)), payback: a.payback == null ? '—' : esc(num.format(a.payback)) }) + '</p>';
+    if (!a.dentroDoTeto) h += '<p class="alerta">' + esc(t('pr.fora_teto')) + '</p>';
+    // 4
+    h += '<h2>' + esc(t('pr.s4')) + '</h2><p>' + esc(t('pr.medir_txt')) + '</p><div class="tabela-rolavel"><table><thead><tr><th>' + esc(t('p.vazamento')) + '</th><th>' + esc(t('p.base')) + '</th><th>' + esc(t('p.metrica')) + '</th><th>' + esc(t('p.janela')) + '</th></tr></thead><tbody>' +
+      proposta.medicao.map(function (m) { return '<tr><td>' + esc(m.vazamento) + '</td><td>' + esc(m.base) + '</td><td>' + esc(m.metrica) + '</td><td>' + esc(m.janela) + '</td></tr>'; }).join('') + '</tbody></table></div>';
+    // 5
+    h += '<h2>' + esc(t('pr.s5')) + '</h2><ul>' + ['pr.c1', 'pr.c2', 'pr.c3', 'pr.c4', 'pr.c5'].map(function (k) { return '<li>' + esc(t(k)) + '</li>'; }).join('') + '</ul>';
+    h += '<p class="nota">' + esc(t('pr.docs')) + '</p>';
+    h += '<div class="assin"><div>' + esc(t('pr.aceite')) + ' — ' + esc(t('pr.contratante')) + '</div><div>' + esc(t('pr.aceite')) + ' — ' + esc(t('pr.consultor_ass')) + '</div></div>';
+    porId('doc').innerHTML = h;
+  }
+
+  porId('controles').addEventListener('input', function (ev) {
+    var id = ev.target.dataset.preco;
+    if (id) proposta.modulos.forEach(function (m) { if (m.id === id) m.preco = parseFloat(ev.target.value) || 0; });
+    if (ev.target.dataset.mod) {
+      var mid = ev.target.dataset.mod;
+      selecionados = ev.target.checked ? selecionados.concat([mid]) : selecionados.filter(function (x) { return x !== mid; });
+    }
+    if (/^c-(nome|doc|contato)$/.test(ev.target.id)) salvarConsultor();
+    desenhar();
+  });
+  porId('controles').addEventListener('change', function () { desenhar(); });
+  porId('bt-imprimir').onclick = function () { window.print(); };
+  porId('bt-abrir').onchange = function (ev) {
+    var arq = ev.target.files[0]; if (!arq) return;
+    arq.text().then(function (conteudo) {
+      var d = JSON.parse(conteudo);
+      if (d.pacote && d.pacote !== pacote.id) { location.href = 'proposta.html?lang=' + I.lang + '&setor=' + d.pacote + '#importado'; try { sessionStorage.setItem('rxpr:importado', conteudo); } catch (e) { /* */ } return; }
+      usar(d.tipo === 'acompanhamento' ? { cliente: d.cliente, valores: d.base.valores, salvoEm: d.base.data } : d);
+    });
+    ev.target.value = '';
+  };
+
+  carregarConsultor();
+  var vindo = null;
+  try { vindo = location.hash === '#importado' ? JSON.parse(sessionStorage.getItem('rxpr:importado') || 'null') : null; } catch (e) { vindo = null; }
+  var salvo = null;
+  try { salvo = JSON.parse(localStorage.getItem('rxm:diagnostico:' + pacote.id) || 'null'); } catch (e) { salvo = null; }
+  var d = vindo || salvo;
+  if (d && d.valores) usar(d); else porId('vazio').hidden = false;
+})();
+</script>
+</body>
+</html>

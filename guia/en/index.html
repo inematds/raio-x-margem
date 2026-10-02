@@ -244,8 +244,8 @@
 
   <div class="step"><div class="b">6</div><div>
     <h3>Send the proposal</h3>
-    <p>Three playbooks at most, starting with the quickest. Rule of thumb: your total fees never exceed 1/3 of what the X-Ray showed as recoverable.</p>
-<pre><span class="s">kit-comercial/abordagem.md</span>   <span class="s">kit-comercial/precificacao.md</span>   <span class="c"># sales kit, in Portuguese for now</span></pre>
+    <p>Three playbooks at most, starting with the quickest. The X-Ray’s <b>Build proposal</b> button turns the client’s numbers into a proposal and suggests prices within the rule: implementation spread over 6 months + retainer ≤ 1/3 of the recoverable amount. Contract and data-processing templates exist for Brazilian law only — have local counsel adapt them.</p>
+<pre><span class="s">app/proposta.html?lang=en</span>  →  <span class="k">Print / PDF</span>   <span class="c"># sales kit texts in kit-comercial/, in Portuguese</span></pre>
   </div></div>
 
   <div class="step"><div class="b">7</div><div>
@@ -293,8 +293,9 @@
 <section id="roadmap"><div class="wrap">
   <span class="chip">Roadmap</span>
   <h2>What exists and what's next</h2>
-  <p class="sub">Current version: 0.7.1 — 15 packs (5 sectors × 3 markets), 60+ automated tests.</p>
+  <p class="sub">Current version: 0.8.1 — 15 packs (5 sectors × 3 markets), 60+ automated tests.</p>
   <div class="phase"><div class="tag">Done</div><div class="d"><strong>X-Ray, Hunter and collectors</strong><span>Restaurant, hotel and appointment services (clinic, salon) for the Global (EN), Latin America (ES) and Brazil (PT) markets; OpenStreetMap and website collectors that work anywhere.</span></div></div>
+  <div class="phase"><div class="tag">Done</div><div class="d"><strong>Proposal builder</strong><span>Builds the proposal from the saved X-Ray in English, Spanish or Portuguese: scope by priority, prices within the 1/3 rule, payback, measurement plan and terms.</span></div></div>
   <div class="phase"><div class="tag">Done</div><div class="d"><strong>Collect screen and rodar.sh</strong><span>One command or one form per neighborhood and sector: lists, merges, ranks and enriches, then opens in the Hunter. Shows the sources that could be scraped, why not, and the alternative route.</span></div></div>
   <div class="phase"><div class="tag">Done</div><div class="d"><strong>Recovery dashboard</strong><span>Opens the saved diagnosis, takes each month's numbers and shows before × after per leak, % of target, cumulative recovery and a bonus only on what can be attributed.</span></div></div>
   <div class="phase"><div class="tag">Next</div><div class="d"><strong>Registry collectors per country</strong><span>Companies House (UK), SIRENE (France), ABN (Australia) and DENUE (Mexico), filtered by industry code and area.</span></div></div>

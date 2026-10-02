@@ -46,6 +46,8 @@ Los recolectores de registros hoy cubren Brasil; en otros países empiece por Op
 
 Contacto, guion de la reunión y precio: [`kit-comercial/`](kit-comercial/) (en portugués).
 
+**Kit comercial** en [`kit-comercial/`](kit-comercial/) (en portugués): contacto, precio y un **generador de propuesta** (botón "Generar propuesta" en la Radiografía, también en español). Los modelos de contrato y de tratamiento de datos siguen la ley brasileña — adáptelos con un abogado local.
+
 ## Qué hay dentro
 
 | Carpeta | Contenido |
@@ -84,4 +86,4 @@ Nada sale del navegador. Los números del cliente quedan en el borrador local y 
 
 ---
 
-Proyecto abierto de [INEMA.CLUB](https://inema.club) · licencia [MIT](LICENSE) · versión 0.7.1
+Proyecto abierto de [INEMA.CLUB](https://inema.club) · licencia [MIT](LICENSE) · versión 0.8.1

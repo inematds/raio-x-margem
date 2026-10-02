@@ -27,7 +27,7 @@ O objetivo é que **qualquer implantador** (freelancer, agência pequena, consul
 | Tela Coletar + `rodar.sh` + servidor local | ✅ pronto, testado de ponta a ponta | `app/coletar.html`, `coletor/rodar.sh`, `coletor/servidor.py` |
 | Fontes e limites (o que não se raspa e o caminho alternativo) | 📄 PT/EN/ES | `docs/FONTES-E-LIMITES.md` |
 | Receitas (módulos de correção) | 📄 especificados (5, inclui 100% canal próprio) | `docs/modulos/` |
-| Kit comercial | 📄 abordagem + preço (falta proposta modelo, contrato, termo LGPD) | `kit-comercial/` |
+| Kit comercial | ✅ abordagem, preço, proposta (modelo + gerador `app/proposta.html`), contrato e termo LGPD (modelos BR) | `kit-comercial/` |
 | Termos de uso e alternativas abertas | 📄 lidos na íntegra / verificados | `docs/TERMOS.md`, `docs/ALTERNATIVAS-ABERTAS.md` |
 | Painel de Recuperação | ✅ pronto, testado (antes × depois, meta, acumulado, bônus atribuível) | `app/painel.html`, `app/painel-motor.js` |
 | Outros setores / mercados | 🔜 | fase 6 |

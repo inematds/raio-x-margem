@@ -119,6 +119,38 @@ const path = require('path');
     await page.screenshot({ path: path.join(saida, `raio-x-${lang}.png`) });
     await page.close();
   }
+  // ── Gerador de proposta (a partir do Raio-X salvo no navegador) ──
+  for (const [lang, moeda] of [['pt', 'R$'], ['en', '$']]) {
+    const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, locale: lang === 'pt' ? 'pt-BR' : 'en-US' });
+    page.on('pageerror', (e) => erros.push(`proposta ${lang}: ${e.message}`));
+    await page.goto('file://' + path.resolve(__dirname, '..', 'app', 'index.html') + '?lang=' + lang);
+    await page.click('#bt-exemplo');
+    await page.click('#bt-proposta');
+    await page.waitForSelector('#doc:not([hidden])');
+    const doc = await page.textContent('#doc');
+    ok(doc.includes(moeda) && (lang === 'en' ? !doc.includes('R$') : true), `proposta ${lang}: moeda`);
+    ok((await page.$$('#doc table')).length >= 4, `proposta ${lang}: tabelas`);
+    ok(!(await page.$('#doc .alerta')), `proposta ${lang}: sugestão deveria caber no teto de 1/3`);
+    if (lang === 'pt') {
+      await page.fill('#c-nome', 'Consultoria Exemplo');
+      await page.screenshot({ path: path.join(saida, 'proposta.png'), fullPage: true });
+      await page.emulateMedia({ media: 'print' });
+      await page.pdf({ path: path.join(saida, 'proposta-exemplo.pdf'), format: 'A4', margin: { top: '14mm', bottom: '14mm', left: '12mm', right: '12mm' } });
+      await page.emulateMedia({ media: 'screen' });
+    }
+    ok(/15%/.test(await page.textContent('#doc')), `proposta ${lang}: bônus sobre taxa de cartão`);
+    // desmarcar o módulo de cobrança muda a implantação e tira o bônus (não há mais o que atribuir)
+    const antes = await page.textContent('#doc');
+    await page.locator('[data-mod]').first().uncheck();
+    ok((await page.textContent('#doc')) !== antes, `proposta ${lang}: desmarcar módulo não mudou nada`);
+    ok(!/15%/.test(await page.textContent('#doc')), `proposta ${lang}: bônus continuou sem o módulo de cobrança`);
+    await page.fill('#c-nome', 'Consultoria Teste');
+    ok((await page.textContent('#doc')).includes('Consultoria Teste'), `proposta ${lang}: nome do consultor`);
+    const larg = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    ok(larg <= 0, `proposta ${lang}: rolagem ${larg}px`);
+    await page.close();
+  }
+
   // ── Painel de Recuperação ──
   {
     const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, locale: 'pt-BR' });

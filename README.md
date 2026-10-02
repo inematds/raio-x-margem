@@ -37,7 +37,7 @@ bash coletor/rodar.sh --setor restaurante --uf PR --cidade Curitiba --bairro Bat
 5. **Implante** seguindo o checklist da receita (caminho SaaS pronto ou stack própria).
 6. **Meça** todo mês no **Painel de Recuperação** (`app/painel.html`): abre o diagnóstico salvo, recebe os números do mês e mostra antes × depois, % da meta, acumulado e bônus só sobre o que é atribuível. Cobre a recorrência.
 
-Abordagem, roteiro da reunião e preço: [`kit-comercial/`](kit-comercial/).
+Kit comercial em [`kit-comercial/`](kit-comercial/): abordagem, preço, **gerador de proposta** (botão "Gerar proposta" no Raio-X), **contrato** e **termo LGPD** (modelos para o Brasil — revise com advogado).
 
 ## O que tem aqui
 
@@ -76,4 +76,4 @@ Nada sai do navegador. Os números do cliente ficam no rascunho local e no `.jso
 
 ---
 
-Projeto aberto do [INEMA.CLUB](https://inema.club) · licença [MIT](LICENSE) · versão 0.7.1
+Projeto aberto do [INEMA.CLUB](https://inema.club) · licença [MIT](LICENSE) · versão 0.8.1

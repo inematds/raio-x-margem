@@ -46,6 +46,8 @@ Registry collectors currently cover Brazil; elsewhere start from OpenStreetMap (
 5. **Implement** it following the playbook's checklist (ready-made SaaS path or your own open-source stack).
 6. **Measure** every month in the **Recovery Dashboard** (`app/painel.html?lang=en`): it opens the saved diagnosis, takes the month's numbers and shows before × after, % of target, cumulative recovery and a bonus only on what can be attributed. Bill the retainer. Rule of thumb: total fees stay below 1/3 of what the X-Ray showed as recoverable.
 
+**Sales kit** in [`kit-comercial/`](kit-comercial/) (in Portuguese): outreach, pricing and a **proposal builder** (the "Build proposal" button in the X-Ray, in English too). The contract and data-processing templates are written for Brazilian law — have local counsel adapt them.
+
 ## What's inside
 
 | Folder | Contents |
@@ -87,4 +89,4 @@ Nothing leaves the browser. The client's numbers stay in the local draft and in 
 
 ---
 
-An open project by [INEMA.CLUB](https://inema.club) · [MIT](LICENSE) license · version 0.7.1
+An open project by [INEMA.CLUB](https://inema.club) · [MIT](LICENSE) license · version 0.8.1

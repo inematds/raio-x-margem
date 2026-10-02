@@ -15,7 +15,7 @@
   header h1 { margin: 0; font-size: 22px; } header h1 span { color: var(--ambar); }
   header small { color: var(--suave); }
   .acoes { display: flex; flex-wrap: wrap; gap: 8px; }
-  button, .botao { background: var(--painel); color: var(--texto); border: 1px solid var(--borda); border-radius: 8px; padding: 8px 12px; font: inherit; cursor: pointer; }
+  button, .botao { background: var(--painel); color: var(--texto); border: 1px solid var(--borda); border-radius: 8px; padding: 8px 12px; font: inherit; cursor: pointer; text-decoration: none; }
   button:hover, .botao:hover { border-color: var(--ambar); }
   button.principal { background: var(--ambar); color: #1a1206; border-color: var(--ambar); font-weight: 600; }
   main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 420px); gap: 20px; padding: 20px 16px; max-width: 1280px; margin: 0 auto; }
@@ -74,6 +74,7 @@
     <button id="bt-limpar" data-i18n="bt.limpar">Limpar</button>
     <button id="bt-salvar" data-i18n="bt.salvar">Salvar diagnóstico (.json)</button>
     <label class="botao"><span data-i18n="bt.abrir">Abrir diagnóstico</span><input id="bt-abrir" type="file" accept="application/json" hidden></label>
+    <a id="bt-proposta" class="botao" href="proposta.html" data-i18n="pr.link">Gerar proposta</a>
     <button id="bt-imprimir" class="principal" data-i18n="bt.imprimir">Imprimir relatório / PDF</button>
   </div>
 </header>
@@ -164,6 +165,7 @@
   porId('versao').textContent = window.RXM.VERSAO;
   porId('link-cacador').href = 'cacador.html?setor=' + pacote.id;
   porId('link-painel').href = 'painel.html?lang=' + I.lang;
+  porId('bt-proposta').href = 'proposta.html?lang=' + I.lang + '&setor=' + pacote.id;
 
   // ── monta o formulário a partir do pacote ──
   var html = pacote.grupos.map(function (g, i) {

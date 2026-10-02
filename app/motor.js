@@ -3,7 +3,7 @@
  * Roda no navegador (window.RXM) e no Node (require) para os testes.
  */
 (function (g) {
-  var VERSAO = '0.7.1';
+  var VERSAO = '0.8.1';
 
   function numero(v) {
     if (v === null || v === undefined || v === '') return null;
