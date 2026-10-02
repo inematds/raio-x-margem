@@ -116,6 +116,7 @@
     <a class="sec" href="#oque">What it is</a>
     <a class="sec" href="#fluxo">How it works</a>
     <a class="sec" href="#guia">Guide</a>
+    <a class="sec" href="#fontes">Sources & limits</a>
     <a class="sec" href="#exemplos">Examples</a>
     <a class="sec" href="#roadmap">Roadmap</a>
     <span class="lang"><a href="../">PT</a><a class="on" href="./">EN</a><a href="../es/">ES</a></span>
@@ -209,7 +210,7 @@
 
   <div class="step"><div class="b">1</div><div>
     <h3>List the businesses with open data</h3>
-    <p>OpenStreetMap works worldwide. City and district boundaries use different <code>admin_level</code> values per country (US cities are usually 8; check the boundary on openstreetmap.org) — adjust with <code>--nivel-cidade</code> / <code>--nivel-bairro</code>. If your country publishes a business registry (UK Companies House, France SIRENE, Australia ABN, Canada's open business data), export your area as CSV and merge it with the map data (or import it straight into the Hunter). Dedicated registry collectors per country are on the roadmap.</p>
+    <p>OpenStreetMap works worldwide. City and district boundaries use different <code>admin_level</code> values per country (US cities are usually 8; check the boundary on openstreetmap.org) — adjust with <code>--nivel-cidade</code> / <code>--nivel-bairro</code>. If your country publishes a business registry (UK Companies House, France SIRENE, Australia ABN, Canada's open business data), export your area as CSV and merge it with the map data (or import it straight into the Hunter). Dedicated registry collectors per country are on the roadmap. Or all at once: the <b>Collect</b> screen (<code>python3 coletor/servidor.py</code>) or <code>bash coletor/rodar.sh</code> — lists, merges, ranks by storefront name and enriches.</p>
 <pre><span class="k">mkdir</span> -p dados                                     <span class="c"># working folder, kept out of git</span>
 <span class="k">python3</span> coletor/osm.py --cidade Austin --setor alimentacao --saida dados/osm-austin.json
 <span class="c"># optional: merge a registry CSV export without duplicates</span>
@@ -262,6 +263,18 @@
   <div class="card" style="margin-top:22px;border-color:var(--amb)"><h3>⚖️ Within the rules</h3><p>The kit does not scrape Google Maps, Instagram or delivery apps (their terms forbid it), never uses customer contacts passed on by a marketplace and only keeps business data. B2B prospecting rules vary: in the EU, GDPR legitimate interest plus national ePrivacy rules; in the UK, PECR lets you email corporate subscribers but treats sole traders as individuals; in the US, CAN-SPAM covers B2B email (clear opt-out); Canada's CASL is stricter. Messaging the business's own customers needs consent (TCPA in the US, PECR soft opt-in in the UK, GDPR in the EU). Health data is a special category (HIPAA, GDPR): a reminder should not reveal the procedure. Details in <a href="https://github.com/inematds/raio-x-margem/blob/main/docs/TERMOS.md" target="_blank" rel="noopener">docs/TERMOS.md</a> (in Portuguese) and <a href="https://github.com/inematds/raio-x-margem/blob/main/docs/mercados/global-pesquisa-2026-10.md" target="_blank" rel="noopener">docs/mercados/global-pesquisa-2026-10.md</a> (research notes, in Portuguese).</p></div>
 </div></section>
 
+<section id="fontes"><div class="wrap">
+  <span class="chip">Sources and limits</span>
+  <h2>We could scrape it — and why the kit does not</h2>
+  <p class="sub">Open-source tools exist to scrape Google Maps and Instagram. The kit does not use them: platform terms forbid it and the risk falls on you and your client. Each source has a route that gets the same information without breaking the rules.</p>
+  <div class="card" style="margin-bottom:18px"><p><b>Order of preference:</b> 1) data from the owner (exported from their own dashboard) · 2) official open registries and OpenStreetMap · 3) indirect signals (the business’s website links its apps, Instagram, booking engine) · 4) official API with authorization · 5) assisted check (~1 min per lead, top prospects only).</p></div>
+  <div class="tabela"><table>
+    <thead><tr><th>Source</th><th>Would give</th><th>What forbids it</th><th>Instead</th></tr></thead>
+    <tbody><tr><td><b>Google Maps</b></td><td>rating, reviews, phone, hours</td><td>Maps Platform Terms 3.2.3 (no scraping)</td><td>check in the Hunter · Places API (place_id only) · owner’s Business Profile</td></tr><tr><td><b>Instagram</b></td><td>activity, posts, followers</td><td>Instagram and Meta terms (automated collection)</td><td>@ from the website · manual check · Business Discovery API · owner’s Insights</td></tr><tr><td><b>Delivery apps</b></td><td>presence, rating, prices</td><td>each app’s terms</td><td>link on the restaurant’s site · web search · partner-portal reports</td></tr><tr><td><b>Booking sites</b></td><td>presence, rating, prices</td><td>Booking A15.2, Airbnb 11.1, Tripadvisor</td><td>tourism registries · hotel website · OTA extranet with the owner</td></tr></tbody>
+  </table></div>
+  <div class="card" style="margin-top:18px;border-color:var(--amb)"><p><b>Automatic collection, all from open sources:</b> the <a href="../../app/coletar.html?lang=en">Collect</a> screen (run <code>python3 coletor/servidor.py</code>) or one command: <code>bash coletor/rodar.sh --setor restaurante --uf PR --cidade Curitiba</code>. Registry collectors currently cover Brazil; elsewhere use OpenStreetMap plus a CSV from your local registry.</p><p><a href="https://github.com/inematds/raio-x-margem/blob/main/docs/en/FONTES-E-LIMITES.md" target="_blank" rel="noopener">Full report: Sources and limits</a></p></div>
+</div></section>
+
 <section id="exemplos"><div class="wrap">
   <span class="chip">Examples</span>
   <h2>What the global packs calculate</h2>
@@ -280,8 +293,9 @@
 <section id="roadmap"><div class="wrap">
   <span class="chip">Roadmap</span>
   <h2>What exists and what's next</h2>
-  <p class="sub">Current version: 0.6.1 — 15 packs (5 sectors × 3 markets), 60+ automated tests.</p>
+  <p class="sub">Current version: 0.7.1 — 15 packs (5 sectors × 3 markets), 60+ automated tests.</p>
   <div class="phase"><div class="tag">Done</div><div class="d"><strong>X-Ray, Hunter and collectors</strong><span>Restaurant, hotel and appointment services (clinic, salon) for the Global (EN), Latin America (ES) and Brazil (PT) markets; OpenStreetMap and website collectors that work anywhere.</span></div></div>
+  <div class="phase"><div class="tag">Done</div><div class="d"><strong>Collect screen and rodar.sh</strong><span>One command or one form per neighborhood and sector: lists, merges, ranks and enriches, then opens in the Hunter. Shows the sources that could be scraped, why not, and the alternative route.</span></div></div>
   <div class="phase"><div class="tag">Done</div><div class="d"><strong>Recovery dashboard</strong><span>Opens the saved diagnosis, takes each month's numbers and shows before × after per leak, % of target, cumulative recovery and a bonus only on what can be attributed.</span></div></div>
   <div class="phase"><div class="tag">Next</div><div class="d"><strong>Registry collectors per country</strong><span>Companies House (UK), SIRENE (France), ABN (Australia) and DENUE (Mexico), filtered by industry code and area.</span></div></div>
   <div class="phase"><div class="tag">Later</div><div class="d"><strong>More niches and a full sales kit in English</strong><span>Gyms, pet shops, auto repair, vacation-rental managers; proposal template, contract and data-processing terms.</span></div></div>

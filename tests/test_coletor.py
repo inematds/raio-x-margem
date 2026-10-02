@@ -103,5 +103,33 @@ class SetorHospedagem(unittest.TestCase):
         self.assertTrue(s["whatsapp_manual"])
 
 
+class Servidor(unittest.TestCase):
+    def setUp(self):
+        import servidor
+        self.s = servidor
+
+    def test_monta_comando_sem_shell(self):
+        cmd = self.s.construir_comando({"setor": "clinica", "uf": "pr", "cidade": "Curitiba", "bairro": "Água Verde",
+                                        "limite": 20, "ia": "claude", "buscar": 10, "confirmar": True})
+        self.assertEqual(cmd[:2], ["bash", "coletor/rodar.sh"])
+        self.assertIn("PR", cmd)
+        self.assertEqual(cmd[cmd.index("--bairro") + 1], "Água Verde")
+        self.assertIn("--confirmar", cmd)
+
+    def test_confirmar_precisa_ser_true(self):
+        cmd = self.s.construir_comando({"setor": "hotel", "uf": "RS", "cidade": "Gramado", "buscar": 5, "confirmar": "sim"})
+        self.assertNotIn("--confirmar", cmd)
+
+    def test_recusa_entrada_perigosa(self):
+        for ruim in ({"setor": "x", "uf": "PR", "cidade": "Curitiba"},
+                     {"setor": "hotel", "uf": "P1", "cidade": "Curitiba"},
+                     {"setor": "hotel", "uf": "PR", "cidade": "Curitiba; rm -rf /"},
+                     {"setor": "hotel", "uf": "PR", "cidade": "$(id)"},
+                     {"setor": "hotel", "uf": "PR", "cidade": "Curitiba", "limite": 9999},
+                     {"setor": "hotel", "uf": "PR", "cidade": "Curitiba", "ia": "gpt"}):
+            with self.assertRaises(self.s.ErroDeEntrada):
+                self.s.construir_comando(ruim)
+
+
 if __name__ == "__main__":
     unittest.main()

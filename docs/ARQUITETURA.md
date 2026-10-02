@@ -23,7 +23,9 @@ O objetivo é que **qualquer implantador** (freelancer, agência pequena, consul
 | Pacote de setor restaurante (BR) | ✅ pronto, testado | `setores/restaurante.js` |
 | Motor de cálculo | ✅ pronto, 7 testes | `app/motor.js`, `tests/motor.test.js` |
 | Raio-X (interface + relatório PDF) | ✅ pronto, testado em `file://` desktop e celular | `app/index.html` |
-| Caçador de Margem (tela + coletor de fontes abertas) | ✅ pronto, testado; piloto Batel/Curitiba | `app/cacador.html`, `coletor/` |
+| Caçador de Margem (tela + coletor de fontes abertas) | ✅ pronto, testado; pilotos Batel e Gramado/Canela | `app/cacador.html`, `coletor/` |
+| Tela Coletar + `rodar.sh` + servidor local | ✅ pronto, testado de ponta a ponta | `app/coletar.html`, `coletor/rodar.sh`, `coletor/servidor.py` |
+| Fontes e limites (o que não se raspa e o caminho alternativo) | 📄 PT/EN/ES | `docs/FONTES-E-LIMITES.md` |
 | Receitas (módulos de correção) | 📄 especificados (5, inclui 100% canal próprio) | `docs/modulos/` |
 | Kit comercial | 📄 abordagem + preço (falta proposta modelo, contrato, termo LGPD) | `kit-comercial/` |
 | Termos de uso e alternativas abertas | 📄 lidos na íntegra / verificados | `docs/TERMOS.md`, `docs/ALTERNATIVAS-ABERTAS.md` |

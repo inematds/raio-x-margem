@@ -24,6 +24,19 @@ python3 coletor/sitios.py --entrada dados/leads-austin.json --saida dados/leads-
 
 OpenStreetMap boundaries use different `admin_level` values per country: adjust with `--nivel-cidade` / `--nivel-bairro`. Sectors: `alimentacao` (food), `hospedagem` (lodging), `servicos` (clinics and salons). Collector docs (in Portuguese): [`coletor/README.md`](coletor/README.md).
 
+## Collect leads (in bulk) and the limits
+
+One form or one command per neighborhood and sector — lists from open sources, merges, ranks by storefront name and enriches:
+
+```bash
+python3 coletor/servidor.py          # screen at http://127.0.0.1:8790/app/coletar.html?lang=en
+bash coletor/rodar.sh --setor restaurante --uf PR --cidade Curitiba --limite 30 --ia claude
+```
+
+Registry collectors currently cover Brazil; elsewhere start from OpenStreetMap (`coletor/osm.py`) plus a CSV export from your local registry.
+
+**Google Maps, Instagram, delivery apps and booking sites could be scraped — the kit does not**, because their terms forbid it and the risk falls on you and your client. Each source has an alternative route (owner's own data, official registries, indirect signals, official APIs, assisted checks): **[docs/en/FONTES-E-LIMITES.md](docs/en/FONTES-E-LIMITES.md)** · in the guide: [Sources and limits](https://inematds.github.io/raio-x-margem/guia/en/#fontes).
+
 ## How to use it with a client (6 steps)
 
 1. **Open `app/index.html?lang=en`** in a browser (double-click; works offline, nothing to install).
@@ -74,4 +87,4 @@ Nothing leaves the browser. The client's numbers stay in the local draft and in 
 
 ---
 
-An open project by [INEMA.CLUB](https://inema.club) · [MIT](LICENSE) license · version 0.6.1
+An open project by [INEMA.CLUB](https://inema.club) · [MIT](LICENSE) license · version 0.7.1

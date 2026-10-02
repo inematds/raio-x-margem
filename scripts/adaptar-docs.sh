@@ -31,7 +31,8 @@ esac
 
 for ARQ in "${ARQS[@]}"; do
   NOME=$(basename "$ARQ")
-  SAIDA="docs/$LANG_ALVO/modulos/$NOME"
+  case "$ARQ" in docs/modulos/*) DIR_SAIDA="docs/$LANG_ALVO/modulos";; *) DIR_SAIDA="docs/$LANG_ALVO";; esac
+  mkdir -p "$DIR_SAIDA"; SAIDA="$DIR_SAIDA/$NOME"
   echo "→ $ARQ → $SAIDA" >&2
   PROMPT="Adapte o documento abaixo para outro mercado, no idioma de destino. Não é tradução literal: troque exemplos, plataformas, meios de pagamento, leis e números do Brasil pelos do mercado de destino, usando SOMENTE fatos do arquivo de pesquisa $PESQ (leia-o). Se o mercado não tiver um equivalente confirmado, diga que é preciso verificar localmente — nunca invente número ou regra.
 
@@ -42,7 +43,7 @@ Não cite o Brasil nem instituições, leis ou produtos brasileiros (iFood, Pix,
 Regras de formato:
 - Responda SOMENTE com o markdown final do documento, sem comentários antes ou depois, sem cercas de código em volta.
 - Mantenha a estrutura (títulos, tabelas, checklists) e o tamanho aproximado.
-- Links relativos: o arquivo novo fica em docs/$LANG_ALVO/modulos/. Links para outros módulos (ex.: cobranca.md) continuam iguais; links para ../ALGO.md viram ../../ALGO.md; acrescente, quando citar números do mercado, link para ../../mercados/$(basename "$PESQ").
+- Links relativos: o arquivo original fica em $(dirname "$ARQ")/ e o novo em $DIR_SAIDA/. Reescreva cada link relativo para continuar apontando para o MESMO arquivo (os documentos citados existem só em português, salvo os módulos já adaptados em docs/$LANG_ALVO/modulos/; prefira esses quando existirem). Quando citar números do mercado, acrescente link para a pesquisa docs/mercados/$(basename "$PESQ") com o caminho relativo correto.
 - Placeholders como {cliente} ficam como estão.
 
 Documento original (português, mercado Brasil):

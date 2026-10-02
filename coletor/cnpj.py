@@ -162,6 +162,7 @@ def main():
     ap.add_argument("--cidade", required=True, help="nome(s) para exibir, na mesma ordem dos códigos")
     ap.add_argument("--bairro", help="texto do bairro como a Receita grava (ex.: BATEL); sem ele, a cidade toda")
     ap.add_argument("--grupo", default="alimentacao", help="nome do grupo de CNAEs (só para o cache)")
+    ap.add_argument("--somente", help="CNAEs a manter na SAÍDA (subconjunto do grupo; ex.: só saúde de um cache de serviços)")
     ap.add_argument("--cnaes", default=",".join(CNAES_PADRAO))
     ap.add_argument("--mes", help="AAAA-MM (padrão: mais recente)")
     ap.add_argument("--todas-situacoes", action="store_true", help="inclui baixadas/inaptas")
@@ -177,12 +178,15 @@ def main():
     arq = cache_municipio(mes, a.uf, municipios, a.cnaes.split(","), a.cache, a.grupo)
 
     bairro = normalizar(a.bairro) if a.bairro else None
+    somente = set(a.somente.split(",")) if a.somente else None
     linhas = []
     with open(arq, encoding="utf-8") as f:
         for col in csv.reader(f, delimiter=";"):
             if bairro and normalizar(col[17]) != bairro:
                 continue
             if not a.todas_situacoes and SITUACAO.get(col[5]) != "ATIVA":
+                continue
+            if somente and col[11] not in somente:
                 continue
             linhas.append(col)
     log(f"{len(linhas)} estabelecimentos em {bairro or a.cidade}")

@@ -116,6 +116,7 @@
     <a class="sec" href="#oque">Qué es</a>
     <a class="sec" href="#fluxo">Cómo funciona</a>
     <a class="sec" href="#guia">Guía de uso</a>
+    <a class="sec" href="#fontes">Fuentes y límites</a>
     <a class="sec" href="#exemplos">Ejemplos</a>
     <a class="sec" href="#roadmap">Hoja de ruta</a>
     <span class="lang"><a href="../">PT</a><a href="../en/">EN</a><a class="on" href="./">ES</a></span>
@@ -209,7 +210,7 @@
 
   <div class="step"><div class="b">1</div><div>
     <h3>Liste los negocios con fuentes abiertas</h3>
-    <p>OpenStreetMap funciona en todo el mundo (<code>--setor alimentacao</code>, <code>hospedagem</code> o <code>servicos</code>). El <code>admin_level</code> de ciudad y colonia cambia según el país: ajústelo con <code>--nivel-cidade</code> / <code>--nivel-bairro</code>. Sume, si quiere, el CSV del registro local — DENUE de INEGI (México), RNT o RUES (Colombia), SII (Chile), SUNAT (Perú) — e impórtelo directo en el Cazador: encabezados comunes en español e inglés (<code>nombre</code>, <code>ciudad</code>, <code>dirección</code>, <code>teléfono</code>, <code>sitio_web</code>, <code>calificación</code>, <code>reseñas</code>…) se reconocen solos. Los recolectores automáticos por registro de cada país están en la hoja de ruta.</p>
+    <p>OpenStreetMap funciona en todo el mundo (<code>--setor alimentacao</code>, <code>hospedagem</code> o <code>servicos</code>). El <code>admin_level</code> de ciudad y colonia cambia según el país: ajústelo con <code>--nivel-cidade</code> / <code>--nivel-bairro</code>. Sume, si quiere, el CSV del registro local — DENUE de INEGI (México), RNT o RUES (Colombia), SII (Chile), SUNAT (Perú) — e impórtelo directo en el Cazador: encabezados comunes en español e inglés (<code>nombre</code>, <code>ciudad</code>, <code>dirección</code>, <code>teléfono</code>, <code>sitio_web</code>, <code>calificación</code>, <code>reseñas</code>…) se reconocen solos. Los recolectores automáticos por registro de cada país están en la hoja de ruta. O todo de una vez: la pantalla <b>Recolectar</b> (<code>python3 coletor/servidor.py</code>) o <code>bash coletor/rodar.sh</code> — lista, une, prioriza por nombre comercial y enriquece.</p>
 <pre><span class="k">python3</span> coletor/osm.py --cidade <span class="s">"Ciudad de México"</span> --setor alimentacao --saida dados/osm-cdmx.json
 <span class="c"># una sola colonia (los niveles cambian por país; revíselos en openstreetmap.org)</span>
 <span class="k">python3</span> coletor/osm.py --cidade <span class="s">"Ciudad de México"</span> --bairro <span class="s">"Roma Norte"</span> --nivel-cidade N --nivel-bairro N --saida dados/osm-roma.json</pre>
@@ -261,6 +262,18 @@
   <div class="card" style="margin-top:22px;border-color:var(--amb)"><h3>⚖️ Dentro de las reglas</h3><p>El kit no raspa Google Maps, Instagram ni las apps de delivery (los términos lo prohíben), nunca usa el contacto de clientes que entrega la plataforma y solo guarda datos de empresa. La prospección B2B sigue la ley de cada país: en Colombia los datos corporativos quedan fuera de la Ley 1581; en Argentina se permiten datos de fuentes de acceso público irrestricto, con derecho de exclusión; en México la nueva LFPDPPP (2025) exige aviso de privacidad y opción de oposición; en Chile la Ley 21.719 entra en vigor el 01/12/2026, posiblemente aplazada; en Perú rige el nuevo reglamento desde 2025. Los datos de salud son datos sensibles en toda la región, y en México la publicidad médica puede requerir aviso o permiso de COFEPRIS (dato de proveedor, verifique la norma). Detalles en <a href="https://github.com/inematds/raio-x-margem/blob/main/docs/TERMOS.md" target="_blank" rel="noopener">docs/TERMOS.md</a> (en portugués) y <a href="https://github.com/inematds/raio-x-margem/blob/main/docs/mercados/latam-pesquisa-2026-10.md" target="_blank" rel="noopener">docs/mercados/latam-pesquisa-2026-10.md</a> (notas de investigación, en portugués).</p></div>
 </div></section>
 
+<section id="fontes"><div class="wrap">
+  <span class="chip">Fuentes y límites</span>
+  <h2>Se podría raspar — y por qué el kit no lo hace</h2>
+  <p class="sub">Existen herramientas abiertas listas para raspar Google Maps e Instagram. El kit no las usa: los términos lo prohíben y el riesgo cae en usted y en su cliente. Para cada fuente hay un camino que trae la misma información sin romper reglas.</p>
+  <div class="card" style="margin-bottom:18px"><p><b>Orden de preferencia:</b> 1) dato del propio dueño (lo exporta de su panel) · 2) registros públicos oficiales y OpenStreetMap · 3) señal indirecta (el sitio del negocio enlaza apps, Instagram, motor de reservas) · 4) API oficial con autorización · 5) verificación asistida (~1 min por lead, solo los mejores).</p></div>
+  <div class="tabela"><table>
+    <thead><tr><th>Fuente</th><th>Daría</th><th>Qué lo impide</th><th>En su lugar</th></tr></thead>
+    <tbody><tr><td><b>Google Maps</b></td><td>calificación, reseñas, teléfono, horario</td><td>Términos de Maps Platform 3.2.3 (sin raspado)</td><td>verificación en el Cazador · Places API (solo place_id) · Perfil de Empresa del dueño</td></tr><tr><td><b>Instagram</b></td><td>actividad, publicaciones, seguidores</td><td>Términos de Instagram y Meta (recolección automatizada)</td><td>@ del sitio · verificación · API Business Discovery · Estadísticas del dueño</td></tr><tr><td><b>Apps de delivery</b></td><td>presencia, calificación, precios</td><td>términos de cada app</td><td>enlace en el sitio del restaurante · búsqueda web · reportes del portal de socios</td></tr><tr><td><b>Sitios de reserva</b></td><td>presencia, calificación, precios</td><td>Booking A15.2, Airbnb 11.1, Tripadvisor</td><td>registros de turismo · sitio del hotel · extranet de la OTA con el dueño</td></tr></tbody>
+  </table></div>
+  <div class="card" style="margin-top:18px;border-color:var(--amb)"><p><b>Recolección automática, toda con fuentes abiertas:</b> la pantalla <a href="../../app/coletar.html?lang=es">Recolectar</a> (con <code>python3 coletor/servidor.py</code>) o un comando: <code>bash coletor/rodar.sh --setor restaurante --uf PR --cidade Curitiba</code>. Los recolectores de registros hoy cubren Brasil; en otros países use OpenStreetMap más un CSV del registro local.</p><p><a href="https://github.com/inematds/raio-x-margem/blob/main/docs/es/FONTES-E-LIMITES.md" target="_blank" rel="noopener">Informe completo: Fuentes y límites</a></p></div>
+</div></section>
+
 <section id="exemplos"><div class="wrap">
   <span class="chip">Ejemplos</span>
   <h2>Qué calcula cada paquete</h2>
@@ -279,8 +292,9 @@
 <section id="roadmap"><div class="wrap">
   <span class="chip">Hoja de ruta</span>
   <h2>Qué existe y qué viene</h2>
-  <p class="sub">Versión actual: 0.6.1 — 15 paquetes (5 sectores × 3 mercados), más de 60 pruebas automáticas.</p>
+  <p class="sub">Versión actual: 0.7.1 — 15 paquetes (5 sectores × 3 mercados), más de 60 pruebas automáticas.</p>
   <div class="phase"><div class="tag">Hecho</div><div class="d"><strong>Radiografía, Cazador y recolectores</strong><span>Restaurante, hotel y servicios con agenda (clínica, salón) en ES/LATAM, EN/GLOBAL y PT/BR; recolector de OpenStreetMap y de sitios para cualquier país; importación de CSV de registros locales.</span></div></div>
+  <div class="phase"><div class="tag">Hecho</div><div class="d"><strong>Pantalla Recolectar y rodar.sh</strong><span>Un comando o un formulario por barrio y sector: lista, une, prioriza y enriquece, y abre en el Cazador. Muestra las fuentes que se podrían raspar, por qué no, y el camino alternativo.</span></div></div>
   <div class="phase"><div class="tag">Hecho</div><div class="d"><strong>Panel de recuperación</strong><span>Abre el diagnóstico guardado, recibe los números de cada mes y muestra antes × después por fuga, % de la meta, acumulado y bono solo sobre lo atribuible.</span></div></div>
   <div class="phase"><div class="tag">Próximo</div><div class="d"><strong>Recolectores por registro de cada país</strong><span>DENUE de INEGI (México), RNT y RUES (Colombia), SII (Chile) y SUNAT (Perú), directo al formato del Cazador.</span></div></div>
   <div class="phase"><div class="tag">Después</div><div class="d"><strong>Más nichos y kit comercial en español</strong><span>Gimnasios, veterinarias, talleres, administradoras de rentas vacacionales; propuesta modelo, contrato y aviso de privacidad por país.</span></div></div>

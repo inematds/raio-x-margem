@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coletar leads</title>
+<style>
+  :root {
+    --fundo: #0e0d0b; --painel: #1a1814; --borda: #2e2a23; --texto: #ece6da; --suave: #a59c8c;
+    --ambar: #f2a93b; --ambar-escuro: #b8761a; --verde: #6fcf8e; --vermelho: #ef6f5e;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fundo); color: var(--texto); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { padding: 20px 16px; border-bottom: 1px solid var(--borda); display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+  header h1 { margin: 0; font-size: 22px; } header h1 span { color: var(--ambar); }
+  header small { color: var(--suave); } header small a { color: var(--ambar); }
+  button, .botao, select, input { font: inherit; color: var(--texto); }
+  button, .botao { background: var(--painel); border: 1px solid var(--borda); border-radius: 8px; padding: 8px 12px; cursor: pointer; text-decoration: none; display: inline-block; }
+  button:hover, .botao:hover { border-color: var(--ambar); }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+  button.principal, .botao.principal { background: var(--ambar); color: #1a1206; border-color: var(--ambar); font-weight: 600; }
+  select.mini { background: var(--painel); border: 1px solid var(--borda); border-radius: 6px; padding: 2px 4px; }
+  main { max-width: 1100px; margin: 0 auto; padding: 20px 16px; }
+  .cartao { background: var(--painel); border: 1px solid var(--borda); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+  .cartao h2 { margin: 0 0 8px; font-size: 18px; }
+  .aviso { border-left: 3px solid var(--ambar); padding: 8px 12px; background: rgba(242,169,59,.08); border-radius: 0 8px 8px 0; font-size: 13px; margin: 0 0 16px; }
+  .aviso.ok { border-color: var(--verde); background: rgba(111,207,142,.08); }
+  .aviso.erro { border-color: var(--vermelho); background: rgba(239,111,94,.08); }
+  .campos { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  .campo label { display: block; font-size: 13px; color: var(--suave); margin-bottom: 3px; }
+  .campo input, .campo select { width: 100%; background: var(--fundo); border: 1px solid var(--borda); border-radius: 8px; padding: 8px; }
+  .linha { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-top: 12px; font-size: 14px; }
+  .linha label { display: flex; gap: 6px; align-items: center; }
+  pre { background: var(--fundo); border: 1px solid var(--borda); border-radius: 8px; padding: 10px; overflow-x: auto; font-size: 12.5px; white-space: pre-wrap; word-break: break-all; margin: 8px 0 0; }
+  .passos { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px; margin: 10px 0; }
+  .passos i { height: 6px; border-radius: 3px; background: var(--borda); }
+  .passos i.feito { background: var(--verde); } .passos i.agora { background: var(--ambar); }
+  #log { max-height: 280px; overflow-y: auto; }
+  .fontes { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-top: 12px; }
+  .fonte { border: 1px solid var(--borda); border-radius: 12px; padding: 14px; background: var(--fundo); position: relative; }
+  .fonte h3 { margin: 0 0 6px; font-size: 16px; }
+  .trava { display: inline-block; margin-bottom: 4px; font-size: 11px; color: var(--vermelho); border: 1px solid #6b302a; border-radius: 99px; padding: 2px 8px; }
+  .fonte dl { margin: 0; font-size: 13px; }
+  .fonte dt { color: var(--suave); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; margin-top: 8px; }
+  .fonte dd { margin: 2px 0 0; }
+  .fonte ul { margin: 2px 0 0; padding-left: 18px; }
+  .fonte .toggle { margin-top: 10px; display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--suave); }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1 data-i18n-html="co.titulo">Coletar <span>leads</span></h1>
+    <small><span data-i18n="co.sub"></span> · <select id="seletor-idioma" class="mini" data-i18n-title="idioma"></select> · <a id="l-cacador" href="cacador.html" data-i18n="rx.cacador">Caçador</a> · <a id="l-raiox" href="index.html" data-i18n-html="rx.titulo">Raio-X</a> · <a id="l-painel" href="painel.html" data-i18n="pn.painel">Painel</a></small>
+  </div>
+</header>
+
+<main>
+  <p id="status" class="aviso"></p>
+  <p id="so-brasil" class="aviso" hidden></p>
+
+  <form id="form" class="cartao" autocomplete="off">
+    <div class="campos">
+      <div class="campo"><label for="setor" data-i18n="co.setor">Setor</label><select id="setor"></select></div>
+      <div class="campo"><label for="uf" data-i18n="co.uf">UF</label><input id="uf" maxlength="2" value="PR" required></div>
+      <div class="campo"><label for="cidade" data-i18n="co.cidade">Cidade</label><input id="cidade" value="Curitiba" required></div>
+      <div class="campo"><label for="bairro" data-i18n="co.bairro">Bairro</label><input id="bairro" value="Batel"></div>
+      <div class="campo"><label for="limite" data-i18n="co.limite">Enriquecer quantos</label><input id="limite" type="number" min="0" max="500" value="30"></div>
+      <div class="campo"><label for="ia" data-i18n="co.ia">IA</label><select id="ia"><option value="nenhuma" data-i18n="co.ia_nenhuma">Sem IA</option><option value="claude">Claude</option><option value="codex">Codex</option></select></div>
+      <div class="campo"><label for="buscar" data-i18n="co.buscar">Buscar</label><input id="buscar" type="number" min="0" max="200" value="0"></div>
+    </div>
+    <p class="suave" id="custo" style="font-size:13px;color:var(--suave);margin:8px 0 0"></p>
+    <div class="linha">
+      <label><input type="checkbox" id="confirmar"> <span data-i18n="co.confirmar"></span></label>
+      <label><input type="checkbox" id="simular"> <span data-i18n="co.simular"></span></label>
+    </div>
+    <p class="aviso" style="margin-top:12px" data-i18n="co.primeira_vez"></p>
+    <div style="font-size:13px;color:var(--suave)"><span data-i18n="co.comando"></span> · <button type="button" id="copiar" data-i18n="co.copiar" style="padding:2px 8px;font-size:12px">Copiar</button></div>
+    <pre id="comando"></pre>
+    <p style="margin:14px 0 0"><button type="submit" id="bt-coletar" class="principal" data-i18n="co.coletar" disabled>Coletar</button></p>
+  </form>
+
+  <div id="progresso" class="cartao" hidden>
+    <h2 id="p-titulo"></h2>
+    <div class="passos" id="passos"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <p id="p-resultado"></p>
+    <pre id="log"></pre>
+  </div>
+
+  <section class="cartao">
+    <h2 data-i18n="co.bloq_titulo">Daria para raspar, mas…</h2>
+    <p style="margin:0;color:var(--suave);font-size:14px" data-i18n="co.bloq_sub"></p>
+    <div class="fontes" id="fontes"></div>
+    <p style="margin:14px 0 0;font-size:14px"><a id="l-fontes" style="color:var(--ambar)" target="_blank" rel="noopener" data-i18n="co.ler_mais">Relatório completo</a></p>
+  </section>
+</main>
+
+<script src="i18n.js"></script>
+<script>
+(function () {
+  var I = window.RXM_I18N, t = I.t;
+  I.aplicar();
+  var porId = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var SETORES = ['restaurante', 'hotel', 'clinica', 'salao'];
+  var PACOTE = { pt: { restaurante: 'restaurante', hotel: 'hotel', clinica: 'clinica', salao: 'salao' },
+                 en: { restaurante: 'restaurante-global', hotel: 'hotel-global', clinica: 'clinica-global', salao: 'salao-global' },
+                 es: { restaurante: 'restaurante-latam', hotel: 'hotel-latam', clinica: 'clinica-latam', salao: 'salao-latam' } }[I.lang];
+  var DOC = 'https://github.com/inematds/raio-x-margem/blob/main/docs/' + (I.lang === 'pt' ? '' : I.lang + '/') + 'FONTES-E-LIMITES.md';
+  porId('l-fontes').href = DOC;
+  ['l-cacador', 'l-raiox', 'l-painel'].forEach(function (id) { porId(id).href += '?lang=' + I.lang; });
+  porId('setor').innerHTML = SETORES.map(function (s) { return '<option value="' + s + '">' + esc(t('s.' + s)) + '</option>'; }).join('');
+  if (I.lang !== 'pt') { porId('so-brasil').hidden = false; porId('so-brasil').textContent = t('co.so_brasil'); }
+
+  // ── Fontes que dariam para raspar (bloqueadas pelos termos) ──
+  var FONTES = {
+    pt: [
+      { nome: 'Google Maps', traria: 'Nota, nº de avaliações, telefone, horário, categoria — o sinal mais forte de demanda.', impede: 'Termos do Google Maps Platform 3.2.3 (sem raspagem; não copiar nomes, endereços e avaliações) e termos adicionais do Maps §2 (sem bases de empresas ou listas de telemarketing).', risco: 'Bloqueio de IP e da conta Google; projeto do Google Cloud suspenso.', ferramenta: 'gosom/google-maps-scraper', lugar: ['Conferência assistida no Caçador (1 clique abre a busca; você digita nota e avaliações)', 'Places API oficial guardando só o place_id (paga, com franquia; exige chave e autorização)', 'Com o cliente: o dono exporta do Perfil da Empresa no Google'] },
+      { nome: 'Instagram', traria: 'Se o negócio está ativo, frequência de posts, seguidores.', impede: 'Termos do Instagram (coleta automatizada sem permissão expressa) e Meta Automated Data Collection Terms.', risco: 'Bloqueio da conta; notificação da Meta, que já processou empresas de raspagem.', ferramenta: 'instaloader', lugar: ['O coletor pega o @ no site do próprio negócio', 'O Caçador abre o perfil; você marca "post nos últimos 30 dias"', 'API oficial da Meta (Business Discovery): dados públicos básicos de contas comerciais, com app aprovado', 'Com o cliente: Insights do Instagram dele'] },
+      { nome: 'Apps de delivery (iFood, 99Food, Keeta, Rappi)', traria: 'Presença no app, nota no app, preço e promoções.', impede: 'Termos do iFood ao usuário §8: proibido coletar para "monitorar, classificar dados… ou concorrer", com indenização prevista.', risco: 'Bloqueio e ação judicial; problema do cliente com o parceiro.', ferramenta: '—', lugar: ['Sinal indireto: o site do restaurante linka o app (o coletor detecta)', 'Busca web (Firecrawl, respeita robots.txt) mostra a página do app — entra como "conferir"', 'Com o cliente: relatório de vendas e repasse do portal do parceiro (é o dado que o Raio-X usa)'] },
+      { nome: 'Sites de reserva (Booking, Airbnb, Expedia, Tripadvisor)', traria: 'Presença nas OTAs, nota, preço, disponibilidade.', impede: 'Termos da Booking ao cliente A15.2 (inclui assistentes de IA), Airbnb 11.1, Tripadvisor.', risco: 'Bloqueio; conflito com o contrato do hotel.', ferramenta: '—', lugar: ['Cadastur (aberto): quartos, leitos, site', 'Site do hotel: motor de reserva e links para OTAs (o coletor detecta)', 'Com o cliente: extranet da Booking/Airbnb — reservas por canal e comissões'] }
+    ],
+    en: [
+      { nome: 'Google Maps', traria: 'Rating, review count, phone, hours, category — the strongest demand signal.', impede: 'Google Maps Platform Terms 3.2.3 (no scraping; no copying business names, addresses or reviews) and Maps additional terms §2 (no business-listing databases or telemarketing lists).', risco: 'IP and Google account blocks; Google Cloud project suspended.', ferramenta: 'gosom/google-maps-scraper', lugar: ['Assisted check in the Hunter (one click opens the search; you type rating and reviews)', 'Official Places API storing only the place_id (paid, with a free tier; needs a key and authorization)', 'With the client: the owner exports from their Google Business Profile'] },
+      { nome: 'Instagram', traria: 'Whether the business is active, posting frequency, followers.', impede: 'Instagram Terms (no automated collection without express permission) and Meta Automated Data Collection Terms.', risco: 'Account blocks; legal notices from Meta, which has sued scraping companies.', ferramenta: 'instaloader', lugar: ['The collector picks up the @ from the business\u2019s own website', 'The Hunter opens the profile; you tick "posted in the last 30 days"', 'Official Meta API (Business Discovery): basic public data of business accounts, with an approved app', 'With the client: their own Instagram Insights'] },
+      { nome: 'Delivery apps (Uber Eats, DoorDash, Deliveroo, Just Eat…)', traria: 'App presence, in-app rating, prices and promotions.', impede: 'Each app\u2019s terms forbid automated collection to monitor or compete.', risco: 'Blocks and legal action; trouble between your client and the platform.', ferramenta: '—', lugar: ['Indirect signal: the restaurant\u2019s site links to the app (the collector detects it)', 'Web search (Firecrawl, respects robots.txt) shows the app page — marked "to check"', 'With the client: sales and payout reports from the partner portal (the data the X-Ray actually uses)'] },
+      { nome: 'Booking sites (Booking.com, Airbnb, Expedia, Tripadvisor)', traria: 'OTA presence, rating, price, availability.', impede: 'Booking.com customer terms A15.2 (including AI assistants), Airbnb 11.1, Tripadvisor.', risco: 'Blocks; conflict with the hotel\u2019s contract.', ferramenta: '—', lugar: ['Official tourism or business registries where they exist', 'The hotel\u2019s website: booking engine and OTA links (the collector detects them)', 'With the client: the OTA extranet — bookings by channel and commissions paid'] }
+    ],
+    es: [
+      { nome: 'Google Maps', traria: 'Calificación, n.º de reseñas, teléfono, horario, categoría — la señal más fuerte de demanda.', impede: 'Términos de Google Maps Platform 3.2.3 (sin raspado; no copiar nombres, direcciones ni reseñas) y términos adicionales de Maps §2 (sin bases de empresas ni listas de telemarketing).', risco: 'Bloqueo de IP y de la cuenta de Google; proyecto de Google Cloud suspendido.', ferramenta: 'gosom/google-maps-scraper', lugar: ['Verificación asistida en el Cazador (un clic abre la búsqueda; usted escribe calificación y reseñas)', 'Places API oficial guardando solo el place_id (paga, con franquicia; requiere clave y autorización)', 'Con el cliente: el dueño exporta desde su Perfil de Empresa en Google'] },
+      { nome: 'Instagram', traria: 'Si el negocio está activo, frecuencia de publicaciones, seguidores.', impede: 'Términos de Instagram (sin recolección automatizada sin permiso expreso) y Meta Automated Data Collection Terms.', risco: 'Bloqueo de la cuenta; notificaciones de Meta, que ya demandó a empresas de raspado.', ferramenta: 'instaloader', lugar: ['El recolector toma el @ del sitio del propio negocio', 'El Cazador abre el perfil; usted marca "publicó en los últimos 30 días"', 'API oficial de Meta (Business Discovery): datos públicos básicos de cuentas comerciales, con app aprobada', 'Con el cliente: sus propias Estadísticas de Instagram'] },
+      { nome: 'Apps de delivery (Rappi, DiDi Food, Uber Eats, PedidosYa)', traria: 'Presencia en la app, calificación, precios y promociones.', impede: 'Los términos de cada app prohíben la recolección automatizada para monitorear o competir.', risco: 'Bloqueo y acción legal; problemas entre su cliente y la plataforma.', ferramenta: '—', lugar: ['Señal indirecta: el sitio del restaurante enlaza la app (el recolector lo detecta)', 'Búsqueda web (Firecrawl, respeta robots.txt) muestra la página en la app — queda como "verificar"', 'Con el cliente: reportes de ventas y liquidación del portal de socios (el dato que usa la Radiografía)'] },
+      { nome: 'Sitios de reserva (Booking, Airbnb, Despegar, Tripadvisor)', traria: 'Presencia en OTAs, calificación, precio, disponibilidad.', impede: 'Términos de Booking al cliente A15.2 (incluye asistentes de IA), Airbnb 11.1, Tripadvisor.', risco: 'Bloqueo; conflicto con el contrato del hotel.', ferramenta: '—', lugar: ['Registros oficiales de turismo (ej.: RNT en Colombia, datos abiertos)', 'Sitio del hotel: motor de reservas y enlaces a OTAs (el recolector los detecta)', 'Con el cliente: la extranet de la OTA — reservas por canal y comisiones pagadas'] }
+    ]
+  }[I.lang];
+  porId('fontes').innerHTML = FONTES.map(function (f) {
+    return '<div class="fonte"><span class="trava">🔒 ' + esc(t('co.bloqueado')) + '</span><h3>' + esc(f.nome) + '</h3><dl>' +
+      '<dt>' + esc(t('co.traria')) + '</dt><dd>' + esc(f.traria) + '</dd>' +
+      '<dt>' + esc(t('co.impede')) + '</dt><dd>' + esc(f.impede) + '</dd>' +
+      '<dt>' + esc(t('co.risco')) + '</dt><dd>' + esc(f.risco) + '</dd>' +
+      '<dt>' + esc(t('co.no_lugar')) + '</dt><dd><ul>' + f.lugar.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></dd></dl>' +
+      (f.ferramenta !== '—' ? '<label class="toggle" title="' + esc(t('co.bloqueado')) + '"><input type="checkbox" disabled> <code>' + esc(f.ferramenta) + '</code></label>' : '') + '</div>';
+  }).join('');
+
+  // ── Formulário → comando ──
+  function pedido() {
+    return { setor: porId('setor').value, uf: porId('uf').value.trim().toUpperCase(), cidade: porId('cidade').value.trim(),
+      bairro: porId('bairro').value.trim(), limite: parseInt(porId('limite').value || '0', 10), ia: porId('ia').value,
+      buscar: parseInt(porId('buscar').value || '0', 10), confirmar: porId('confirmar').checked, simular: porId('simular').checked };
+  }
+  function aspas(s) { return /^[\w.,\-/]+$/.test(s) ? s : '"' + s.replace(/(["\\$`])/g, '\\$1') + '"'; }
+  function comando(p) {
+    var c = ['bash coletor/rodar.sh', '--setor', p.setor, '--uf', p.uf, '--cidade', aspas(p.cidade)];
+    if (p.bairro) c.push('--bairro', aspas(p.bairro));
+    c.push('--limite', p.limite, '--ia', p.ia);
+    if (p.buscar) { c.push('--buscar', p.buscar); if (p.confirmar) c.push('--confirmar'); }
+    if (p.simular) c.push('--simular');
+    return c.join(' ');
+  }
+  function atualizar() {
+    var p = pedido();
+    porId('comando').textContent = 'cd raio-x-margem\n' + comando(p);
+    porId('custo').textContent = p.buscar ? t('co.custo', { n: p.buscar * 2 }) : '';
+  }
+  porId('form').addEventListener('input', atualizar);
+  porId('form').addEventListener('change', atualizar);
+  porId('copiar').onclick = function () {
+    var b = this;
+    if (navigator.clipboard) navigator.clipboard.writeText(comando(pedido())).then(function () { b.textContent = t('co.copiado'); setTimeout(function () { b.textContent = t('co.copiar'); }, 1500); });
+  };
+  atualizar();
+
+  // ── Servidor local ──
+  var online = location.protocol.indexOf('http') === 0;
+  function status(msgHtml, classe) { var s = porId('status'); s.className = 'aviso' + (classe ? ' ' + classe : ''); s.innerHTML = msgHtml; }
+  status(t('co.servidor_off'));
+  if (online) {
+    fetch('../api/status').then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (j) {
+      status(esc(t('co.servidor_on', { v: j.versao })), 'ok');
+      porId('bt-coletar').disabled = false;
+    }).catch(function () { /* sem servidor: fica o aviso */ });
+  }
+
+  porId('form').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var p = pedido();
+    porId('bt-coletar').disabled = true;
+    fetch('../api/coletar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(p) })
+      .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, status: r.status, j: j }; }); })
+      .then(function (x) {
+        if (!x.ok) { porId('bt-coletar').disabled = false; status(esc(x.status === 409 ? t('co.ocupado') : x.j.erro || 'erro'), 'erro'); return; }
+        acompanhar(x.j.id, p.setor);
+      })
+      .catch(function (e) { porId('bt-coletar').disabled = false; status(esc(e.message), 'erro'); });
+  });
+
+  function acompanhar(id, setor) {
+    porId('progresso').hidden = false;
+    porId('p-titulo').textContent = t('co.rodando');
+    porId('p-resultado').innerHTML = '';
+    var tick = function () {
+      fetch('../api/trabalhos/' + id).then(function (r) { return r.json(); }).then(function (e) {
+        porId('passos').innerHTML = [1, 2, 3, 4, 5, 6].map(function (n) {
+          return '<i class="' + (n < e.passo || (n === e.passo && e.status !== 'rodando') ? 'feito' : n === e.passo ? 'agora' : '') + '"></i>';
+        }).join('');
+        porId('p-titulo').textContent = e.status === 'rodando' ? t('co.rodando') + ' · ' + t('co.passo', { n: e.passo || 1 }) + ' · ' + e.segundos + 's' : '';
+        var log = porId('log'); log.textContent = e.log.join('\n'); log.scrollTop = log.scrollHeight;
+        if (e.status === 'rodando') { setTimeout(tick, 1500); return; }
+        porId('bt-coletar').disabled = false;
+        if (e.status === 'ok' && e.saida) {
+          var url = 'cacador.html?lang=' + I.lang + '&setor=' + PACOTE[setor] + '&importar=' + encodeURIComponent('../' + e.saida);
+          porId('p-titulo').textContent = t('co.pronto', { arq: e.saida });
+          porId('p-resultado').innerHTML = '<a class="botao principal" id="abrir-cacador" href="' + esc(url) + '">' + esc(t('co.abrir_cacador')) + '</a>';
+        } else if (e.status === 'ok') {
+          porId('p-titulo').textContent = t('co.pronto', { arq: '—' });
+        } else {
+          porId('p-titulo').textContent = t('co.erro');
+        }
+      });
+    };
+    tick();
+  }
+})();
+</script>
+</body>
+</html>

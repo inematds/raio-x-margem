@@ -2,6 +2,16 @@
 
 Monta a lista de restaurantes de um bairro com **fontes abertas** e entrega um `leads.json` para importar no Caçador (`app/cacador.html`). Roda na máquina de quem implanta; Python 3 e Node, sem dependências extras.
 
+## Tudo de uma vez
+
+```bash
+python3 coletor/servidor.py      # tela Coletar: http://127.0.0.1:8790/app/coletar.html
+bash coletor/rodar.sh --setor <restaurante|hotel|clinica|salao> --uf PR --cidade Curitiba [--bairro Batel] \
+  [--limite 30] [--ia claude|codex] [--buscar 25 --confirmar] [--simular]
+```
+
+O `rodar.sh` descobre os códigos do município (`municipio.py`), lista pelo CNPJ e pelo OpenStreetMap (mais Cadastur no hotel e CNES na clínica), junta, **prioriza nome de fachada** (`priorizar.js`) e enriquece. O que **não** é coletado e por quê: [docs/FONTES-E-LIMITES.md](../docs/FONTES-E-LIMITES.md).
+
 ## Passo a passo (exemplo: Batel, Curitiba)
 
 ```bash

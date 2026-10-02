@@ -1,11 +1,13 @@
 {
   "name": "raio-x-margem",
-  "version": "0.6.1",
+  "version": "0.7.1",
   "description": "Kit aberto para diagnosticar vazamentos de dinheiro (Raio-X), corrigir e medir — restaurantes no Brasil",
   "private": true,
   "license": "MIT",
   "scripts": {
     "test": "node --test tests/*.test.js && python3 -m unittest discover -s tests -p 'test_*.py'",
-    "test:ui": "node tests/ui.check.cjs"
+    "test:ui": "node tests/ui.check.cjs",
+    "coletar": "python3 coletor/servidor.py",
+    "test:coletar": "node tests/coletar.check.cjs"
   }
 }

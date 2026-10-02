@@ -124,3 +124,14 @@ test('abordagem formata números pelo mercado do pacote', () => {
   const t = RXC.abordagem(global, RXC.normalizarLead(global, { nome: 'Joe', sinais: { nota: 4.7, avaliacoes: 3000 } }));
   assert.match(t, /4\.7 rating with 3,000 reviews/);
 });
+
+test('priorizar: fachada conhecida e nome de marca antes de razão social', () => {
+  const { priorizar } = require('../coletor/priorizar.js');
+  const ordem = priorizar([
+    { nome: 'Aakf Lanchonete e Cafeteria Ltda', porte: 'DEMAIS', fontes: ['cnpj'] },
+    { nome: 'Cantina do Delio Batel', porte: 'ME', fontes: ['cnpj', 'osm'] },
+    { nome: 'Restaurante Manu', porte: 'EPP', fontes: ['cnpj'] },
+    { nome: 'Fechado Ltda', porte: 'DEMAIS', fontes: ['cnpj', 'osm'], situacao: 'BAIXADA' }
+  ]).map((l) => l.nome);
+  assert.deepEqual(ordem, ['Cantina do Delio Batel', 'Restaurante Manu', 'Aakf Lanchonete e Cafeteria Ltda', 'Fechado Ltda']);
+});

@@ -116,6 +116,7 @@
     <a class="sec" href="#oque">O que é</a>
     <a class="sec" href="#fluxo">Como funciona</a>
     <a class="sec" href="#guia">Guia de uso</a>
+    <a class="sec" href="#fontes">Fontes e limites</a>
     <a class="sec" href="#exemplos">Exemplos</a>
     <a class="sec" href="#roadmap">Roadmap</a>
     <span class="lang"><a class="on" href="./">PT</a><a href="en/">EN</a><a href="es/">ES</a></span>
@@ -209,7 +210,7 @@
 
   <div class="step"><div class="b">1</div><div>
     <h3>Liste os negócios do bairro com fontes abertas</h3>
-    <p>CNPJ da Receita (código de município da Receita, não do IBGE) e OpenStreetMap. Para clínicas, some o CNES; para hotéis, o Cadastur.</p>
+    <p>CNPJ da Receita (código de município da Receita, não do IBGE) e OpenStreetMap. Para clínicas, some o CNES; para hotéis, o Cadastur. Ou tudo de uma vez: tela <b>Coletar</b> (<code>python3 coletor/servidor.py</code>) ou <code>bash coletor/rodar.sh</code> — lista, junta, prioriza por nome de fachada e enriquece.</p>
 <pre><span class="k">python3</span> coletor/cnpj.py --uf PR --municipio 7535 --cidade Curitiba --bairro BATEL --saida dados/cnpj-batel.json
 <span class="k">python3</span> coletor/osm.py --cidade Curitiba --bairro Batel --saida dados/osm-batel.json
 <span class="k">node</span> coletor/juntar.js dados/cnpj-batel.json dados/osm-batel.json <span class="k">></span> dados/leads-batel.json</pre>
@@ -261,6 +262,18 @@
   <div class="card" style="margin-top:22px;border-color:var(--amb)"><h3>⚖️ Dentro das regras</h3><p>O kit não raspa Google Maps, Instagram nem iFood (os termos proíbem), não usa contato de cliente vindo de marketplace e só guarda dados de empresa (LGPD). Clínica segue o conselho profissional: dentista não anuncia preço nem faz "indique e ganhe". Tudo com trecho e link em <a href="https://github.com/inematds/raio-x-margem/blob/main/docs/TERMOS.md" target="_blank" rel="noopener">docs/TERMOS.md</a>.</p></div>
 </div></section>
 
+<section id="fontes"><div class="wrap">
+  <span class="chip">Fontes e limites</span>
+  <h2>Daria para raspar — e por que o kit não raspa</h2>
+  <p class="sub">Existem ferramentas abertas prontas para raspar Google Maps e Instagram. O kit não usa: os termos proíbem e o risco cai em você e no cliente. Para cada fonte há um caminho que traz a mesma informação sem quebrar regra.</p>
+  <div class="card" style="margin-bottom:18px"><p><b>Ordem de preferência:</b> 1) dado do próprio dono (ele exporta do painel dele) · 2) cadastro público oficial (CNPJ, CNES, Cadastur, OpenStreetMap) · 3) sinal indireto (o site do negócio linka app, Instagram, motor de reserva) · 4) API oficial com autorização · 5) conferência assistida (~1 min por lead, só nos melhores).</p></div>
+  <div class="tabela"><table>
+    <thead><tr><th>Fonte</th><th>Traria</th><th>O que impede</th><th>No lugar</th></tr></thead>
+    <tbody><tr><td><b>Google Maps</b></td><td>nota, avaliações, telefone, horário</td><td>Termos do Maps Platform 3.2.3 (sem raspagem)</td><td>conferência no Caçador · Places API (só place_id) · Perfil da Empresa do dono</td></tr><tr><td><b>Instagram</b></td><td>atividade, posts, seguidores</td><td>Termos do Instagram e da Meta (coleta automatizada)</td><td>@ do site do negócio · conferência · API Business Discovery · Insights do dono</td></tr><tr><td><b>Apps de delivery</b></td><td>presença, nota, preço</td><td>Termos do iFood §8 e de cada app</td><td>link no site do restaurante · busca web · relatório do portal do parceiro</td></tr><tr><td><b>Sites de reserva</b></td><td>presença, nota, preço</td><td>Booking A15.2, Airbnb 11.1, Tripadvisor</td><td>Cadastur · site do hotel · extranet da OTA com o dono</td></tr></tbody>
+  </table></div>
+  <div class="card" style="margin-top:18px;border-color:var(--amb)"><p><b>Coleta automática, toda com fonte aberta:</b> tela <a href="../app/coletar.html">Coletar</a> (com <code>python3 coletor/servidor.py</code>) ou um comando: <code>bash coletor/rodar.sh --setor restaurante --uf PR --cidade Curitiba --bairro Batel</code>.</p><p><a href="https://github.com/inematds/raio-x-margem/blob/main/docs/FONTES-E-LIMITES.md" target="_blank" rel="noopener">Relatório completo: Fontes e limites</a></p></div>
+</div></section>
+
 <section id="exemplos"><div class="wrap">
   <span class="chip">Exemplos</span>
   <h2>O que saiu do piloto</h2>
@@ -279,8 +292,9 @@
 <section id="roadmap"><div class="wrap">
   <span class="chip">Roadmap</span>
   <h2>O que existe e o que vem</h2>
-  <p class="sub">Versão atual: 0.6.1 — 15 pacotes (5 setores × 3 mercados), 60+ testes automáticos.</p>
+  <p class="sub">Versão atual: 0.7.1 — 15 pacotes (5 setores × 3 mercados), 60+ testes automáticos.</p>
   <div class="phase"><div class="tag">Feito</div><div class="d"><strong>Raio-X, Caçador e coletores</strong><span>Restaurante, hotel, serviços com agenda (clínica, salão) em PT/BR, ES/LATAM e EN/GLOBAL; coletores de CNPJ, CNES, Cadastur, OSM e sites.</span></div></div>
+  <div class="phase"><div class="tag">Feito</div><div class="d"><strong>Tela Coletar e rodar.sh</strong><span>Um comando ou um formulário por bairro e setor: lista, junta, prioriza e enriquece; abre direto no Caçador. Mostra as fontes que daria para raspar, por que não, e o caminho alternativo.</span></div></div>
   <div class="phase"><div class="tag">Feito</div><div class="d"><strong>Painel de recuperação</strong><span>Abre o diagnóstico salvo, recebe os números do mês e mostra antes × depois por vazamento, % da meta, acumulado e bônus só sobre o que é atribuível.</span></div></div>
   <div class="phase"><div class="tag">Próximo</div><div class="d"><strong>Kit comercial completo</strong><span>Proposta modelo, contrato e termo de LGPD.</span></div></div>
   <div class="phase"><div class="tag">Depois</div><div class="d"><strong>Mais nichos e coletores por país</strong><span>Academias, pet shops, oficinas, administradoras de temporada; DENUE (México), Companies House (Reino Unido), SIRENE (França).</span></div></div>

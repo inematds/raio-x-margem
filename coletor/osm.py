@@ -23,6 +23,8 @@ SETORES = {  # setor → lista de (chave OSM, valores)
     "hospedagem": [("tourism", "hotel|guest_house|motel|hostel|apartment|chalet")],
     "servicos": [("amenity", "dentist|clinic|doctors"), ("healthcare", "dentist|clinic|doctor|physiotherapist|psychotherapist|podiatrist|alternative|nutrition_counselling|speech_therapist"),
                  ("shop", "hairdresser|beauty|massage|cosmetics")],
+    "saude": [("amenity", "dentist|clinic|doctors"), ("healthcare", "dentist|clinic|doctor|physiotherapist|psychotherapist|podiatrist|alternative|nutrition_counselling|speech_therapist")],
+    "beleza": [("shop", "hairdresser|beauty|massage|cosmetics")],
 }
 USER_AGENT = "raio-x-margem/0.2 (+https://github.com/inematds/raio-x-margem)"
 

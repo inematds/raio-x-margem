@@ -22,6 +22,19 @@ python3 coletor/sitios.py --entrada dados/osm-cdmx.json --saida dados/leads-cdmx
 
 Detalles del recolector en [`coletor/README.md`](coletor/README.md) (en portugués).
 
+## Recolectar leads (en masa) y los límites
+
+Un formulario o un comando por barrio y sector — lista con fuentes abiertas, une, prioriza por nombre comercial y enriquece:
+
+```bash
+python3 coletor/servidor.py          # pantalla en http://127.0.0.1:8790/app/coletar.html?lang=es
+bash coletor/rodar.sh --setor restaurante --uf PR --cidade Curitiba --limite 30 --ia claude
+```
+
+Los recolectores de registros hoy cubren Brasil; en otros países empiece por OpenStreetMap (`coletor/osm.py`) más un CSV del registro local.
+
+**Se podría raspar Google Maps, Instagram, apps de delivery y sitios de reserva — el kit no lo hace**, porque los términos lo prohíben y el riesgo cae en usted y en su cliente. Cada fuente tiene un camino alternativo (dato del dueño, registros oficiales, señal indirecta, API oficial, verificación asistida): **[docs/es/FONTES-E-LIMITES.md](docs/es/FONTES-E-LIMITES.md)** · en la guía: [Fuentes y límites](https://inematds.github.io/raio-x-margem/guia/es/#fontes).
+
 ## Cómo usarlo con un cliente (6 pasos)
 
 1. **Abra `app/index.html?lang=es`** en el navegador (doble clic; funciona sin conexión, sin instalar nada).
@@ -71,4 +84,4 @@ Nada sale del navegador. Los números del cliente quedan en el borrador local y 
 
 ---
 
-Proyecto abierto de [INEMA.CLUB](https://inema.club) · licencia [MIT](LICENSE) · versión 0.6.1
+Proyecto abierto de [INEMA.CLUB](https://inema.club) · licencia [MIT](LICENSE) · versión 0.7.1

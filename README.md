@@ -17,6 +17,17 @@ Setores: **restaurante, hotel/pousada, clínica, salão** (e o modelo genérico 
 
 `coletor/` monta a lista de restaurantes de um bairro com **fontes abertas** (CNPJ da Receita + OpenStreetMap + site do próprio restaurante, IA pela assinatura opcional) e `app/cacador.html` pontua, estima o potencial, gera a abordagem e acompanha cada lead até o Raio-X. Passo a passo em [`coletor/README.md`](coletor/README.md).
 
+## Coletar leads (em massa) e os limites
+
+Um formulário ou um comando por bairro e setor — lista com fontes abertas, junta, prioriza por nome de fachada e enriquece:
+
+```bash
+python3 coletor/servidor.py          # tela em http://127.0.0.1:8790/app/coletar.html
+bash coletor/rodar.sh --setor restaurante --uf PR --cidade Curitiba --bairro Batel --limite 30 --ia claude
+```
+
+**Daria para raspar Google Maps, Instagram, apps de delivery e sites de reserva — o kit não raspa**, porque os termos proíbem e o risco cai em você e no cliente. Para cada fonte há um caminho alternativo (dado do dono, cadastro oficial, sinal indireto, API oficial, conferência assistida): **[docs/FONTES-E-LIMITES.md](docs/FONTES-E-LIMITES.md)** · no guia: [Fontes e limites](https://inematds.github.io/raio-x-margem/guia/#fontes).
+
 ## Como usar num cliente (6 passos)
 
 1. **Abra `app/index.html`** no navegador (duplo clique; funciona offline, sem instalar nada).
@@ -65,4 +76,4 @@ Nada sai do navegador. Os números do cliente ficam no rascunho local e no `.jso
 
 ---
 
-Projeto aberto do [INEMA.CLUB](https://inema.club) · licença [MIT](LICENSE) · versão 0.6.1
+Projeto aberto do [INEMA.CLUB](https://inema.club) · licença [MIT](LICENSE) · versão 0.7.1
