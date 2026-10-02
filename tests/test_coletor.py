@@ -56,6 +56,10 @@ class Busca(unittest.TestCase):
         a = sitios.classificar_resultados({"nome": "Bar do Toninho"}, [{"url": "https://guiacuritiba.com.br/bares"}])
         self.assertIsNone(a["site"])
 
+    def test_diretorio_com_nome_no_subdominio_nao_vira_site(self):
+        a = sitios.classificar_resultados({"nome": "Bar do Toninho"}, [{"url": "https://bar-do-toninho-curitiba.br-rest.com/"}])
+        self.assertIsNone(a["site"])
+
     def test_consulta(self):
         self.assertEqual(sitios.consulta_de({"nome": "X", "bairro": "Batel", "cidade": "Curitiba"}), "X Batel Curitiba")
 

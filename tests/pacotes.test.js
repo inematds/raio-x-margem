@@ -68,6 +68,12 @@ test('hotel: Caçador usa nº de quartos no potencial e alerta rede/pequeno', ()
   assert.equal(RXC.pontuar(hotel, RXC.normalizarLead(hotel, { nome: 'W' })).potencial, null);
 });
 
+test('hotel: com motor de reserva, abordagem fala da fatia que ainda vai pela OTA', () => {
+  const t = RXC.abordagem(hotel, RXC.normalizarLead(hotel, { nome: 'Hotel Y', cidade: 'Gramado', sinais: { pedido_proprio: true, fidelidade: false } }));
+  assert.match(t, /já têm reserva direta/);
+  assert.match(t, /15–18%/);
+});
+
 test('hotel: abordagem fala de OTA e paridade, não de iFood', () => {
   const t = RXC.abordagem(hotel, RXC.normalizarLead(hotel, { nome: 'Pousada X', cidade: 'Canela', sinais: { marketplace: true, pedido_proprio: false, fidelidade: false } }));
   assert.match(t, /Booking/);

@@ -47,3 +47,10 @@ Nota e avaliações do Google ficam para conferência manual: raspar o Google Ma
 ## Código do município
 
 É o da **Receita**, não o do IBGE. Curitiba = `7535`. Outros: abrir `Municipios.zip` no compartilhamento da Receita (o `cnpj.py` usa o mês mais recente). O texto do bairro é como a Receita grava (maiúsculas, sem acento): `BATEL`, `AGUA VERDE`, `CENTRO`.
+
+## Armadilhas (vistas no piloto)
+
+- **Razão social no lugar do nome de fachada.** Sem nome fantasia, o CNPJ traz "Aakf Lanchonete e Cafeteria Ltda" — ninguém busca o restaurante assim. Priorize leads que também aparecem no OpenStreetMap ou com nome fantasia; o resto, confira o nome de fachada à mão antes de buscar.
+- **Grande ≠ bom lead.** Porte DEMAIS no Batel inclui franquias e redes (Madero, Bacio di Latte, Hard Rock): a decisão de canal é da franqueadora. No hotel, acima de ~200 UHs costuma ser rede com central própria.
+- **Hotel médio já tem motor de reserva.** No piloto de Gramado/Canela (48–118 UHs), 33 de 40 já tinham motor (quase todos Omnibees). Para esses, o vazamento é a fatia que ainda vai pela OTA, a baixa temporada e o hóspede que não volta — não "falta canal".
+- **Bairro na Receita é texto livre.** O filtro compara o texto depois de normalizar acento e espaço; grafias diferentes do mesmo bairro ficam de fora. Antes de fechar a lista, abra o cache do município (`dados/cnpj-*-<grupo>.csv`) e confira as variações.

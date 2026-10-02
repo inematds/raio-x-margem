@@ -110,6 +110,7 @@
     else partes.push(trocar((lead.bairro || lead.cidade) ? t.conheco_local : t.conheco));
     if (s.marketplace === true && s.pedido_proprio === false) partes.push(trocar(pacote.cacador.abordagem));
     else if (s.pedido_proprio === false) partes.push(trocar(t.sem_canal));
+    else if (s.pedido_proprio === true && t.com_canal) partes.push(trocar(t.com_canal));
     if (s.fidelidade === false) partes.push(trocar(t.sem_fidelidade));
     partes.push(trocar(t.convite));
     return partes.join(' ');

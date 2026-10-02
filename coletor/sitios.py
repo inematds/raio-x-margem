@@ -44,7 +44,8 @@ PEDIDO_TEXTO = ["faça seu pedido", "faca seu pedido", "peça online", "peca onl
 FIDELIDADE = ["fidelidade", "cashback", "clube de vantagens", "clube do", "programa de pontos", "acumule pontos", "seja membro", "assinatura"]
 IGNORAR = ["google.", "facebook.com", "tripadvisor", "yelp.", "foursquare", "guiadacidade", "restaurantguru",
            "wikipedia", "linkedin", "youtube", "tiktok", "twitter.com", "x.com", "apontador", "cnpj", "econodata",
-           "casadosdados", "solutudo", "telelistas", "waze", "booking.com", "tagme", "getin", "opentable", "kekanto"]
+           "casadosdados", "solutudo", "telelistas", "waze", "booking.com", "tagme", "getin", "opentable", "kekanto",
+           "br-rest.com", "restaurantes.com", "menupix", "cardapio.menu", "guiademoteis", "hoteis.com", "trivago", "decolar", "expedia", "airbnb"]
 
 
 def log(msg):

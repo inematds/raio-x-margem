@@ -14,7 +14,7 @@
   var pacote = {
     id: 'hotel',
     nome: 'Hotel / pousada',
-    versao: '0.1.0',
+    versao: '0.2.0',
     mercado: 'BR',
     idioma: 'pt-BR',
     moeda: 'BRL',
@@ -209,9 +209,11 @@
         { id: 'avaliacoes', sinal: 'avaliacoes', teste: 'v >= 300', rotulo: '300+ avaliações (tem demanda)', peso: 20 },
         { id: 'marketplace', sinal: 'marketplace', teste: 'v === true', rotulo: 'Vende por OTA', peso: 20 },
         { id: 'instagram', sinal: 'instagram_ativo', teste: 'v === true', rotulo: 'Instagram ativo', peso: 10 },
-        { id: 'sem_motor', sinal: 'pedido_proprio', teste: 'v === false', rotulo: 'Sem motor de reserva direta', peso: 15 },
+        // piloto Gramado/Canela: 60 de 69 já têm motor → critério separa pouco (peso 5)
+        { id: 'sem_motor', sinal: 'pedido_proprio', teste: 'v === false', rotulo: 'Sem motor de reserva direta', peso: 5 },
         { id: 'whatsapp_manual', sinal: 'whatsapp_manual', teste: 'v === true', rotulo: 'Reserva direta à mão', peso: 10 },
-        { id: 'sem_fidelidade', sinal: 'fidelidade', teste: 'v === false', rotulo: 'Sem programa de hóspede', peso: 10 }
+        // piloto: só 9 de 69 têm programa de hóspede → é o que mais separa (peso 20)
+        { id: 'sem_fidelidade', sinal: 'fidelidade', teste: 'v === false', rotulo: 'Sem programa de hóspede', peso: 20 }
       ],
       alertas: [
         { id: 'pequeno', teste: 'l.uhs != null && l.uhs < 8', texto: 'Menos de 8 UHs: receita pequena para pagar implantação.' },
@@ -239,6 +241,7 @@
         conheco_local: 'Conheço {nome}, em {local}.',
         conheco: 'Conheço {nome}.',
         sem_canal: 'Não encontrei como reservar direto no site de vocês sem passar por site de reserva ou mandar mensagem — quem já conhece a casa acaba reservando pela OTA.',
+        com_canal: 'Vi que vocês já têm reserva direta no site — o ponto é quanto da receita ainda paga 15–18% de OTA, e por onde volta quem já se hospedou.',
         sem_fidelidade: 'Também não vi nada para quem volta: hóspede satisfeito não tem motivo para reservar direto da próxima vez.',
         convite: 'Faço um diagnóstico de 40 minutos que mostra, em reais por mês, quanto está escapando em comissão de OTA de hóspede que já é seu, quarto vazio na baixa e taxa de cartão — sem mexer na paridade com a Booking. Sem custo: se não aparecer pelo menos R$ 3 mil por mês, eu mesmo digo que não vale mexer. Qual dia é mais tranquilo?'
       },
