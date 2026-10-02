@@ -242,6 +242,22 @@ SETORES = {
                        "fidelidade = programa de hóspede frequente, pontos, clube ou tarifa de membro. "
                        "marketplace = o site divulga Booking/Expedia/Decolar/Airbnb/Hurb."),
     },
+    "servicos": {
+        "MARKETPLACES": {"doctoralia.com": "Doctoralia", "boaconsulta.com": "BoaConsulta", "booksy.com": "Booksy",
+                         "trinks.com": "Trinks", "appbarber": "AppBarber", "fresha.com": "Fresha"},
+        "PEDIDO_PROPRIO": ["doctoralia.com", "boaconsulta.com", "feegow", "iclinic", "clinicorp", "simplesdental", "amplimed",
+                           "ninsaude", "booksy.com", "trinks.com", "appbarber", "avec.app", "avecbrasil", "belasis", "salao99",
+                           "agendapro", "fresha.com", "calendly", "/agendamento", "/agendar", "agenda.online"],
+        "PEDIDO_TEXTO": ["agende online", "agendar online", "agende sua consulta", "agendamento online", "marque sua consulta",
+                         "agende seu horário", "agende seu horario", "agendar horário", "agendar horario"],
+        "FIDELIDADE": ["clube de assinatura", "assinatura mensal", "plano mensal", "clube do", "fidelidade", "cashback",
+                       "plano de tratamento mensal", "assine"],
+        "TIPO": "clínica, consultório, salão ou barbearia",
+        "DEFINICOES": ("pedido_proprio = o site permite AGENDAR ONLINE (escolher dia e horário e confirmar), ainda que por Doctoralia/Booksy/Trinks — formulário de contato NÃO conta. "
+                       "whatsapp_manual = para marcar é preciso mandar mensagem no WhatsApp ou ligar, sem agenda online. "
+                       "fidelidade = clube/assinatura mensal, plano de cuidado contínuo ou programa de fidelidade. "
+                       "marketplace = o site divulga perfil em Doctoralia/BoaConsulta/Booksy/Trinks."),
+    },
 }
 
 

@@ -80,3 +80,38 @@ test('hotel: abordagem fala de OTA e paridade, não de iFood', () => {
   assert.match(t, /em Canela/);
   assert.doesNotMatch(t, /iFood|marketplace|restaurante/i);
 });
+
+// ── Perfis do modelo "Serviços com agenda" ──
+const clinica = require('../setores/clinica.js');
+const salao = require('../setores/salao.js');
+const exemplo = (p) => RXM.diagnosticar(p, Object.fromEntries(p.entradas.map((e) => [e.id, e.exemplo])));
+const perda = (d, id) => d.itens.find((r) => r.id === id).perda;
+
+test('nenhum {termo} sobra sem troca nos pacotes', () => {
+  const permitidos = new Set(['{nome}', '{nota}', '{avaliacoes}', '{local}', '{onde}', '{cidade}']);
+  for (const p of pacotes) {
+    const sobras = (JSON.stringify(p).match(/\{[A-Za-zÀ-ú_]+\}/g) || []).filter((m) => !permitidos.has(m));
+    assert.deepEqual(sobras, [], `${p.id}: ${sobras.join(' ')}`);
+  }
+});
+
+test('clínica: herda da base, troca termos e calcula à mão', () => {
+  assert.equal(clinica.base, 'servicos');
+  assert.match(clinica.vazamentos.find((v) => v.id === 'retorno').nome, /^Paciente que não volta/);
+  assert.equal(clinica.vazamentos.some((v) => v.id === 'adicional'), false, 'adicional removido');
+  const d = exemplo(clinica);
+  perto(perda(d, 'faltas'), 400 * 0.09 * 250 * 0.6);            // 5.400
+  perto(perda(d, 'glosa'), 30000 * 0.04);                         // 1.200
+  perto(perda(d, 'orcamentos'), 40 * 0.10 * 1800 * 0.6);          // 4.320
+  perto(perda(d, 'plataforma'), 0);                               // mensalidade, não comissão
+  const alertas = RXC.pontuar(clinica, RXC.normalizarLead(clinica, { nome: 'X', cnae: '8630504' })).alertas;
+  assert.ok(alertas.some((a) => /CFO/.test(a)));
+});
+
+test('salão: retorno é o vazamento-chave, clube pesa 25 no Caçador', () => {
+  const d = exemplo(salao);
+  perto(perda(d, 'retorno'), 120 * 0.15 * 80 * 1.5 * 0.45);      // 972
+  perto(perda(d, 'faltas'), 900 * 0.06 * 80 * 0.45);             // 1.944
+  assert.equal(salao.cacador.criterios.find((c) => c.id === 'sem_plano').peso, 25);
+  assert.equal(d.ranking[0].id === 'retorno' || d.ranking[0].id === 'faltas', true);
+});
