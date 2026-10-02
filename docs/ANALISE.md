@@ -77,16 +77,22 @@ Só achei dados dos EUA e de blogs: 69–78% dos clientes de primeira visita nã
 
 ### 3.1 Termos do marketplace (o risco jurídico central)
 
-Os termos de parceiro do iFood vedam, segundo os resumos encontrados: **divulgar telefone ou canal de entrega próprio por pedidos e canais da plataforma**, **usar dados de clientes da plataforma para divulgar canal próprio** e usar embalagem de concorrente ([termos 2023 PDF](https://assets-cms-partner.ifood.com.br/termos_e_condicoes_2023_92a1934504.pdf), [termos web](https://webmiddleware.ifood.com.br/termos) — oficial, lido por resumo).
+Lido na íntegra em 01/10/2026 — detalhe, trechos e fontes em [TERMOS.md](TERMOS.md).
 
-**Não confirmamos** se um folheto/QR físico dentro da sacola é vetado nem qual a penalidade. Até ler a cláusula vigente:
+- **iFood, contrato de parceiro (30/03/2023), cl. 3.3:** o parceiro não pode disponibilizar ao cliente, "por meio do(s) Pedido(s) e outros canais de comunicação disponibilizados pelo iFood", telefone ou endereço de outros canais de entrega. Folheto/QR/WhatsApp **dentro da sacola de pedido do iFood** pode ser lido como "por meio do Pedido" → **risco alto, o kit não recomenda.**
+- **iFood cl. 3.3.1:** proibido usar dados de clientes do iFood para divulgar canal próprio.
+- **iFood cl. 13.1:** penalidades a critério do iFood — rebaixamento ou desativação da loja de 1 a 30 dias, até rescisão.
+- **Paridade de preço:** não encontrada no iFood 2023 nem na Keeta (out/2025); **a Rappi exige "mesmos preços… que oferece ao público"** e pune indicação de outro canal dentro do app com inativação imediata.
+- **Exclusividade:** TJ-SP (29/09/2026) derrubou as cláusulas da 99Food que proibiam operar com a Keeta, com validade nacional.
 
-- **Não** usar telefone/endereço do cliente que veio do marketplace para mandar mensagem.
-- **Não** colocar "peça direto no WhatsApp" na descrição ou nos itens do cardápio do marketplace.
-- Preferir migração por **canais que são do restaurante**: Perfil do Google, Instagram, salão/balcão, sacola de pedidos próprios, comunidade do bairro.
-- Se usar algo na embalagem, que seja **valor (cartão fidelidade do clube do bairro, conteúdo)**, com decisão consciente do dono sobre o risco — e registrar isso no contrato.
+**Regras do kit:**
 
-> **Pendência:** ler a cláusula vigente do iFood, 99Food, Keeta e Rappi e registrar aqui. Até lá, o kit trata "insert na embalagem do marketplace" como risco, não como tática recomendada.
+- **Não** usar telefone/endereço do cliente que veio do marketplace.
+- **Não** colocar canal próprio na sacola, na descrição ou nas imagens do marketplace.
+- Migração só por **canais que são do restaurante**: Perfil do Google, Instagram, salão/balcão, sacola de pedidos próprios, comunidade do bairro. O cliente do marketplace chega ao canal próprio porque **encontra o restaurante fora do app**, não porque recebeu um convite dentro do pedido.
+- Benefício no canal próprio em vez de preço menor; antes de mexer em preço, ler o contrato do próprio cliente.
+
+> **Pendência:** termos de parceiro da 99Food e versão do iFood posterior a 2023 ficam atrás de login — pedir ao cliente o contrato que ele assinou.
 
 ### 3.2 WhatsApp oficial × não oficial
 
@@ -126,7 +132,7 @@ Faturamento de restaurante oscila com clima, feriado, promoção do marketplace 
 - **Dono sem números.** Sem extrato, sem relatório de vendas, o Raio-X vira chute. Saída: diagnóstico em 2 encontros — no 1º levanta o que dá e lista "dados a levantar"; no 2º fecha. O app mostra "sem dados" de propósito.
 - **Marketplace é o único canal real.** Restaurante de cozinha fantasma, sem salão, sem Instagram, sem marca: migrar cliente é muito difícil. Focar em pagamentos, cardápio e ticket.
 - **Dono não executa.** Canal próprio exige alguém respondendo, postando o prato do dia, embalando com cuidado. O implantador vende a operação mensal ou o projeto morre em 60 dias.
-- **Preço menor no canal próprio** pode esbarrar em regras de paridade do marketplace (não confirmado). Alternativa segura: mesmo preço + benefício (pontos, brinde, frete) só no canal próprio.
+- **Preço menor no canal próprio** esbarra na paridade da Rappi (confirmada) e pode esbarrar no contrato de cada restaurante. Alternativa segura: mesmo preço + benefício (pontos, brinde, frete) só no canal próprio.
 
 ---
 
@@ -134,7 +140,7 @@ Faturamento de restaurante oscila com clima, feriado, promoção do marketplace 
 
 | Tarefa | IA ajuda? | Como |
 |---|---|---|
-| Achar leads | Sim | Agente lê perfil do Google, Instagram e presença em marketplace e pontua (Caçador). Coleta respeitando termos de cada site; API do Google só com autorização. |
+| Achar leads | Sim, com limite | Places API (só `place_id` guardado) e leitura do site do próprio restaurante; Instagram e marketplace conferidos à mão — raspar Google Maps, Instagram e iFood é proibido pelos termos ([TERMOS.md](TERMOS.md)). |
 | Diagnóstico | Pouco | É conta e conversa. IA ajuda a ler extrato em PDF e montar a planilha. |
 | Atender WhatsApp | Sim | Responder dúvida repetida, mandar cardápio, montar pedido. Humano fecha casos fora do padrão. |
 | Cardápio vivo | Sim | Foto do prato do dia → texto, post e status em um passo. |
@@ -173,7 +179,7 @@ A tese é universal (intermediário + comissão + recorrência), mas os números
 - Tabela real da Keeta.
 - Ano do prazo de isenção da Rappi ("até 31 de julho").
 - Tabela oficial da Meta para o Brasil (usado preço de fornecedores; datas de cobrança em BRL divergem).
-- **Cláusula exata e penalidade do iFood sobre insert/QR na embalagem e preço diferente fora da plataforma.**
+- Contrato de parceiro iFood posterior a 30/03/2023 e termos de parceiro da 99Food (atrás de login). *(Cláusula de embalagem e penalidade: confirmadas — ver [TERMOS.md](TERMOS.md).)*
 - Custo do Pix por aproximação e do Pix Automático para o lojista.
 - Margem líquida média oficial da Abrasel.
 - Recompra/retenção em delivery no Brasil; efeito de cashback/fidelidade em restaurante brasileiro.
