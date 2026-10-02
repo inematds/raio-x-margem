@@ -6,11 +6,16 @@
 (function (g) {
   function escolher() {
     var setores = g.RXM_SETORES || {};
-    var ids = Object.keys(setores);
+    // idioma = mercado: mostra os pacotes do idioma da interface (pt → BR, es → LATAM, en → GLOBAL);
+    // se o mercado ainda não tem pacote, mostra todos (o rótulo indica o mercado de cada um)
+    var lang = (g.RXM_I18N && g.RXM_I18N.lang) || 'pt';
+    var todos = Object.keys(setores);
+    var doIdioma = todos.filter(function (k) { return (setores[k].idioma || 'pt').slice(0, 2) === lang; });
+    var ids = doIdioma.length ? doIdioma : todos;
     var pedido = new URLSearchParams(location.search).get('setor');
     var salvo = null;
     try { salvo = localStorage.getItem('rxm:setor'); } catch (e) { salvo = null; }
-    var id = [pedido, salvo, 'restaurante', ids[0]].filter(function (x) { return x && setores[x]; })[0];
+    var id = [pedido, salvo, 'restaurante', ids[0]].filter(function (x) { return x && ids.indexOf(x) >= 0; })[0] || ids[0];
     try { localStorage.setItem('rxm:setor', id); } catch (e) { /* sem storage */ }
     var el = document.getElementById('seletor-setor');
     if (el) {

@@ -7,7 +7,7 @@ const RXM = require('../app/motor.js');
 const RXC = require('../app/cacador-motor.js');
 
 const raiz = path.join(__dirname, '..');
-const pacotes = fs.readdirSync(path.join(raiz, 'setores')).filter((f) => f.endsWith('.js'))
+const pacotes = fs.readdirSync(path.join(raiz, 'setores')).filter((f) => f.endsWith('.js') && !f.startsWith('_'))
   .map((f) => require(path.join(raiz, 'setores', f)));
 
 for (const p of pacotes) {

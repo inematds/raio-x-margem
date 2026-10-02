@@ -13,7 +13,7 @@ const path = require('path');
   const ok = (cond, msg) => { if (!cond) falhas.push(msg); };
 
   for (const [nome, viewport] of [['desktop', { width: 1366, height: 900 }], ['celular', { width: 390, height: 844 }]]) {
-    const page = await browser.newPage({ viewport });
+    const page = await browser.newPage({ viewport, locale: 'pt-BR' });
     page.on('pageerror', (e) => erros.push(`${nome}: ${e.message}`));
     await page.goto(url);
     ok((await page.textContent('#r-total')).includes('R$'), `${nome}: total não renderizou`);
@@ -41,7 +41,7 @@ const path = require('path');
     await page.close();
 
     // ── Caçador ──
-    const cac = await browser.newPage({ viewport });
+    const cac = await browser.newPage({ viewport, locale: 'pt-BR' });
     cac.on('pageerror', (e) => erros.push(`${nome} caçador: ${e.message}`));
     await cac.goto('file://' + path.resolve(__dirname, '..', 'app', 'cacador.html'));
     await cac.setInputFiles('#bt-importar', path.join(__dirname, 'fixtures', 'leads-exemplo.json'));
@@ -74,7 +74,7 @@ const path = require('path');
   }
   // ── Setor hotel (mesmas telas, outro pacote) ──
   {
-    const page = await browser.newPage({ viewport: { width: 1366, height: 900 } });
+    const page = await browser.newPage({ viewport: { width: 1366, height: 900 }, locale: 'pt-BR' });
     page.on('pageerror', (e) => erros.push(`hotel: ${e.message}`));
     await page.goto('file://' + path.resolve(__dirname, '..', 'app', 'index.html') + '?setor=hotel');
     ok((await page.inputValue('#seletor-setor')) === 'hotel', 'hotel: seletor não ficou em hotel');
@@ -95,6 +95,21 @@ const path = require('path');
     ok(/Booking/.test(await primeiro.locator('textarea').inputValue()), 'hotel caçador: abordagem sem paridade/Booking');
     ok((await page.$$('details.lead:nth-child(2) .chip.alerta')).length === 1, 'hotel caçador: alerta de pousada pequena');
     await page.screenshot({ path: path.join(saida, 'cacador-hotel.png'), fullPage: true });
+    await page.close();
+  }
+  // ── Idiomas: EN e ES (interface traduzida; pacote do mercado ou, se ainda não houver, o do Brasil) ──
+  for (const [lang, titulo, botao] of [['en', 'Margin X-Ray', 'Fill in example'], ['es', 'Radiografía de Margen', 'Completar ejemplo']]) {
+    const page = await browser.newPage({ viewport: { width: 1366, height: 900 } });
+    page.on('pageerror', (e) => erros.push(`${lang}: ${e.message}`));
+    await page.goto('file://' + path.resolve(__dirname, '..', 'app', 'index.html') + '?lang=' + lang);
+    ok((await page.textContent('h1')).replace(/\s+/g, ' ').trim() === titulo, `${lang}: título`);
+    ok((await page.textContent('#bt-exemplo')) === botao, `${lang}: botão`);
+    ok((await page.getAttribute('html', 'lang')).startsWith(lang), `${lang}: <html lang>`);
+    await page.click('#bt-exemplo');
+    ok(/\d/.test(await page.textContent('#r-total')), `${lang}: total`);
+    const cac = await page.goto('file://' + path.resolve(__dirname, '..', 'app', 'cacador.html') + '?lang=' + lang);
+    ok((await page.$$('[data-i18n]')).length > 5, `${lang}: caçador sem marcações de idioma`);
+    await page.screenshot({ path: path.join(saida, `raio-x-${lang}.png`) });
     await page.close();
   }
   await browser.close();

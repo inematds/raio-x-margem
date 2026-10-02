@@ -18,15 +18,16 @@ import urllib.parse
 import urllib.request
 
 ENDPOINT = "https://overpass-api.de/api/interpreter"
-SETORES = {
-    "alimentacao": ("amenity", "restaurant|fast_food|cafe|bar|pub|ice_cream|food_court|biergarten"),
-    "hospedagem": ("tourism", "hotel|guest_house|motel|hostel|apartment|chalet"),
+SETORES = {  # setor → lista de (chave OSM, valores)
+    "alimentacao": [("amenity", "restaurant|fast_food|cafe|bar|pub|ice_cream|food_court|biergarten")],
+    "hospedagem": [("tourism", "hotel|guest_house|motel|hostel|apartment|chalet")],
+    "servicos": [("amenity", "dentist|clinic|doctors"), ("healthcare", "dentist|clinic|doctor|physiotherapist|psychotherapist|podiatrist|alternative|nutrition_counselling|speech_therapist"),
+                 ("shop", "hairdresser|beauty|massage|cosmetics")],
 }
 USER_AGENT = "raio-x-margem/0.2 (+https://github.com/inematds/raio-x-margem)"
 
 
 def montar_consulta(cidade, bairro, nivel_cidade, nivel_bairro, setor, uf=None):
-    chave, valores = SETORES[setor]
     filtro_uf = f'["is_in:state_code"="{uf}"]' if uf else ""
     if bairro:
         area = f"""area["name"="{cidade}"]["boundary"="administrative"]["admin_level"="{nivel_cidade}"]{filtro_uf}->.cidade;
@@ -34,10 +35,13 @@ rel["name"="{bairro}"]["boundary"="administrative"]["admin_level"="{nivel_bairro
 map_to_area->.alvo;"""
     else:
         area = f"""area["name"="{cidade}"]["boundary"="administrative"]["admin_level"="{nivel_cidade}"]{filtro_uf}->.alvo;"""
+    filtros = "\n".join(f'  nwr["{chave}"~"^({valores})$"](area.alvo);' for chave, valores in SETORES[setor])
     return f"""
 [out:json][timeout:90];
 {area}
-nwr["{chave}"~"^({valores})$"](area.alvo);
+(
+{filtros}
+);
 out center tags;
 """.strip()
 
@@ -72,7 +76,7 @@ def para_lead(el, cidade, bairro, setor):
         "telefone": t.get("phone") or t.get("contact:phone"),
         "site": t.get("website") or t.get("contact:website"),
         "instagram": insta,
-        "tipo": t.get(SETORES[setor][0]),
+        "tipo": next((t.get(chave) for chave, _ in SETORES[setor] if t.get(chave)), None),
         "estrelas": t.get("stars"),
         "quartos": t.get("rooms"),
         "cozinha": t.get("cuisine"),

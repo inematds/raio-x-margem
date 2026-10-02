@@ -66,39 +66,39 @@
 <body>
 <header>
   <div>
-    <h1>Raio-X de <span>Margem</span></h1>
-    <small>Onde está indo embora o dinheiro que o cliente já faturou · v<span id="versao"></span> · <select id="seletor-setor" aria-label="Setor" style="background:var(--painel);color:var(--texto);border:1px solid var(--borda);border-radius:6px;padding:2px 4px;font:inherit"></select> · <a id="link-cacador" href="cacador.html" style="color:var(--ambar)">Caçador de leads</a></small>
+    <h1 data-i18n-html="rx.titulo">Raio-X de <span>Margem</span></h1>
+    <small><span data-i18n="rx.sub">Onde está indo embora o dinheiro que o cliente já faturou</span> · v<span id="versao"></span> · <select id="seletor-idioma" data-i18n-title="idioma" style="background:var(--painel);color:var(--texto);border:1px solid var(--borda);border-radius:6px;padding:2px 4px;font:inherit"></select> · <select id="seletor-setor" data-i18n-title="setor" style="background:var(--painel);color:var(--texto);border:1px solid var(--borda);border-radius:6px;padding:2px 4px;font:inherit"></select> · <a id="link-cacador" href="cacador.html" style="color:var(--ambar)" data-i18n="rx.cacador">Caçador de leads</a></small>
   </div>
   <div class="acoes">
-    <button id="bt-exemplo">Preencher exemplo</button>
-    <button id="bt-limpar">Limpar</button>
-    <button id="bt-salvar">Salvar diagnóstico (.json)</button>
-    <label class="botao">Abrir diagnóstico<input id="bt-abrir" type="file" accept="application/json" hidden></label>
-    <button id="bt-imprimir" class="principal">Imprimir relatório / PDF</button>
+    <button id="bt-exemplo" data-i18n="bt.exemplo">Preencher exemplo</button>
+    <button id="bt-limpar" data-i18n="bt.limpar">Limpar</button>
+    <button id="bt-salvar" data-i18n="bt.salvar">Salvar diagnóstico (.json)</button>
+    <label class="botao"><span data-i18n="bt.abrir">Abrir diagnóstico</span><input id="bt-abrir" type="file" accept="application/json" hidden></label>
+    <button id="bt-imprimir" class="principal" data-i18n="bt.imprimir">Imprimir relatório / PDF</button>
   </div>
 </header>
 
 <main>
   <section id="formulario">
     <div class="cartao">
-      <h2>Cliente</h2>
+      <h2 data-i18n="cli.titulo">Cliente</h2>
       <div class="campos">
-        <label><b>Nome do negócio</b><input type="text" id="cli-nome" placeholder="Nome do negócio"></label>
-        <label><b>Cidade / bairro</b><input type="text" id="cli-cidade"></label>
-        <label><b>Data do diagnóstico</b><input type="date" id="cli-data"></label>
-        <label><b>Responsável pelo diagnóstico</b><input type="text" id="cli-implantador"></label>
+        <label><b data-i18n="cli.nome">Nome do negócio</b><input type="text" id="cli-nome" data-i18n-ph="cli.nome"></label>
+        <label><b data-i18n="cli.cidade">Cidade / bairro</b><input type="text" id="cli-cidade"></label>
+        <label><b data-i18n="cli.data">Data do diagnóstico</b><input type="date" id="cli-data"></label>
+        <label><b data-i18n="cli.resp">Responsável pelo diagnóstico</b><input type="text" id="cli-implantador"></label>
       </div>
-      <p class="aviso" style="margin-top:14px">Preencha com o dono, com extrato e relatórios abertos. Campo vazio = "não sei": o vazamento fica fora da soma e vai para a lista de dados a levantar. Nada sai deste navegador.</p>
+      <p class="aviso" style="margin-top:14px" data-i18n="cli.aviso">Preencha com o dono, com extrato e relatórios abertos. Campo vazio = "não sei": o vazamento fica fora da soma e vai para a lista de dados a levantar. Nada sai deste navegador.</p>
     </div>
     <div id="grupos"></div>
   </section>
 
   <aside>
     <div class="cartao">
-      <h2>Vazamento estimado</h2>
+      <h2 data-i18n="r.titulo">Vazamento estimado</h2>
       <div class="total" id="r-total">R$ 0</div>
-      <div class="suave">por mês · <span id="r-anual">R$ 0</span> por ano · <span id="r-pct">—</span> do faturamento</div>
-      <div style="margin-top:12px">Recuperável em 6 meses: <strong class="verde" id="r-recuperavel">R$ 0</strong>/mês</div>
+      <div class="suave"><span data-i18n="r.por_mes">por mês</span> · <span id="r-anual">R$ 0</span> <span data-i18n="r.por_ano">por ano</span> · <span id="r-pct">—</span> <span data-i18n="r.do_fat">do faturamento</span></div>
+      <div style="margin-top:12px"><span data-i18n="r.recuperavel">Recuperável em 6 meses:</span> <strong class="verde" id="r-recuperavel">R$ 0</strong>/<span data-i18n="r.mes">mês</span></div>
       <div id="r-lista" style="margin-top:16px"></div>
       <div id="r-sem-dados" class="suave" style="margin-top:12px;font-size:13px"></div>
     </div>
@@ -106,20 +106,20 @@
 
   <section id="relatorio" class="cartao">
     <div class="so-impressao">
-      <h1 style="margin:0">Raio-X de Margem</h1>
+      <h1 style="margin:0" data-i18n-html="rx.titulo">Raio-X de Margem</h1>
       <p class="suave" id="p-cliente"></p>
     </div>
     <p class="manchete" id="p-manchete"></p>
     <div class="tabela-rolavel">
       <table>
-        <thead><tr><th>#</th><th>Vazamento</th><th class="num">Perda/mês</th><th class="num">Recuperável/mês</th><th>Dificuldade</th><th>1º efeito</th><th>Como corrigir</th></tr></thead>
+        <thead><tr><th>#</th><th data-i18n="p.vazamento">Vazamento</th><th class="num" data-i18n="p.perda">Perda/mês</th><th class="num" data-i18n="p.recuperavel">Recuperável/mês</th><th data-i18n="p.dificuldade">Dificuldade</th><th data-i18n="p.efeito">1º efeito</th><th data-i18n="p.corrigir">Como corrigir</th></tr></thead>
         <tbody id="p-tabela"></tbody>
       </table>
     </div>
-    <h2 style="margin-top:20px">Como vamos medir o resultado</h2>
+    <h2 style="margin-top:20px" data-i18n="p.medir">Como vamos medir o resultado</h2>
     <div class="tabela-rolavel">
       <table>
-        <thead><tr><th>Vazamento</th><th>Base (antes)</th><th>Métrica (depois)</th><th>Janela</th></tr></thead>
+        <thead><tr><th data-i18n="p.vazamento">Vazamento</th><th data-i18n="p.base">Base (antes)</th><th data-i18n="p.metrica">Métrica (depois)</th><th data-i18n="p.janela">Janela</th></tr></thead>
         <tbody id="p-medicao"></tbody>
       </table>
     </div>
@@ -127,15 +127,22 @@
   </section>
 </main>
 
+<script src="i18n.js"></script>
+<script src="../setores/_herdar.js"></script>
 <script src="../setores/restaurante.js"></script>
 <script src="../setores/hotel.js"></script>
+<script src="../setores/servicos.js"></script>
 <script src="setor.js"></script>
 <script src="motor.js"></script>
 <script>
 (function () {
+  var I = window.RXM_I18N, t = I.t;
+  I.aplicar();
   var pacote = window.RXM_ESCOLHER_SETOR();
   var CHAVE = 'rxm:diagnostico:' + pacote.id;
-  var dinheiro = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: pacote.moeda, maximumFractionDigits: 0 });
+  var dinheiro = new Intl.NumberFormat(I.locale, { style: 'currency', currency: pacote.moeda, maximumFractionDigits: 0 });
+  var simbolo = (dinheiro.formatToParts(0).filter(function (x) { return x.type === 'currency'; })[0] || {}).value || pacote.moeda;
+  var ehMoeda = function (u) { return u === 'R$' || u === 'moeda'; };
   var porId = function (id) { return document.getElementById(id); };
   var escapar = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
   var rotuloEntrada = {};
@@ -149,9 +156,9 @@
   var html = pacote.grupos.map(function (g, i) {
     var campos = pacote.entradas.filter(function (e) { return e.grupo === g.id; }).map(function (e) {
       return '<label><b>' + escapar(e.rotulo) + '</b><div class="entrada">' +
-        (e.unidade === 'R$' ? '<span>R$</span>' : '') +
-        '<input type="number" step="any" inputmode="decimal" data-entrada="' + e.id + '" placeholder="ex.: ' + e.exemplo + '">' +
-        (e.unidade !== 'R$' ? '<span>' + escapar(e.unidade) + '</span>' : '') +
+        (ehMoeda(e.unidade) ? '<span>' + escapar(simbolo) + '</span>' : '') +
+        '<input type="number" step="any" inputmode="decimal" data-entrada="' + e.id + '" placeholder="' + t('p.ex') + ' ' + e.exemplo + '">' +
+        (!ehMoeda(e.unidade) ? '<span>' + escapar(e.unidade) + '</span>' : '') +
         '</div>' + (e.ajuda ? '<div class="ajuda">' + escapar(e.ajuda) + '</div>' : '') + '</label>';
     }).join('');
     return '<details class="cartao"' + (i < 2 ? ' open' : '') + '><summary>' + escapar(g.titulo) + '</summary><div class="campos">' + campos + '</div></details>';
@@ -180,7 +187,7 @@
     var d = window.RXM.diagnosticar(pacote, lerValores());
     porId('r-total').textContent = dinheiro.format(d.totalMensal);
     porId('r-anual').textContent = dinheiro.format(d.totalAnual);
-    porId('r-pct').textContent = d.pctFaturamento === null ? '—' : d.pctFaturamento.toFixed(1).replace('.', ',') + '%';
+    porId('r-pct').textContent = d.pctFaturamento === null ? '—' : new Intl.NumberFormat(I.locale, { maximumFractionDigits: 1 }).format(d.pctFaturamento) + '%';
     porId('r-recuperavel').textContent = dinheiro.format(d.recuperavelMensal);
 
     var maior = d.ranking.reduce(function (m, r) { return Math.max(m, r.perda); }, 0) || 1;
@@ -189,39 +196,39 @@
         '<div class="barra"><i style="width:' + (r.perda / maior * 100).toFixed(1) + '%"></i></div>';
     }).join('');
     porId('r-sem-dados').innerHTML = d.semDados.length
-      ? '<b>Sem dados (' + d.semDados.length + '):</b> ' + d.semDados.map(function (r) { return escapar(r.vazamento.nome); }).join(' · ')
+      ? '<b>' + t('r.sem_dados', { n: d.semDados.length }) + '</b> ' + d.semDados.map(function (r) { return escapar(r.vazamento.nome); }).join(' · ')
       : '';
 
     // relatório
     var cli = lerCliente();
-    var nome = cli['cli-nome'] || 'o negócio';
-    porId('p-cliente').textContent = [cli['cli-nome'], cli['cli-cidade'], cli['cli-data'] && cli['cli-data'].split('-').reverse().join('/'), cli['cli-implantador'] && ('por ' + cli['cli-implantador'])].filter(Boolean).join(' · ');
+    var nome = cli['cli-nome'] || t('p.o_negocio');
+    porId('p-cliente').textContent = [cli['cli-nome'], cli['cli-cidade'], cli['cli-data'] && new Date(cli['cli-data'] + 'T12:00').toLocaleDateString(I.locale), cli['cli-implantador'] && t('p.por', { nome: cli['cli-implantador'] })].filter(Boolean).join(' · ');
     var top = d.ranking.slice(0, 4);
     var somaTop = top.reduce(function (s, r) { return s + r.perda; }, 0);
     var recTop = top.reduce(function (s, r) { return s + r.recuperavel; }, 0);
     porId('p-manchete').innerHTML = d.ranking.length
-      ? escapar(nome.charAt(0).toUpperCase() + nome.slice(1)) + ' está deixando aproximadamente <strong>' + dinheiro.format(d.totalMensal) + ' por mês</strong> em ' + d.ranking.length + (d.ranking.length > 1 ? ' pontos' : ' ponto') +
-        '. Começando pelas ' + top.length + ' prioridades (' + dinheiro.format(somaTop) + '/mês de vazamento), nossa proposta é recuperar <strong class="verde">' + dinheiro.format(recTop) + ' por mês</strong> (' + dinheiro.format(recTop * 12) + ' por ano).'
-      : 'Preencha os números com o dono para gerar o diagnóstico.';
+      ? t('p.manchete', { nome: escapar(nome.charAt(0).toUpperCase() + nome.slice(1)), total: dinheiro.format(d.totalMensal), n: d.ranking.length,
+          pontos: t(d.ranking.length > 1 ? 'p.pontos' : 'p.ponto'), k: top.length, somaTop: dinheiro.format(somaTop), rec: dinheiro.format(recTop), recAno: dinheiro.format(recTop * 12) })
+      : t('p.vazio');
     var nomeReceitas = function (v) {
-      return v.receitas.map(function (id) { return escapar(pacote.receitas[id].nome); }).join(', ') || '<span class="suave">processo interno</span>';
+      return v.receitas.map(function (id) { return escapar(pacote.receitas[id].nome); }).join(', ') || '<span class="suave">' + t('p.interno') + '</span>';
     };
     porId('p-tabela').innerHTML = d.ranking.map(function (r, i) {
       var v = r.vazamento;
       return '<tr><td>' + (i + 1) + '</td><td><b>' + escapar(v.nome) + '</b><div class="suave" style="font-size:12px">' + escapar(v.explicacao) + '</div></td>' +
         '<td class="num">' + dinheiro.format(r.perda) + '</td><td class="num verde">' + dinheiro.format(r.recuperavel) + '</td>' +
         '<td>' + '●'.repeat(v.dificuldade) + '<span class="suave ponto-vazio">' + '●'.repeat(5 - v.dificuldade) + '</span></td>' +
-        '<td>' + v.prazo_semanas + ' sem.</td><td>' + nomeReceitas(v) + '</td></tr>';
+        '<td>' + t('p.semanas', { n: v.prazo_semanas }) + '</td><td>' + nomeReceitas(v) + '</td></tr>';
     }).join('');
     porId('p-medicao').innerHTML = d.ranking.map(function (r) {
       var m = r.vazamento.como_medir;
       return '<tr><td>' + escapar(r.vazamento.nome) + '</td><td>' + escapar(m.base) + '</td><td>' + escapar(m.metrica) + '</td><td>' + escapar(m.janela) + '</td></tr>';
     }).join('');
     var naoVerificados = d.ranking.filter(function (r) { return !r.vazamento.fonte.verificado; });
-    porId('p-premissas').innerHTML = '<b>Premissas.</b> Valores são estimativas a partir dos números informados. ' +
-      (naoVerificados.length ? 'Confirmar com documento (extrato, relatório de vendas, cotação) antes de fechar meta: ' + naoVerificados.map(function (r) { return escapar(r.vazamento.nome); }).join('; ') + '. ' : '') +
-      '"Recuperável" é o que é realista em 6 meses, não o vazamento inteiro.' +
-      (d.semDados.length ? ' Pontos ainda sem dados: ' + d.semDados.map(function (r) { return escapar(r.vazamento.nome); }).join('; ') + '.' : '');
+    var lista = function (xs) { return xs.map(function (r) { return escapar(r.vazamento.nome); }).join('; '); };
+    porId('p-premissas').innerHTML = t('p.premissas') + ' ' +
+      (naoVerificados.length ? t('p.confirmar', { lista: lista(naoVerificados) }) + ' ' : '') +
+      t('p.recuperavel_e') + (d.semDados.length ? ' ' + t('p.sem_dados', { lista: lista(d.semDados) }) : '');
 
     try { localStorage.setItem(CHAVE, JSON.stringify(estado())); } catch (e) { /* navegador sem storage: segue sem rascunho */ }
   }
@@ -230,7 +237,7 @@
   porId('bt-exemplo').onclick = function () {
     var v = {};
     pacote.entradas.forEach(function (e) { v[e.id] = e.exemplo; });
-    aplicar({ valores: v, cliente: { 'cli-nome': pacote.nome.split(' ')[0] + ' Exemplo', 'cli-cidade': '', 'cli-data': new Date().toISOString().slice(0, 10) } });
+    aplicar({ valores: v, cliente: { 'cli-nome': pacote.nome.split(' ')[0] + ' ' + t('p.exemplo'), 'cli-cidade': '', 'cli-data': new Date().toISOString().slice(0, 10) } });
   };
   porId('bt-limpar').onclick = function () { aplicar({}); };
   porId('bt-imprimir').onclick = function () { window.print(); };
@@ -248,9 +255,9 @@
     if (!arq) return;
     arq.text().then(function (t) {
       var e = JSON.parse(t);
-      if (e.pacote && e.pacote !== pacote.id) throw new Error('Diagnóstico de outro setor: ' + e.pacote);
+      if (e.pacote && e.pacote !== pacote.id) throw new Error(t('erro.outro_setor', { id: e.pacote }));
       aplicar(e);
-    }).catch(function (err) { porId('p-manchete').textContent = 'Não consegui abrir o arquivo: ' + err.message; });
+    }).catch(function (err) { porId('p-manchete').textContent = t('erro.abrir', { msg: err.message }); });
     ev.target.value = '';
   };
 
