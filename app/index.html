@@ -67,7 +67,7 @@
 <header>
   <div>
     <h1>Raio-X de <span>Margem</span></h1>
-    <small>Onde está indo embora o dinheiro que o cliente já faturou · v<span id="versao"></span> · pacote <span id="nome-pacote"></span></small>
+    <small>Onde está indo embora o dinheiro que o cliente já faturou · v<span id="versao"></span> · pacote <span id="nome-pacote"></span> · <a href="cacador.html" style="color:var(--ambar)">Caçador de leads</a></small>
   </div>
   <div class="acoes">
     <button id="bt-exemplo">Preencher exemplo</button>
@@ -254,6 +254,12 @@
 
   var salvo = null;
   try { salvo = JSON.parse(localStorage.getItem(CHAVE) || 'null'); } catch (e) { salvo = null; }
+  // Vindo do Caçador (index.html?nome=…&cidade=…): outro cliente → começa do zero
+  var params = new URLSearchParams(location.search);
+  var nomeUrl = params.get('nome');
+  if (nomeUrl && (!salvo || !salvo.cliente || salvo.cliente['cli-nome'] !== nomeUrl)) {
+    salvo = { valores: {}, cliente: { 'cli-nome': nomeUrl, 'cli-cidade': params.get('cidade') || '', 'cli-data': new Date().toISOString().slice(0, 10) } };
+  }
   if (salvo) aplicar(salvo); else atualizar();
 })();
 </script>

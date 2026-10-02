@@ -1,0 +1,10 @@
+{
+  "pacote": "restaurante",
+  "leads": [
+    { "nome": "Cantina Exemplo", "cnpj": "11.111.111/0001-11", "bairro": "Batel", "cidade": "Curitiba", "porte": "EPP", "cnae": "5611201", "situacao": "ATIVA", "fontes": ["cnpj", "osm"],
+      "sinais": { "nota": 4.8, "avaliacoes": 3000, "marketplace": true, "instagram_ativo": true, "pedido_proprio": false, "whatsapp_manual": true, "fidelidade": false },
+      "evidencias": { "pedido_proprio": "Não achei pedido online no site" } },
+    { "nome": "Lanches Teste", "bairro": "Batel", "cidade": "Curitiba", "porte": "MEI", "cnae": "5620104", "fontes": ["cnpj"], "sinais": { "avaliacoes": 40 } },
+    { "nome": "Bistrô Demonstração", "bairro": "Batel", "cidade": "Curitiba", "porte": "ME", "fontes": ["osm"], "site": "https://exemplo.invalid", "sinais": { "nota": 4.6, "avaliacoes": 700 } }
+  ]
+}

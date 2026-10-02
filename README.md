@@ -5,6 +5,10 @@ Primeiro setor completo: **restaurantes no Brasil**.
 
 > Não vende IA. Não vende aplicativo. Vende **menos perda, mais margem, mais controle e mais recorrência.**
 
+## Achar o cliente: Caçador de Margem
+
+`coletor/` monta a lista de restaurantes de um bairro com **fontes abertas** (CNPJ da Receita + OpenStreetMap + site do próprio restaurante, IA pela assinatura opcional) e `app/cacador.html` pontua, estima o potencial, gera a abordagem e acompanha cada lead até o Raio-X. Passo a passo em [`coletor/README.md`](coletor/README.md).
+
 ## Como usar num cliente (6 passos)
 
 1. **Abra `app/index.html`** no navegador (duplo clique; funciona offline, sem instalar nada).
@@ -20,11 +24,14 @@ Abordagem, roteiro da reunião e preço: [`kit-comercial/`](kit-comercial/).
 
 | Pasta | Conteúdo |
 |---|---|
-| `app/` | Raio-X (interface + motor de cálculo) |
+| `app/` | Raio-X (`index.html`) e Caçador (`cacador.html`) |
+| `coletor/` | Scripts de lista de leads: CNPJ, OpenStreetMap, sites |
 | `setores/` | Pacotes de setor: perguntas, fórmulas, % recuperável, como medir, receitas |
 | `docs/ANALISE.md` | Análise profunda da tese, com números e fontes |
 | `docs/ARQUITETURA.md` | Como o sistema é montado, formato do pacote e roteiro |
-| `docs/modulos/` | Receitas: Cardápio Vivo, Ganho e retenção de clientes, Cobrança e pagamentos, Marketing local e comunidade |
+| `docs/modulos/` | Receitas: Cardápio Vivo, Ganho e retenção de clientes, Cobrança e pagamentos, Marketing local e comunidade, 100% canal próprio |
+| `docs/TERMOS.md` | O que os termos do Google, Instagram, iFood, Rappi, Keeta e a LGPD permitem |
+| `docs/ALTERNATIVAS-ABERTAS.md` | Peças de código aberto verificadas (licença, atividade, risco) |
 | `docs/origem/` | Os dois textos que deram origem ao projeto |
 | `kit-comercial/` | Abordagem, objeções, precificação |
 | `tests/` | Testes do motor e da interface |
@@ -36,7 +43,7 @@ Marketplace cobrando de novo por cliente que já é seu · taxas de cartão · a
 ## Testes
 
 ```bash
-npm test                       # motor: exemplos dos documentos de origem (R$ 3.000 e R$ 14.700)
+npm test                       # motores (Raio-X e Caçador) + coletor, sem rede
 NODE_PATH=<pasta>/node_modules npm run test:ui   # interface em file://, desktop e celular (precisa de playwright)
 ```
 
@@ -50,4 +57,4 @@ Nada sai do navegador. Os números do cliente ficam no rascunho local e no `.jso
 
 ---
 
-Projeto aberto do [INEMA.CLUB](https://inema.club) · licença [MIT](LICENSE) · versão 0.1.0
+Projeto aberto do [INEMA.CLUB](https://inema.club) · licença [MIT](LICENSE) · versão 0.2.0

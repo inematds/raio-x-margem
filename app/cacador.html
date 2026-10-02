@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Caçador de Margem</title>
+<style>
+  :root {
+    --fundo: #0e0d0b; --painel: #1a1814; --borda: #2e2a23; --texto: #ece6da; --suave: #a59c8c;
+    --ambar: #f2a93b; --ambar-escuro: #b8761a; --verde: #6fcf8e; --vermelho: #ef6f5e;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fundo); color: var(--texto); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { padding: 20px 16px; border-bottom: 1px solid var(--borda); display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+  header h1 { margin: 0; font-size: 22px; } header h1 span { color: var(--ambar); }
+  header small { color: var(--suave); } header small a { color: var(--ambar); }
+  .acoes { display: flex; flex-wrap: wrap; gap: 8px; }
+  button, .botao, select, input, textarea { font: inherit; color: var(--texto); }
+  button, .botao { background: var(--painel); border: 1px solid var(--borda); border-radius: 8px; padding: 8px 12px; cursor: pointer; text-decoration: none; display: inline-block; }
+  button:hover, .botao:hover { border-color: var(--ambar); }
+  button.principal, .botao.principal { background: var(--ambar); color: #1a1206; border-color: var(--ambar); font-weight: 600; }
+  main { max-width: 1100px; margin: 0 auto; padding: 20px 16px; }
+  .filtros { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .filtros input, .filtros select, .campo input, .campo select, textarea { background: var(--fundo); border: 1px solid var(--borda); border-radius: 8px; padding: 8px; min-width: 0; }
+  .filtros input { flex: 1 1 200px; }
+  .resumo { color: var(--suave); font-size: 14px; margin-bottom: 16px; }
+  .vazio { text-align: center; padding: 40px 16px; color: var(--suave); border: 1px dashed var(--borda); border-radius: 12px; }
+  details.lead { background: var(--painel); border: 1px solid var(--borda); border-radius: 12px; margin-bottom: 10px; }
+  details.lead[open] { border-color: var(--ambar-escuro); }
+  details.lead > summary { list-style: none; cursor: pointer; padding: 14px 16px; display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 12px; align-items: center; }
+  .pos { font-size: 18px; font-weight: 700; color: var(--suave); text-align: center; }
+  .nome { font-weight: 600; } .sub { color: var(--suave); font-size: 13px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .chip { font-size: 11px; padding: 2px 7px; border-radius: 99px; border: 1px solid var(--borda); color: var(--suave); }
+  .chip.ok { border-color: #2f6b45; color: var(--verde); } .chip.nao { opacity: .55; text-decoration: line-through; }
+  .chip.alerta { border-color: #6b302a; color: var(--vermelho); }
+  .placar { text-align: right; min-width: 92px; }
+  .placar b { font-size: 24px; color: var(--ambar); } .placar small { display: block; color: var(--suave); font-size: 12px; }
+  .barra { height: 5px; background: var(--borda); border-radius: 3px; margin-top: 4px; position: relative; overflow: hidden; }
+  .barra i { position: absolute; left: 0; top: 0; bottom: 0; } .barra i.teto { background: #4a3a1e; } .barra i.pts { background: var(--ambar); }
+  .corpo { padding: 0 16px 16px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+  @media (max-width: 760px) { .corpo { grid-template-columns: minmax(0, 1fr); } details.lead > summary { grid-template-columns: 28px minmax(0, 1fr) auto; gap: 8px; } }
+  .corpo h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .05em; color: var(--suave); margin: 12px 0 8px; }
+  .campos { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+  .campo label { display: block; font-size: 12px; color: var(--suave); margin-bottom: 2px; }
+  .campo input, .campo select { width: 100%; }
+  .evid { font-size: 12px; color: var(--suave); margin: 4px 0 0; padding-left: 16px; }
+  .links { display: flex; flex-wrap: wrap; gap: 6px; } .links a { font-size: 13px; padding: 5px 10px; }
+  textarea { width: 100%; min-height: 120px; resize: vertical; }
+  .aviso { border-left: 3px solid var(--ambar); padding: 8px 12px; background: rgba(242,169,59,.08); border-radius: 0 8px 8px 0; font-size: 13px; margin: 0 0 16px; }
+  dialog { background: var(--painel); color: var(--texto); border: 1px solid var(--borda); border-radius: 12px; max-width: min(520px, calc(100vw - 32px)); width: 100%; }
+  dialog::backdrop { background: rgba(0,0,0,.6); }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Caçador de <span>Margem</span></h1>
+    <small>Quem já tem demanda e está perdendo dinheiro · <a href="index.html">abrir Raio-X</a></small>
+  </div>
+  <div class="acoes">
+    <label class="botao principal">Importar leads (.json do coletor ou .csv)<input id="bt-importar" type="file" accept=".json,.csv,application/json,text/csv" hidden></label>
+    <button id="bt-novo">Adicionar lead</button>
+    <button id="bt-json">Exportar .json</button>
+    <button id="bt-csv">Exportar .csv</button>
+    <button id="bt-limpar">Limpar lista</button>
+  </div>
+</header>
+
+<main>
+  <p class="aviso">Pontos = critérios já conferidos. A barra clara mostra até onde o lead pode chegar quando você conferir o que falta. <b>Potencial</b> é faixa grosseira pelo porte da Receita — serve para ordenar, nunca para prometer; o número real sai do Raio-X. Instagram e marketplace se conferem à mão (os termos proíbem coleta automática — ver docs/TERMOS.md).</p>
+  <div class="filtros">
+    <input id="f-busca" type="search" placeholder="Buscar nome, endereço, CNPJ…">
+    <select id="f-status"><option value="">Todos os status</option></select>
+    <select id="f-bairro"><option value="">Todos os bairros</option></select>
+    <select id="f-alerta"><option value="">Com e sem alertas</option><option value="sem">Só sem alertas</option></select>
+  </div>
+  <div class="resumo" id="resumo"></div>
+  <div id="lista"></div>
+</main>
+
+<dialog id="dlg-novo">
+  <form method="dialog" id="form-novo">
+    <h2 style="margin-top:0">Novo lead</h2>
+    <div class="campos" style="grid-template-columns:1fr">
+      <div class="campo"><label>Nome</label><input name="nome" required></div>
+      <div class="campo"><label>Bairro</label><input name="bairro"></div>
+      <div class="campo"><label>Cidade</label><input name="cidade"></div>
+      <div class="campo"><label>Site</label><input name="site" type="url"></div>
+    </div>
+    <p class="acoes" style="margin-top:16px"><button value="ok" class="principal">Adicionar</button><button value="cancelar" formnovalidate>Cancelar</button></p>
+  </form>
+</dialog>
+
+<script src="../setores/restaurante.js"></script>
+<script src="cacador-motor.js"></script>
+<script>
+(function () {
+  var pacote = window.RXM_SETORES.restaurante;
+  var RXC = window.RXC;
+  var CHAVE = 'rxc:leads:' + pacote.id;
+  var STATUS = [['a_contatar', 'A contatar'], ['contatado', 'Contatado'], ['raio_x', 'Raio-X marcado'], ['proposta', 'Proposta enviada'], ['fechado', 'Fechado'], ['descartado', 'Descartado']];
+  var nomeStatus = {}; STATUS.forEach(function (s) { nomeStatus[s[0]] = s[1]; });
+  var dinheiro = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+  var porId = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var abertos = {};
+  var leads = [];
+
+  try { leads = (JSON.parse(localStorage.getItem(CHAVE) || '[]') || []).map(function (l) { return RXC.normalizarLead(pacote, l); }); } catch (e) { leads = []; }
+  function salvar() { try { localStorage.setItem(CHAVE, JSON.stringify(leads)); } catch (e) { /* sem storage: só nesta aba */ } }
+
+  STATUS.forEach(function (s) { porId('f-status').insertAdjacentHTML('beforeend', '<option value="' + s[0] + '">' + s[1] + '</option>'); });
+
+  function buscaGoogle(q) { return 'https://www.google.com/search?q=' + encodeURIComponent(q); }
+  function linksConferencia(l) {
+    var onde = [l.nome, l.bairro, l.cidade].filter(Boolean).join(' ');
+    var links = [
+      ['Google Maps', 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(onde)],
+      ['Instagram', l.instagram ? (/^https?:/.test(l.instagram) ? l.instagram : 'https://www.instagram.com/' + String(l.instagram).replace(/^@/, '') + '/') : buscaGoogle('site:instagram.com ' + onde)],
+      ['iFood', buscaGoogle('site:ifood.com.br ' + onde)],
+      ['99Food / Keeta', buscaGoogle(l.nome + ' ' + (l.cidade || '') + ' 99food OR keeta')]
+    ];
+    if (l.site) links.unshift(['Site', /^https?:/.test(l.site) ? l.site : 'https://' + l.site]);
+    return links.map(function (x) { return '<a class="botao" target="_blank" rel="noopener" href="' + esc(x[1]) + '">' + esc(x[0]) + ' ↗</a>'; }).join('');
+  }
+
+  function editorSinal(l, s) {
+    var v = l.sinais[s.id];
+    var dentro;
+    if (s.tipo === 'numero') {
+      dentro = '<input type="number" step="any" data-sinal="' + s.id + '" value="' + (v == null ? '' : esc(v)) + '" placeholder="?">';
+    } else {
+      dentro = '<select data-sinal="' + s.id + '">' +
+        [['', '? a conferir'], ['sim', 'Sim'], ['nao', 'Não']].map(function (o) {
+          var sel = (o[0] === '' && v == null) || (o[0] === 'sim' && v === true) || (o[0] === 'nao' && v === false);
+          return '<option value="' + o[0] + '"' + (sel ? ' selected' : '') + '>' + o[1] + '</option>';
+        }).join('') + '</select>';
+    }
+    var ev = l.evidencias[s.id] ? '<p class="evid">' + esc(l.evidencias[s.id]) + '</p>' : '';
+    return '<div class="campo"><label>' + esc(s.rotulo) + '</label>' + dentro + ev + '</div>';
+  }
+
+  function filtrar(lista) {
+    var q = RXC.chaveNome(porId('f-busca').value);
+    var st = porId('f-status').value, ba = porId('f-bairro').value, al = porId('f-alerta').value;
+    return lista.filter(function (x) {
+      var l = x.lead;
+      if (st && l.status !== st) return false;
+      if (ba && (l.bairro || '') !== ba) return false;
+      if (al === 'sem' && x.p.alertas.length) return false;
+      if (q && RXC.chaveNome([l.nome, l.endereco, l.cnpj, l.bairro].join(' ')).indexOf(q) < 0) return false;
+      return true;
+    });
+  }
+
+  function desenhar() {
+    var bairros = {};
+    leads.forEach(function (l) { if (l.bairro) bairros[l.bairro] = 1; });
+    var fb = porId('f-bairro'), atual = fb.value;
+    fb.innerHTML = '<option value="">Todos os bairros</option>' + Object.keys(bairros).sort().map(function (b) { return '<option' + (b === atual ? ' selected' : '') + '>' + esc(b) + '</option>'; }).join('');
+
+    var ordem = RXC.ordenar(pacote, leads);
+    var visiveis = filtrar(ordem);
+    var porStatus = {};
+    leads.forEach(function (l) { porStatus[l.status] = (porStatus[l.status] || 0) + 1; });
+    porId('resumo').textContent = leads.length
+      ? visiveis.length + ' de ' + leads.length + ' leads · ' + STATUS.filter(function (s) { return porStatus[s[0]]; }).map(function (s) { return porStatus[s[0]] + ' ' + s[1].toLowerCase(); }).join(' · ')
+      : '';
+    if (!leads.length) {
+      porId('lista').innerHTML = '<div class="vazio">Nenhum lead ainda. Importe o <b>leads.json</b> gerado pelo coletor (<code>coletor/</code>), uma planilha .csv, ou adicione à mão.</div>';
+      return;
+    }
+    porId('lista').innerHTML = visiveis.map(function (x, i) {
+      var l = x.lead, p = x.p;
+      var chips = p.criterios.map(function (c) {
+        return '<span class="chip ' + (c.ok === true ? 'ok' : c.ok === false ? 'nao' : '') + '" title="' + esc(c.rotulo) + ' (' + c.peso + ')">' + (c.ok === true ? '✓ ' : c.ok === false ? '' : '? ') + esc(c.rotulo) + '</span>';
+      }).join('') + p.alertas.map(function (a) { return '<span class="chip alerta">⚠ ' + esc(a) + '</span>'; }).join('');
+      var sub = [l.bairro, l.porte, l.cnae && ('CNAE ' + l.cnae), l.fontes.join('+')].filter(Boolean).map(esc).join(' · ');
+      var pot = p.potencial ? dinheiro.format(p.potencial[0]) + '–' + dinheiro.format(p.potencial[1]) + '/mês' : 'sem porte';
+      var raiox = 'index.html?nome=' + encodeURIComponent(l.nome || '') + '&cidade=' + encodeURIComponent([l.bairro, l.cidade].filter(Boolean).join(', '));
+      return '<details class="lead" data-id="' + esc(l.id) + '"' + (abertos[l.id] ? ' open' : '') + '>' +
+        '<summary><div class="pos">' + (i + 1) + '</div><div><div class="nome">' + esc(l.nome || '(sem nome)') + '</div><div class="sub">' + sub + ' · ' + esc(nomeStatus[l.status] || l.status) + '</div><div class="chips">' + chips + '</div></div>' +
+        '<div class="placar"><b>' + p.pontos + '</b><small>teto ' + p.teto + ' · ' + p.conferido + '% conferido</small><div class="barra"><i class="teto" style="width:' + p.teto + '%"></i><i class="pts" style="width:' + p.pontos + '%"></i></div><small>' + pot + '</small></div></summary>' +
+        '<div class="corpo"><div>' +
+          '<h3>Conferir</h3><div class="links">' + linksConferencia(l) + '</div>' +
+          '<h3>Sinais</h3><div class="campos">' + pacote.cacador.sinais.map(function (s) { return editorSinal(l, s); }).join('') + '</div>' +
+          '<h3>Dados</h3><p class="sub" style="margin:0">' + [l.cnpj && 'CNPJ ' + l.cnpj, l.endereco, l.telefone && 'tel. ' + l.telefone, l.abertura && 'aberto em ' + l.abertura, l.situacao].filter(Boolean).map(esc).join(' · ') + '</p>' +
+        '</div><div>' +
+          '<h3>Andamento</h3><div class="campos"><div class="campo"><label>Status</label><select data-campo="status">' + STATUS.map(function (s) { return '<option value="' + s[0] + '"' + (s[0] === l.status ? ' selected' : '') + '>' + s[1] + '</option>'; }).join('') + '</select></div>' +
+          '<div class="campo"><label>Observação</label><input data-campo="obs" value="' + esc(l.obs || '') + '"></div></div>' +
+          '<h3>Abordagem</h3><textarea readonly>' + esc(RXC.abordagem(pacote, l)) + '</textarea>' +
+          '<p class="acoes"><button data-acao="copiar">Copiar abordagem</button><a class="botao principal" href="' + esc(raiox) + '">Abrir Raio-X deste lead</a><button data-acao="remover">Remover</button></p>' +
+        '</div></div></details>';
+    }).join('') || '<div class="vazio">Nenhum lead com esses filtros.</div>';
+  }
+
+  function leadDe(el) {
+    var d = el.closest('details.lead');
+    if (!d) return null;
+    var id = d.getAttribute('data-id');
+    return leads.filter(function (l) { return l.id === id; })[0];
+  }
+
+  document.addEventListener('toggle', function (ev) {
+    var d = ev.target;
+    if (d.classList && d.classList.contains('lead')) abertos[d.getAttribute('data-id')] = d.open;
+  }, true);
+
+  porId('lista').addEventListener('change', function (ev) {
+    var l = leadDe(ev.target); if (!l) return;
+    var t = ev.target;
+    if (t.dataset.sinal) {
+      var s = pacote.cacador.sinais.filter(function (x) { return x.id === t.dataset.sinal; })[0];
+      l.sinais[s.id] = RXC.normalizarLead(pacote, { sinais: (function () { var o = {}; o[s.id] = t.value; return o; })() }).sinais[s.id];
+      delete l.evidencias[s.id];
+    } else if (t.dataset.campo) {
+      if (t.dataset.campo === 'status' && t.value !== l.status) l.historico.push({ em: new Date().toISOString(), de: l.status, para: t.value });
+      l[t.dataset.campo] = t.value;
+    }
+    salvar(); desenhar();
+  });
+
+  porId('lista').addEventListener('click', function (ev) {
+    var b = ev.target.closest('button[data-acao]'); if (!b) return;
+    var l = leadDe(b); if (!l) return;
+    if (b.dataset.acao === 'copiar') {
+      var texto = RXC.abordagem(pacote, l);
+      var feito = function () { b.textContent = 'Copiado ✓'; setTimeout(function () { b.textContent = 'Copiar abordagem'; }, 1500); };
+      if (navigator.clipboard) navigator.clipboard.writeText(texto).then(feito, function () { b.closest('.corpo').querySelector('textarea').select(); });
+      else { b.closest('.corpo').querySelector('textarea').select(); }
+    } else if (b.dataset.acao === 'remover') {
+      leads = leads.filter(function (x) { return x !== l; });
+      salvar(); desenhar();
+    }
+  });
+
+  ['f-busca', 'f-status', 'f-bairro', 'f-alerta'].forEach(function (id) { porId(id).addEventListener('input', desenhar); });
+
+  function baixar(nome, conteudo, tipo) {
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([conteudo], { type: tipo }));
+    a.download = nome; a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+  }
+  porId('bt-json').onclick = function () { baixar('leads.json', JSON.stringify({ pacote: pacote.id, exportadoEm: new Date().toISOString(), leads: leads }, null, 2), 'application/json'); };
+  porId('bt-csv').onclick = function () { baixar('leads.csv', '﻿' + RXC.escreverCSV(pacote, leads), 'text/csv'); };
+  porId('bt-limpar').onclick = function () { leads = []; salvar(); desenhar(); };
+
+  porId('bt-importar').onchange = function (ev) {
+    var arq = ev.target.files[0]; if (!arq) return;
+    arq.text().then(function (t) {
+      var novos;
+      if (/\.json$/i.test(arq.name) || /^\s*[\[{]/.test(t)) {
+        var j = JSON.parse(t);
+        novos = Array.isArray(j) ? j : (j.leads || []);
+      } else {
+        novos = RXC.lerCSV(t);
+      }
+      leads = RXC.mesclar(pacote, leads, novos);
+      salvar(); desenhar();
+      porId('resumo').textContent = novos.length + ' importados de ' + arq.name + ' · ' + porId('resumo').textContent;
+    }).catch(function (err) { porId('resumo').textContent = 'Não consegui importar: ' + err.message; });
+    ev.target.value = '';
+  };
+
+  var dlg = porId('dlg-novo');
+  porId('bt-novo').onclick = function () { porId('form-novo').reset(); dlg.showModal(); };
+  dlg.addEventListener('close', function () {
+    if (dlg.returnValue !== 'ok') return;
+    var f = porId('form-novo'), novo = { fontes: ['manual'] };
+    ['nome', 'bairro', 'cidade', 'site'].forEach(function (k) { novo[k] = f.elements[k].value.trim(); });
+    if (!novo.nome) return;
+    leads = RXC.mesclar(pacote, leads, [novo]);
+    salvar(); desenhar();
+  });
+
+  desenhar();
+})();
+</script>
+</body>
+</html>

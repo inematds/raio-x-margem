@@ -31,9 +31,15 @@
 
 ## Para o implantador: Caçador de Margem (ganhar clientes para você)
 
-O mesmo módulo, do lado de quem implanta. Critérios e pesos já estão no pacote (`cacador`): nota ≥ 4,5, mais de 500 avaliações, ativo em marketplace, Instagram ativo, sem pedido próprio, WhatsApp manual, sem fidelidade. Fase 3 entrega a tela: colar CSV de leads (levantados à mão ou por coleta autorizada) → pontuação → texto de abordagem pronto.
+O mesmo módulo, do lado de quem implanta: `app/cacador.html` + `coletor/`.
 
-Abordagem (do pacote):
+1. **Listar** o bairro com fontes abertas: CNPJ da Receita (todas as empresas ativas de alimentação, com porte) + OpenStreetMap ([coletor/README.md](../../coletor/README.md)).
+2. **Enriquecer** lendo o site do próprio restaurante (pedido online? WhatsApp? fidelidade? links de marketplace?), com IA pela assinatura opcional.
+3. **Conferir à mão** o que os termos não deixam coletar: nota e avaliações no Google, Instagram ativo, presença no marketplace. O Caçador abre a busca pronta.
+4. **Pontuar** com os critérios do pacote (0–100, só com o que foi conferido; a barra clara mostra o teto) e ver **alertas** de quando a tese falha (MEI, poucas avaliações, só delivery).
+5. **Abordar** com o texto gerado — ele só cita o que foi conferido — e acompanhar o status até o Raio-X ("Abrir Raio-X deste lead").
+
+Abordagem base (do pacote):
 > "Seu restaurante claramente já tem demanda. O problema não parece ser conseguir clientes. É que, cada vez que seu cliente volta pelo marketplace, você paga de novo para falar com alguém que já conhece sua marca."
 
 ## Caminhos de implantação

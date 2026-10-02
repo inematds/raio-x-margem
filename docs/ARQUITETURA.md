@@ -16,16 +16,17 @@ O objetivo é que **qualquer implantador** (freelancer, agência pequena, consul
                     └──── abordagem ────┴── proposta ────┴── implantação ────┴── recorrência
 ```
 
-## Estado atual (v0.1.0)
+## Estado atual (v0.2.0)
 
 | Peça | Estado | Onde |
 |---|---|---|
 | Pacote de setor restaurante (BR) | ✅ pronto, testado | `setores/restaurante.js` |
 | Motor de cálculo | ✅ pronto, 7 testes | `app/motor.js`, `tests/motor.test.js` |
 | Raio-X (interface + relatório PDF) | ✅ pronto, testado em `file://` desktop e celular | `app/index.html` |
-| Receitas (módulos de correção) | 📄 especificados | `docs/modulos/` |
-| Kit comercial | 📄 abordagem + preço | `kit-comercial/` |
-| Caçador de Margem | 🔜 critérios já no pacote; falta tela | fase 3 |
+| Caçador de Margem (tela + coletor de fontes abertas) | ✅ pronto, testado; piloto Batel/Curitiba | `app/cacador.html`, `coletor/` |
+| Receitas (módulos de correção) | 📄 especificados (5, inclui 100% canal próprio) | `docs/modulos/` |
+| Kit comercial | 📄 abordagem + preço (falta proposta modelo, contrato, termo LGPD) | `kit-comercial/` |
+| Termos de uso e alternativas abertas | 📄 lidos na íntegra / verificados | `docs/TERMOS.md`, `docs/ALTERNATIVAS-ABERTAS.md` |
 | Painel de Recuperação | 🔜 `como_medir` já no pacote; falta tela | fase 5 |
 | Outros setores / mercados | 🔜 | fase 6 |
 | Guia trilíngue (GitHub Pages) | 🔜 | fase 7 |
@@ -77,6 +78,7 @@ Cada receita ataca vazamentos específicos e tem **dois caminhos**: SaaS pronto 
 | **Ganho e retenção de clientes** | marketplace, retenção, marketing | [modulos/aquisicao.md](modulos/aquisicao.md) |
 | **Cobrança e pagamentos** | pagamentos, antecipação, caixa | [modulos/cobranca.md](modulos/cobranca.md) |
 | **Marketing local e comunidade** | retenção, marketplace, marketing | [modulos/marketing-local.md](modulos/marketing-local.md) |
+| **100% canal próprio** | marketplace (inteiro), pagamentos | [modulos/canal-proprio.md](modulos/canal-proprio.md) |
 
 Desperdício e compras ficam como **processo interno** (ficha técnica, pesagem, cotação) — o kit diagnostica e mede, mas a correção é de gestão, não de software.
 
@@ -98,7 +100,7 @@ Cada mercado: pacote `setores/restaurante.latam.js` / `restaurante.global.js`, c
 |---|---|---|
 | 1 | Repo, docs de origem, análise, arquitetura | ✅ |
 | 2 | Raio-X restaurante | ✅ testes de motor + UI em `file://` |
-| 3 | Caçador de Margem: colar CSV de leads → pontuação + texto de abordagem | lista de 20 leads reais pontuada sem API paga |
+| 3 | Caçador de Margem: coletor (CNPJ + OSM + site + IA pela assinatura) → pontuação, potencial, abordagem, andamento | ✅ piloto Batel/Curitiba |
 | 4 | Receitas com checklist de implantação passo a passo e SaaS comparados | um implantador novo segue sem perguntar |
 | 5 | Painel de Recuperação: abre o `.json` do diagnóstico, recebe números do mês, mostra antes × depois | 3 meses simulados batem com conta à mão |
 | 6 | Pacotes: hotel, clínica, salão; mercados LATAM e GLOBAL | testes de integridade + 1 caso numérico por pacote |

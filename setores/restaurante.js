@@ -18,7 +18,7 @@
   var pacote = {
     id: 'restaurante',
     nome: 'Restaurante (delivery + salão)',
-    versao: '0.1.0',
+    versao: '0.2.0',
     // Mercado, não só idioma: ES = América Latina, EN = modelo global.
     // Outro mercado = outro pacote (plataformas, pagamentos e referências locais).
     mercado: 'BR',
@@ -98,7 +98,7 @@
         recuperavel_pct: 40, dificuldade: 3, prazo_semanas: 6,
         explicacao: 'Cada pedido de cliente recorrente feito pelo marketplace paga a comissão de novo. A diferença entre o custo do marketplace e o do canal próprio, nesses pedidos, é o vazamento.',
         como_medir: { base: 'Faturamento e custo efetivo do marketplace nos 3 meses anteriores', metrica: 'Pedidos no canal próprio de clientes vindos do marketplace × diferença de custo', janela: 'mensal, comparando mesmo período e descontando promoções do marketplace' },
-        receitas: ['cardapio-vivo', 'aquisicao', 'marketing-local'],
+        receitas: ['cardapio-vivo', 'aquisicao', 'marketing-local', 'canal-proprio'],
         fonte: { texto: 'Exemplo do documento de origem: R$ 30 mil migrados × 10 p.p. = R$ 3 mil/mês. Custo efetivo do marketplace vem do extrato do cliente.', verificado: false }
       },
       {
@@ -209,21 +209,53 @@
       'cardapio-vivo': { nome: 'Cardápio Vivo', doc: 'docs/modulos/cardapio-vivo.md', resumo: 'Cardápio próprio que muda todo dia e se espalha sozinho (Google, Instagram, status do WhatsApp).' },
       'aquisicao': { nome: 'Ganho e retenção de clientes', doc: 'docs/modulos/aquisicao.md', resumo: 'Marketplace traz, canal próprio retém: captura de contato, CRM, reativação e indicação.' },
       'cobranca': { nome: 'Cobrança e pagamentos', doc: 'docs/modulos/cobranca.md', resumo: 'Renegociar taxas, Pix, conciliação, antecipação só quando precisa, previsão de caixa.' },
-      'marketing-local': { nome: 'Marketing local e comunidade', doc: 'docs/modulos/marketing-local.md', resumo: 'O restaurante como ponto de encontro do bairro: canal, parcerias, eventos, indicação.' }
+      'marketing-local': { nome: 'Marketing local e comunidade', doc: 'docs/modulos/marketing-local.md', resumo: 'O restaurante como ponto de encontro do bairro: canal, parcerias, eventos, indicação.' },
+      'canal-proprio': { nome: '100% canal próprio', doc: 'docs/modulos/canal-proprio.md', resumo: 'Sair do marketplace em etapas, com peças de código aberto, quando a marca do bairro sustenta.' }
     },
 
     // ───────────── Caçador de Margem: critérios de lead ─────────────
-    // Usado pelo Caçador (fase 3). Pontuação 0–100.
+    // Usado pelo Caçador (app/cacador.html). Pontuação 0–100.
+    // Cada critério lê um SINAL do lead (lead.sinais[sinal]) e aplica o teste.
+    // Sinal desconhecido (null) não pontua e conta como "a conferir".
     cacador: {
-      criterios: [
-        { id: 'nota', rotulo: 'Nota no Google ≥ 4,5', peso: 15 },
-        { id: 'avaliacoes', rotulo: 'Mais de 500 avaliações', peso: 20 },
-        { id: 'marketplace', rotulo: 'Ativo em marketplace de delivery', peso: 20 },
-        { id: 'instagram', rotulo: 'Instagram ativo (post nos últimos 15 dias)', peso: 10 },
-        { id: 'sem_pedido_proprio', rotulo: 'Sem pedido próprio estruturado', peso: 15 },
-        { id: 'whatsapp_manual', rotulo: 'WhatsApp atendido à mão', peso: 10 },
-        { id: 'sem_fidelidade', rotulo: 'Sem fidelidade/CRM visível', peso: 10 }
+      // CNAEs que entram na lista (Receita Federal, sem pontuação)
+      cnaes: ['5611201', '5611203', '5611204', '5611205', '5620104'],
+      sinais: [
+        { id: 'nota', rotulo: 'Nota no Google', tipo: 'numero' },
+        { id: 'avaliacoes', rotulo: 'Nº de avaliações no Google', tipo: 'numero' },
+        { id: 'marketplace', rotulo: 'Está em marketplace de delivery', tipo: 'sim_nao' },
+        { id: 'instagram_ativo', rotulo: 'Instagram com post nos últimos 30 dias', tipo: 'sim_nao' },
+        { id: 'pedido_proprio', rotulo: 'Tem pedido online próprio estruturado', tipo: 'sim_nao' },
+        { id: 'whatsapp_manual', rotulo: 'Pedido por WhatsApp atendido à mão', tipo: 'sim_nao' },
+        { id: 'fidelidade', rotulo: 'Tem fidelidade/clube/cashback visível', tipo: 'sim_nao' }
       ],
+      criterios: [
+        { id: 'nota', sinal: 'nota', teste: 'v >= 4.5', rotulo: 'Nota no Google ≥ 4,5', peso: 15 },
+        { id: 'avaliacoes', sinal: 'avaliacoes', teste: 'v >= 500', rotulo: '500+ avaliações (tem demanda)', peso: 20 },
+        { id: 'marketplace', sinal: 'marketplace', teste: 'v === true', rotulo: 'Ativo em marketplace de delivery', peso: 20 },
+        { id: 'instagram', sinal: 'instagram_ativo', teste: 'v === true', rotulo: 'Instagram ativo', peso: 10 },
+        { id: 'sem_pedido_proprio', sinal: 'pedido_proprio', teste: 'v === false', rotulo: 'Sem pedido próprio estruturado', peso: 15 },
+        { id: 'whatsapp_manual', sinal: 'whatsapp_manual', teste: 'v === true', rotulo: 'WhatsApp atendido à mão', peso: 10 },
+        { id: 'sem_fidelidade', sinal: 'fidelidade', teste: 'v === false', rotulo: 'Sem fidelidade/CRM visível', peso: 10 }
+      ],
+      // Quando a tese falha (docs/ANALISE.md §3.5): não descarta, avisa.
+      alertas: [
+        { id: 'pouca_demanda', teste: 'l.sinais.avaliacoes != null && l.sinais.avaliacoes < 100', texto: 'Poucas avaliações: talvez falte demanda, não canal.' },
+        { id: 'nota_baixa', teste: 'l.sinais.nota != null && l.sinais.nota < 4.0', texto: 'Nota abaixo de 4,0: problema pode ser produto/serviço.' },
+        { id: 'mei', teste: 'l.porte === "MEI"', texto: 'MEI: faturamento pequeno para pagar implantação.' },
+        { id: 'inativa', teste: 'l.situacao && l.situacao !== "ATIVA"', texto: 'CNPJ não está ativo na Receita.' },
+        { id: 'so_delivery', teste: 'l.cnae === "5620104"', texto: 'Só delivery (CNAE 5620-1/04): migrar cliente é mais difícil.' }
+      ],
+      // Potencial = faixa grosseira para ORDENAR a lista, nunca para prometer.
+      // Faturamento mensal pelo porte declarado na Receita (limites legais do
+      // Simples/porte; EPP tem faixa larga). Depois aplica a conta do marketplace.
+      potencial: {
+        faturamento_por_porte: { MEI: [0, 6750], ME: [6750, 30000], EPP: [30000, 400000], DEMAIS: [400000, 1000000] },
+        // fração do faturamento que vaza: delivery 58% × marketplace 54% (Abrasel)
+        // × recompra 30% (premissa) × 10 p.p. de diferença de custo (premissa)
+        fator: 0.58 * 0.54 * 0.30 * 0.10,
+        aviso: 'Estimativa grosseira pelo porte da Receita e médias do setor. Só serve para ordenar; o número real sai do Raio-X.'
+      },
       abordagem: 'Seu restaurante claramente já tem demanda. O problema não parece ser conseguir clientes. É que, cada vez que seu cliente volta pelo marketplace, você paga de novo para falar com alguém que já conhece sua marca.'
     }
   };

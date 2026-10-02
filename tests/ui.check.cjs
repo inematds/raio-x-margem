@@ -39,6 +39,38 @@ const path = require('path');
     await page.click('#bt-limpar');
     ok((await page.textContent('#r-total')).replace(/\s/g, ' ') === 'R$ 0', `${nome}: limpar não zerou`);
     await page.close();
+
+    // ── Caçador ──
+    const cac = await browser.newPage({ viewport });
+    cac.on('pageerror', (e) => erros.push(`${nome} caçador: ${e.message}`));
+    await cac.goto('file://' + path.resolve(__dirname, '..', 'app', 'cacador.html'));
+    await cac.setInputFiles('#bt-importar', path.join(__dirname, 'fixtures', 'leads-exemplo.json'));
+    await cac.waitForSelector('details.lead');
+    const nomes = await cac.$$eval('details.lead .nome', (n) => n.map((x) => x.textContent));
+    ok(nomes.length === 3 && nomes[0] === 'Cantina Exemplo', `${nome} caçador: ordem ${nomes.join(' | ')}`);
+    const pts = await cac.textContent('details.lead:first-child .placar b');
+    ok(pts === '100', `${nome} caçador: lead ideal com ${pts} pontos`);
+    ok((await cac.$$('details.lead:nth-child(2) .chip.alerta')).length + (await cac.$$('details.lead:nth-child(3) .chip.alerta')).length >= 2, `${nome} caçador: alertas do MEI não apareceram`);
+    // conferir um sinal à mão muda a pontuação do Bistrô (ME): sem pedido próprio → +15
+    const bistro = cac.locator('details.lead', { hasText: 'Bistrô Demonstração' });
+    await bistro.locator('summary').click();
+    const antes = Number(await bistro.locator('.placar b').textContent());
+    await bistro.locator('select[data-sinal="pedido_proprio"]').selectOption('nao');
+    const depois = Number(await cac.locator('details.lead', { hasText: 'Bistrô Demonstração' }).locator('.placar b').textContent());
+    ok(depois === antes + 15, `${nome} caçador: sinal manual ${antes} → ${depois}`);
+    const larg2 = await cac.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    ok(larg2 <= 0, `${nome} caçador: rolagem horizontal de ${larg2}px`);
+    await cac.screenshot({ path: path.join(saida, `cacador-${nome}.png`), fullPage: true });
+    // persistência + ida ao Raio-X com o nome do lead
+    await cac.reload();
+    ok((await cac.$$('details.lead')).length === 3, `${nome} caçador: lista não voltou após recarregar`);
+    const primeiro = cac.locator('details.lead').first();
+    await primeiro.locator('summary').click();
+    await primeiro.locator('a', { hasText: 'Abrir Raio-X' }).click();
+    await cac.waitForLoadState();
+    ok((await cac.inputValue('#cli-nome')) === 'Cantina Exemplo', `${nome}: Raio-X não recebeu o nome do lead`);
+    ok((await cac.textContent('#r-total')).replace(/\s/g, ' ') === 'R$ 0', `${nome}: Raio-X do lead novo deveria começar zerado`);
+    await cac.close();
   }
   await browser.close();
   const tudo = erros.concat(falhas);
