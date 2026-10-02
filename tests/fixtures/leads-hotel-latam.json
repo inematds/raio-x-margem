@@ -1,0 +1,5 @@
+{ "pacote": "hotel-latam", "leads": [
+  { "nome": "Posada Ejemplo del Lago", "cidade": "Valle de Bravo", "uhs": 24, "fontes": ["osm"],
+    "sinais": { "nota": 4.7, "avaliacoes": 640, "marketplace": true, "pedido_proprio": false, "whatsapp_manual": true, "fidelidade": false } },
+  { "nome": "Cabañas Prueba", "cidade": "Valle de Bravo", "uhs": 5, "fontes": ["osm"] }
+] }

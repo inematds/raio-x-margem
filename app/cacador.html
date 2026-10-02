@@ -272,13 +272,13 @@
 
   porId('bt-importar').onchange = function (ev) {
     var arq = ev.target.files[0]; if (!arq) return;
-    arq.text().then(function (t) {
+    arq.text().then(function (conteudo) {
       var novos;
-      if (/\.json$/i.test(arq.name) || /^\s*[\[{]/.test(t)) {
-        var j = JSON.parse(t);
+      if (/\.json$/i.test(arq.name) || /^\s*[\[{]/.test(conteudo)) {
+        var j = JSON.parse(conteudo);
         novos = Array.isArray(j) ? j : (j.leads || []);
       } else {
-        novos = RXC.lerCSV(t);
+        novos = RXC.lerCSV(conteudo);
       }
       leads = RXC.mesclar(pacote, leads, novos);
       salvar(); desenhar();

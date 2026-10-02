@@ -37,6 +37,14 @@ class Regras(unittest.TestCase):
         self.assertIsNone(insta)
 
 
+class PlataformasDeOutrosMercados(unittest.TestCase):
+    def test_detecta_didi_pedidosya_doordash(self):
+        s, ev, _ = sitios.regras([pagina(["https://www.didi-food.com/es-MX/store/x", "https://www.pedidosya.com.ar/r/x",
+                                          "https://www.doordash.com/store/x"], "")])
+        for nome in ("DiDi Food", "PedidosYa", "DoorDash"):
+            self.assertIn(nome, ev["marketplace"])
+
+
 class Busca(unittest.TestCase):
     def test_classifica_site_instagram_marketplace(self):
         lead = {"nome": "Porcini Trattoria", "bairro": "Batel", "cidade": "Curitiba"}

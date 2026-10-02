@@ -1,0 +1,5 @@
+{ "pacote": "hotel-global", "leads": [
+  { "nome": "Lakeside Inn (example)", "cidade": "Asheville", "uhs": 28, "fontes": ["osm"],
+    "sinais": { "nota": 4.7, "avaliacoes": 910, "marketplace": true, "pedido_proprio": false, "whatsapp_manual": true, "fidelidade": false } },
+  { "nome": "Test Cottages", "cidade": "Asheville", "uhs": 5, "fontes": ["osm"] }
+] }

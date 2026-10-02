@@ -265,8 +265,8 @@
   porId('bt-abrir').onchange = function (ev) {
     var arq = ev.target.files[0];
     if (!arq) return;
-    arq.text().then(function (t) {
-      var e = JSON.parse(t);
+    arq.text().then(function (conteudo) {
+      var e = JSON.parse(conteudo);
       if (e.pacote && e.pacote !== pacote.id) throw new Error(t('erro.outro_setor', { id: e.pacote }));
       aplicar(e);
     }).catch(function (err) { porId('p-manchete').textContent = t('erro.abrir', { msg: err.message }); });

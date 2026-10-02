@@ -109,3 +109,18 @@ test('mesclar: nome parecido no mesmo bairro junta; CNPJs diferentes não', () =
   assert.equal(r.length, 4);
   assert.equal(r[0].site, 'https://madero.com.br');
 });
+
+test('CSV com cabeçalhos em inglês e espanhol', () => {
+  const en = RXC.lerCSV('Business Name,City,Website,Rating,Reviews\nJoe Diner,Austin,https://joe.example,4.7,812\n');
+  assert.deepEqual(Object.keys(en[0]), ['nome', 'cidade', 'site', 'nota', 'avaliacoes']);
+  const es = RXC.lerCSV('Nombre;Ciudad;Teléfono;Reseñas\nTaquería Sol;Ciudad de México;5555;300\n');
+  assert.equal(es[0].nome, 'Taquería Sol');
+  assert.equal(es[0].telefone, '5555');
+  assert.equal(RXC.normalizarLead(restaurante, es[0]).sinais.avaliacoes, 300);
+});
+
+test('abordagem formata números pelo mercado do pacote', () => {
+  const global = require('../setores/en/restaurante.js');
+  const t = RXC.abordagem(global, RXC.normalizarLead(global, { nome: 'Joe', sinais: { nota: 4.7, avaliacoes: 3000 } }));
+  assert.match(t, /4\.7 rating with 3,000 reviews/);
+});

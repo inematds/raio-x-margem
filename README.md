@@ -1,7 +1,15 @@
 # Raio-X de Margem
 
+**🇧🇷 [Português](README.md) · 🇺🇸 [English](README.en.md) · 🇪🇸 [Español](README.es.md)**
+
+[![Raio-X de Margem](guia/assets/banner.jpg)](https://inematds.github.io/raio-x-margem/guia/)
+
+## 📖 Guia de uso
+
+Guia completo (landing + passo a passo): **https://inematds.github.io/raio-x-margem/guia/** · App online: **https://inematds.github.io/raio-x-margem/app/**
+
 **Kit aberto para encontrar onde um negócio perde dinheiro, mostrar em reais, corrigir e provar o que voltou.**
-Primeiro setor completo: **restaurantes no Brasil**.
+Setores: **restaurante, hotel/pousada, clínica, salão** (e o modelo genérico "serviços com agenda"), em três mercados: **Brasil (PT), América Latina (ES) e global (EN)**.
 
 > Não vende IA. Não vende aplicativo. Vende **menos perda, mais margem, mais controle e mais recorrência.**
 
@@ -57,4 +65,4 @@ Nada sai do navegador. Os números do cliente ficam no rascunho local e no `.jso
 
 ---
 
-Projeto aberto do [INEMA.CLUB](https://inema.club) · licença [MIT](LICENSE) · versão 0.5.0
+Projeto aberto do [INEMA.CLUB](https://inema.club) · licença [MIT](LICENSE) · versão 0.5.1

@@ -23,3 +23,4 @@ When I correct you, or you catch yourself making a mistake: before continuing, a
 - Não editar um script bash enquanto ele roda (o bash lê o arquivo aos poucos): copiar para um novo nome ou esperar terminar. Editei `scripts/adaptar-docs.sh` com a adaptação EN em andamento. (02/10/2026)
 - CNES: a "esfera administrativa" é de GESTÃO do cadastro, não de propriedade — filtrar empresa pela natureza jurídica (1º dígito 2). Filtrei pela esfera e saíram 0 leads. (02/10/2026)
 - Pacotes de outros idiomas não citam o Brasil (Pix, iFood, LGPD) nem como contraste: o prompt de adaptação precisa proibir explicitamente, não só dizer "não existe Pix". (02/10/2026)
+- Nas telas, `t` é a função de tradução: nunca usar `t` como nome de parâmetro/variável (o `arq.text().then(function (t)` escondeu a função e quebrou a importação em todos os idiomas). (02/10/2026)

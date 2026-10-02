@@ -94,7 +94,9 @@
       });
   }
 
-  function formatarNumero(n) { return String(n).replace('.', ','); }
+  var LOCALE_MOEDA = { BRL: 'pt-BR', MXN: 'es-MX', USD: 'en-US', COP: 'es-CO', ARS: 'es-AR', CLP: 'es-CL', PEN: 'es-PE', GBP: 'en-GB', EUR: 'de-DE' };
+  function localeDo(pacote) { return LOCALE_MOEDA[pacote.moeda] || pacote.idioma || 'pt-BR'; }
+  function formatarNumero(n, pacote) { return new Intl.NumberFormat(localeDo(pacote), { maximumFractionDigits: 1 }).format(n); }
 
   // Abordagem personalizada: só cita o que foi conferido. Textos vêm do pacote
   // (cacador.textos), com {nome}, {nota}, {avaliacoes}, {local} substituídos.
@@ -102,8 +104,8 @@
     var s = lead.sinais, t = pacote.cacador.textos, partes = [];
     var trocar = function (txt) {
       return txt.replace(/\{nome\}/g, lead.nome || '')
-        .replace(/\{nota\}/g, s.nota != null ? formatarNumero(s.nota) : '')
-        .replace(/\{avaliacoes\}/g, s.avaliacoes != null ? s.avaliacoes.toLocaleString('pt-BR') : '')
+        .replace(/\{nota\}/g, s.nota != null ? formatarNumero(s.nota, pacote) : '')
+        .replace(/\{avaliacoes\}/g, s.avaliacoes != null ? formatarNumero(s.avaliacoes, pacote) : '')
         .replace(/\{local\}/g, lead.bairro || lead.cidade || '');
     };
     if (s.nota != null && s.avaliacoes != null && s.nota >= 4.3) partes.push(trocar(t.demanda));
@@ -162,6 +164,19 @@
   }
 
   // ── CSV (vírgula ou ponto e vírgula, aspas, acentos) ──
+  // Cabeçalhos em inglês/espanhol (exportações de registros de outros países) viram os campos do kit.
+  var ALIAS_COLUNAS = {
+    name: 'nome', business_name: 'nome', company_name: 'nome', trading_name: 'nome', nombre: 'nome', razon_social: 'nome', nombre_comercial: 'nome',
+    city: 'cidade', town: 'cidade', ciudad: 'cidade', municipio: 'cidade', locality: 'cidade',
+    neighborhood: 'bairro', neighbourhood: 'bairro', district: 'bairro', barrio: 'bairro', colonia: 'bairro', comuna: 'bairro',
+    address: 'endereco', street_address: 'endereco', direccion: 'endereco', domicilio: 'endereco',
+    phone: 'telefone', telephone: 'telefone', telefono: 'telefone',
+    website: 'site', web: 'site', url: 'site', sitio_web: 'site', sitio: 'site',
+    rating: 'nota', google_rating: 'nota', calificacion: 'nota',
+    reviews: 'avaliacoes', review_count: 'avaliacoes', resenas: 'avaliacoes',
+    delivery_apps: 'marketplace', online_ordering: 'pedido_proprio', loyalty: 'fidelidade', lealtad: 'fidelidade',
+    rooms: 'uhs', habitaciones: 'uhs', employees: 'empleados_txt', status: 'situacao'
+  };
   function lerCSV(texto) {
     texto = String(texto).replace(/^﻿/, '');
     var primeira = texto.split(/\r?\n/)[0] || '';
@@ -185,7 +200,10 @@
     linha.push(campo);
     if (linha.some(function (x) { return x !== ''; })) linhas.push(linha);
     if (!linhas.length) return [];
-    var cab = linhas.shift().map(function (h) { return semAcento(h).trim().toLowerCase().replace(/\s+/g, '_'); });
+    var cab = linhas.shift().map(function (h) {
+      var k = semAcento(h).trim().toLowerCase().replace(/\s+/g, '_');
+      return ALIAS_COLUNAS[k] || k;
+    });
     return linhas.map(function (l) {
       var o = {};
       cab.forEach(function (h, j) { o[h] = (l[j] || '').trim(); });

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Margin X-Ray — find where a business is losing money</title>
+<meta name="description" content="Open kit for consultants: lead hunter built on open data, an X-Ray that prices every money leak, fix playbooks and measurement. Restaurants, hotels, clinics and salons, with market packs in English, Spanish and Portuguese.">
+<link rel="alternate" hreflang="pt-BR" href="https://inematds.github.io/raio-x-margem/guia/">
+<link rel="alternate" hreflang="en" href="https://inematds.github.io/raio-x-margem/guia/en/">
+<link rel="alternate" hreflang="es" href="https://inematds.github.io/raio-x-margem/guia/es/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0c10; --bg2:#14141b; --card:#16161e; --line:#272730;
+    --txt:#e9e9ee; --mut:#9a9aa6; --amb:#E2A23B; --amb2:#f0c070; --sky:#38bdf8; --pro:#cbd5e1;
+    color-scheme:dark;
+  }
+  body.light{
+    --bg:#f6f7f9; --bg2:#eceef2; --card:#ffffff; --line:#e1e3ea;
+    --txt:#1a1a22; --mut:#5b5b68; --amb:#b9791d; --amb2:#a16207; --sky:#0369a1; --pro:#b45309;
+    color-scheme:light;
+  }
+  body.light .hero .glow{opacity:.5}
+  body.light pre{background:#0e0e14;color:#d6d6e0}
+  body.light pre .c{color:#8a8a98}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.65 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:Sora,sans-serif;line-height:1.15;margin:0}
+  a{color:var(--amb);text-decoration:none}
+  code,pre{font-family:"JetBrains Mono",monospace}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 22px}
+  .mut{color:var(--mut)} .amb{color:var(--amb)}
+  .chip{display:inline-block;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--amb);font-weight:600;font-family:Sora}
+  nav{position:sticky;top:0;z-index:30;backdrop-filter:blur(12px);background:rgba(12,12,16,.78);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;align-items:center;gap:22px;height:60px}
+  nav .brand{display:flex;align-items:center;gap:8px;font-family:Sora;font-weight:800;letter-spacing:-.02em;color:var(--amb)}
+  nav .brand .emoji{font-size:1.25rem}
+  nav .sep{color:var(--mut);opacity:.45}
+  nav .inema{color:var(--sky);font-weight:600;font-size:.88rem;font-family:Sora}
+  nav .inema:hover{filter:brightness(1.15)}
+  nav .pro{color:var(--pro);font-weight:600;font-size:.88rem;font-family:Sora}
+  nav .pro:hover{filter:brightness(1.15)}
+  nav .clubpro{display:inline-flex;align-items:center;gap:6px}
+  nav .links{margin-left:auto;display:flex;align-items:center;gap:20px;font-size:.92rem}
+  nav .links a.sec{color:var(--mut)} nav .links a.sec:hover{color:var(--txt)}
+  .lang{display:inline-flex;gap:2px;font-family:Sora;font-size:.78rem}
+  .lang a{color:var(--mut);padding:.2em .45em;border-radius:6px} .lang a.on{color:var(--amb);background:rgba(226,162,59,.12)}
+  .tgl{background:var(--bg2);border:1px solid var(--line);color:var(--txt);width:38px;height:38px;border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:1.05rem}
+  .tgl:hover{border-color:var(--amb)}
+  .btn{display:inline-block;background:var(--amb);color:#1a1206;font-weight:600;padding:.6em 1.05em;border-radius:10px;font-family:Sora}
+  .btn.ghost{background:transparent;color:var(--txt);border:1px solid var(--line)}
+  @media(max-width:760px){nav .links a.sec{display:none}}
+  @media(max-width:520px){nav .wrap{gap:8px;padding:8px 14px;height:auto;flex-wrap:wrap} nav .links{gap:8px;margin-left:0;width:100%;justify-content:space-between} nav .btn{padding:.45em .7em;font-size:.82rem} .tgl{width:34px;height:34px}}
+  .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+  .hero .glow{position:absolute;inset:-40% -20% auto auto;width:70%;height:600px;background:radial-gradient(closest-side,rgba(226,162,59,.22),transparent 70%);pointer-events:none}
+  .hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:74px 22px}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.5rem);font-weight:800;letter-spacing:-.025em}
+  .hero p.lead{font-size:1.18rem;color:var(--mut);margin:1.1em 0 1.6em;max-width:34ch}
+  .hero .cta{display:flex;gap:12px;flex-wrap:wrap}
+  .hero figure{margin:0;border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:0 30px 80px -30px #000}
+  .hero figure img{width:100%;display:block}
+  @media(max-width:780px){.hero .wrap{grid-template-columns:1fr;padding:48px 22px}}
+  section{padding:62px 0;border-bottom:1px solid var(--line)}
+  section h2{font-size:clamp(1.5rem,3.4vw,2.1rem);font-weight:800;letter-spacing:-.02em}
+  section .sub{color:var(--mut);margin:.6em 0 2em;max-width:62ch}
+  .grid{display:grid;gap:16px}
+  .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)} .g2{grid-template-columns:repeat(2,1fr)}
+  @media(max-width:820px){.g3,.g4{grid-template-columns:1fr 1fr}}
+  @media(max-width:540px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .card h3{font-size:1.05rem;margin-bottom:.4em}
+  .card p{color:var(--mut);font-size:.92rem;margin:0}
+  .num{display:inline-flex;width:30px;height:30px;align-items:center;justify-content:center;border-radius:8px;background:rgba(226,162,59,.14);color:var(--amb);font-family:Sora;font-weight:800;font-size:.9rem;margin-bottom:.7em}
+  .flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+  .flow span{background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:.45em .9em;font-size:.85rem;font-family:Sora;font-weight:600}
+  .flow .arr{color:var(--amb);border:none;background:none;padding:0 .1em}
+  pre{background:#0a0a0e;border:1px solid var(--line);border-radius:12px;padding:16px 18px;overflow:auto;font-size:.86rem;line-height:1.6;color:#d6d6e0}
+  pre .c{color:#6f6f7c} pre .k{color:var(--amb2)} pre .s{color:#9ece6a}
+  .step{display:grid;grid-template-columns:46px 1fr;gap:16px;margin-bottom:26px}
+  .step .b{width:46px;height:46px;border-radius:12px;background:var(--amb);color:#1a1206;font-family:Sora;font-weight:800;font-size:1.25rem;display:flex;align-items:center;justify-content:center}
+  .step h3{font-size:1.12rem;margin-bottom:.3em}
+  .step p{color:var(--mut);margin:.2em 0 .7em}
+  .ex{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:680px){.ex{grid-template-columns:1fr}}
+  .ex figure{margin:0;border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+  .ex figure img{width:100%;display:block}
+  .ex figcaption{padding:12px 14px;font-size:.88rem;color:var(--mut);background:var(--card)}
+  .phase{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .phase:last-child{border:none}
+  .phase .tag{flex:0 0 92px;font-family:Sora;font-weight:800;color:var(--amb)}
+  .phase .d strong{display:block;margin-bottom:.2em}
+  .phase .d span{color:var(--mut);font-size:.92rem}
+  footer{padding:46px 0;text-align:center;color:var(--mut);font-size:.9rem}
+  .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:.3em .8em;font-size:.78rem;color:var(--mut);margin:0 4px}
+  .tabela{overflow-x:auto;border:1px solid var(--line);border-radius:14px}
+  .tabela table{width:100%;border-collapse:collapse;min-width:640px;font-size:.92rem}
+  .tabela th,.tabela td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  .tabela th{color:var(--amb);font-family:Sora,sans-serif;font-weight:600}
+  .grid>*,.step>div{min-width:0} pre{max-width:100%;overflow-x:auto}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a class="brand" href="#top"><span class="emoji">🩻</span> Margin X-Ray</a>
+  <span class="sep">|</span>
+  <span class="clubpro">
+    <a class="inema" href="https://inema.club" target="_blank" rel="noopener">INEMA.CLUB</a>
+    <span class="sep">-</span>
+    <a class="pro" href="https://inema.pro" target="_blank" rel="noopener">PRO</a>
+  </span>
+  <div class="links">
+    <a class="sec" href="#oque">What it is</a>
+    <a class="sec" href="#fluxo">How it works</a>
+    <a class="sec" href="#guia">Guide</a>
+    <a class="sec" href="#exemplos">Examples</a>
+    <a class="sec" href="#roadmap">Roadmap</a>
+    <span class="lang"><a href="../">PT</a><a class="on" href="./">EN</a><a href="../es/">ES</a></span>
+    <button class="tgl" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">🌙</button>
+    <a class="btn" href="https://github.com/inematds/raio-x-margem" target="_blank" rel="noopener">GitHub</a>
+  </div>
+</div></nav>
+
+<header class="hero" id="top">
+  <div class="glow"></div>
+  <div class="wrap">
+    <div>
+      <span class="chip">Open kit for consultants · restaurants, hotels, clinics, salons</span>
+      <h1>Find where the business <span class="amb">is losing money</span></h1>
+      <p class="lead">Don't sell AI or another app. Show the owner, in dollars, what is leaking out, fix it and prove what came back. A lead hunter built on open data, an X-Ray with a PDF report, fix playbooks and measurement — all in the browser, nothing to install.</p>
+      <div class="cta">
+        <a class="btn" href="#guia">Start the guide</a>
+        <a class="btn ghost" href="../../app/?lang=en">Open the X-Ray</a>
+        <a class="btn ghost" href="https://github.com/inematds/raio-x-margem" target="_blank" rel="noopener">View on GitHub</a>
+      </div>
+    </div>
+    <figure><img src="../assets/banner-en.jpg" alt="Margin X-Ray: find where the business is losing money and win it back"></figure>
+  </div>
+</header>
+
+<section id="oque"><div class="wrap">
+  <span class="chip">What it is</span>
+  <h2>One tool for each stage of the sale</h2>
+  <p class="sub">The question stops being "do you need AI?" and becomes "where is the money you already earned going?". The kit covers the whole path, from first lead to monthly retainer.</p>
+  <figure style="margin:0 0 26px;border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:0 30px 80px -30px #000"><img src="../assets/banner-grade-en.jpg" alt="Lead hunter, X-Ray, playbooks and measurement" loading="lazy" style="width:100%;display:block"></figure>
+  <div class="grid g3">
+    <div class="card"><h3>🎯 Lead hunter</h3><p>Lists the businesses in a city or neighborhood from open data (OpenStreetMap anywhere, plus your country's business registry as a CSV), reads each one's own website and scores who already has demand and is leaking money. Writes the outreach message for you.</p></div>
+    <div class="card"><h3>🩻 X-Ray</h3><p>Filled in with the owner in 40 minutes: prices each leak in $/month (as lost margin, not revenue), ranks them from quickest to hardest fix and prints the report "you are leaving $X on the table every month".</p></div>
+    <div class="card"><h3>🔧 Playbooks + measurement</h3><p>For every leak, a fix guide with a ready-made (SaaS) path or an open-source one, a checklist and how to measure before × after — the evidence that backs a recurring fee.</p></div>
+  </div>
+  <h3 style="margin-top:34px">Sectors and markets</h3>
+  <p class="sub">Each sector is a <b>data pack</b> (questions, formulas, how much is recoverable, how to measure). Each language is a separate <b>market</b>, with its own platforms, payments and rules.</p>
+  <div class="tabela"><table>
+    <thead><tr><th>Sector</th><th>🌐 Global (EN)</th><th>🌎 Latin America (ES)</th><th>🇧🇷 Brazil (PT)</th></tr></thead>
+    <tbody>
+      <tr><td>Restaurant</td><td>DoorDash, Uber Eats, Grubhub, Deliveroo, Just Eat · card processing</td><td>Rappi, DiDi Food, Uber Eats · CoDi/DiMo</td><td>national delivery apps · instant payments</td></tr>
+      <tr><td>Hotel / guesthouse</td><td>Booking, Expedia, Airbnb · no rate parity in the EEA (DMA)</td><td>Booking 15/18/23% · no parity in Chile</td><td>Booking, Airbnb</td></tr>
+      <tr><td>Clinic / practice</td><td>no-shows, claim denials, Zocdoc new-patient fees</td><td>no-shows, insurers</td><td>no-shows, health-plan denials</td></tr>
+      <tr><td>Salon / barbershop</td><td>rebooking, membership · Fresha, Booksy Boost</td><td>return within the cycle, club</td><td>return within the cycle, club</td></tr>
+      <tr><td>Appointment services (generic)</td><td colspan="3">default model for any appointment-based business — the profiles above inherit from it</td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+
+<section id="fluxo"><div class="wrap">
+  <span class="chip">How it works</span>
+  <h2>From lead to recurring revenue</h2>
+  <p class="sub">Start with the quickest leak (often card processing or no-shows): it pays for the setup and earns the trust you need for the rest.</p>
+  <div class="flow">
+    <span>Hunter</span><span class="arr">→</span>
+    <span>Outreach</span><span class="arr">→</span>
+    <span>X-Ray with the owner</span><span class="arr">→</span>
+    <span>Proposal</span><span class="arr">→</span>
+    <span>Playbooks</span><span class="arr">→</span>
+    <span>Measurement</span><span class="arr">→</span>
+    <span>Monthly fee</span>
+  </div>
+  <div class="grid g3" style="margin-top:26px">
+    <div class="card"><h3>Restaurant leaks</h3><p>Delivery apps charging 15–30% again for customers who are already yours, card processing above market, cash advances, customers who never come back, low average check, waste, buying without quotes, menu mix, repetitive staff work, ads and cash planning.</p></div>
+    <div class="card"><h3>Hotel leaks</h3><p>OTA commission on repeat guests, visibility programs that don't pay for themselves, empty rooms in low season, guests who never return, extras nobody offers, uncharged no-shows, card fees and cash gaps.</p></div>
+    <div class="card"><h3>Service business leaks</h3><p>No-shows, slots never booked, clients who don't rebook on time, booking marketplaces charging for clients you already have, add-ons, card fees — and in clinics, claim denials and treatment plans that never start.</p></div>
+  </div>
+</div></section>
+
+<section id="pre"><div class="wrap">
+  <span class="chip">Requirements</span>
+  <h2>Almost nothing</h2>
+  <p class="sub">The X-Ray and the Hunter run in the browser, even offline. Your client's numbers never leave your machine.</p>
+  <div class="grid g3">
+    <div class="card"><h3>Use the app</h3><p>Just a browser. Online through GitHub Pages, or download the repository and open the file.</p><pre><span class="c"># online</span>
+<span class="s">https://inematds.github.io/raio-x-margem/app/?lang=en</span>
+<span class="c"># or locally</span>
+<span class="k">git clone</span> https://github.com/inematds/raio-x-margem
+<span class="k">open</span> raio-x-margem/app/index.html</pre></div>
+    <div class="card"><h3>Collect leads</h3><p>Python 3 and Node, no extra libraries. The OpenStreetMap collector queries the public Overpass API, one request at a time — nothing big to download.</p><pre><span class="k">python3</span> --version   <span class="c"># 3.10+</span>
+<span class="k">node</span> --version      <span class="c"># 18+</span></pre></div>
+    <div class="card"><h3>Optional</h3><p>Website/Instagram search through Firecrawl (uses paid credits, only with <code>--confirmar</code>) and an AI review of the signals through your subscription CLI (<code>claude</code> or <code>codex</code>), no API key needed.</p><pre><span class="k">export</span> FIRECRAWL_API_KEY=...   <span class="c"># optional</span>
+<span class="k">claude</span> --version            <span class="c"># optional</span></pre></div>
+  </div>
+</div></section>
+
+<section id="guia"><div class="wrap">
+  <span class="chip">Guide · step by step</span>
+  <h2>From a neighborhood to a report in 8 steps</h2>
+  <p class="sub">Example: restaurants in Austin, Texas. Swap the city and the sector (<code>alimentacao</code> = food, <code>hospedagem</code> = lodging, <code>servicos</code> = clinics and salons) for your own market.</p>
+
+  <div class="step"><div class="b">1</div><div>
+    <h3>List the businesses with open data</h3>
+    <p>OpenStreetMap works worldwide. City and district boundaries use different <code>admin_level</code> values per country (US cities are usually 8; check the boundary on openstreetmap.org) — adjust with <code>--nivel-cidade</code> / <code>--nivel-bairro</code>. If your country publishes a business registry (UK Companies House, France SIRENE, Australia ABN, Canada's open business data), export your area as CSV and merge it with the map data (or import it straight into the Hunter). Dedicated registry collectors per country are on the roadmap.</p>
+<pre><span class="k">mkdir</span> -p dados                                     <span class="c"># working folder, kept out of git</span>
+<span class="k">python3</span> coletor/osm.py --cidade Austin --setor alimentacao --saida dados/osm-austin.json
+<span class="c"># optional: merge a registry CSV export without duplicates</span>
+<span class="k">node</span> coletor/juntar.js dados/osm-austin.json dados/registry-austin.csv <span class="k">></span> dados/leads-austin.json</pre>
+  </div></div>
+
+  <div class="step"><div class="b">2</div><div>
+    <h3>Enrich by reading each business's own website</h3>
+    <p>Own online ordering? Text/WhatsApp link? Loyalty program? Links to delivery apps? The script reads each site respecting robots.txt; an optional AI review through your subscription double-checks the signals.</p>
+<pre><span class="k">python3</span> coletor/sitios.py --entrada dados/leads-austin.json --saida dados/leads-austin-enr.json \
+  --setor alimentacao --limite 30 --ia claude      <span class="c"># --buscar firecrawl --confirmar to find missing sites</span></pre>
+  </div></div>
+
+  <div class="step"><div class="b">3</div><div>
+    <h3>Import into the Hunter and check by hand what platform terms forbid collecting</h3>
+    <p>Google rating and reviews, an active Instagram and presence on delivery apps are checked with one click (the screen opens the search for you). The score only counts what was checked; the light bar shows the ceiling. A registry CSV is read directly: common English and Spanish headers (<code>name</code>, <code>city</code>, <code>address</code>, <code>phone</code>, <code>website</code>, <code>rating</code>, <code>reviews</code>…) are recognized.</p>
+<pre><span class="s">app/cacador.html?lang=en</span>  →  <span class="k">Import leads</span>  →  dados/leads-austin-enr.json</pre>
+  </div></div>
+
+  <div class="step"><div class="b">4</div><div>
+    <h3>Reach out with the generated message</h3>
+    <p>It only mentions what was verified ("4.8 stars from 3,000 reviews…") and offers a free 40-minute diagnosis. Track each lead's status until the X-Ray. Follow the B2B outreach rules of your country (see the box below).</p>
+<pre><span class="k">Copy message</span>  →  <span class="k">Open X-Ray for this lead</span></pre>
+  </div></div>
+
+  <div class="step"><div class="b">5</div><div>
+    <h3>Run the X-Ray with the owner</h3>
+    <p>With the delivery-app and card-processor statements open. An empty field means "don't know": it stays out of the total and goes onto a list of data to collect. Packs default to USD with a US example. Save the diagnosis (.json) — that is your "before" baseline.</p>
+<pre><span class="s">app/index.html?lang=en&amp;setor=restaurante-global</span>  →  <span class="k">Print report / PDF</span>  +  <span class="k">Save diagnosis (.json)</span></pre>
+  </div></div>
+
+  <div class="step"><div class="b">6</div><div>
+    <h3>Send the proposal</h3>
+    <p>Three playbooks at most, starting with the quickest. Rule of thumb: your total fees never exceed 1/3 of what the X-Ray showed as recoverable.</p>
+<pre><span class="s">kit-comercial/abordagem.md</span>   <span class="s">kit-comercial/precificacao.md</span>   <span class="c"># sales kit, in Portuguese for now</span></pre>
+  </div></div>
+
+  <div class="step"><div class="b">7</div><div>
+    <h3>Implement the playbook</h3>
+    <p>Every playbook has a ready-made (SaaS) or open-source path, a checklist and what not to do — for example, never use a delivery app's order flow or packaging to pull its customers to your own channel when its terms forbid it.</p>
+<pre><span class="s">docs/en/modulos/</span>  cardapio-vivo · aquisicao · cobranca · marketing-local · canal-proprio · servicos-agenda · hotel-*</pre>
+  </div></div>
+
+  <div class="step"><div class="b">8</div><div>
+    <h3>Measure and bill monthly</h3>
+    <p>The report already includes "how we will measure" for every leak: baseline, metric after and time window. Charge a performance bonus only on what can be attributed (card processing fees, for example).</p>
+<pre><span class="c"># every month: same X-Ray with the new numbers × the .json saved in step 5</span></pre>
+  </div></div>
+
+  <div class="card" style="margin-top:22px;border-color:var(--amb)"><h3>⚖️ Within the rules</h3><p>The kit does not scrape Google Maps, Instagram or delivery apps (their terms forbid it), never uses customer contacts passed on by a marketplace and only keeps business data. B2B prospecting rules vary: in the EU, GDPR legitimate interest plus national ePrivacy rules; in the UK, PECR lets you email corporate subscribers but treats sole traders as individuals; in the US, CAN-SPAM covers B2B email (clear opt-out); Canada's CASL is stricter. Messaging the business's own customers needs consent (TCPA in the US, PECR soft opt-in in the UK, GDPR in the EU). Health data is a special category (HIPAA, GDPR): a reminder should not reveal the procedure. Details in <a href="https://github.com/inematds/raio-x-margem/blob/main/docs/TERMOS.md" target="_blank" rel="noopener">docs/TERMOS.md</a> (in Portuguese) and <a href="https://github.com/inematds/raio-x-margem/blob/main/docs/mercados/global-pesquisa-2026-10.md" target="_blank" rel="noopener">docs/mercados/global-pesquisa-2026-10.md</a> (research notes, in Portuguese).</p></div>
+</div></section>
+
+<section id="exemplos"><div class="wrap">
+  <span class="chip">Examples</span>
+  <h2>What the global packs calculate</h2>
+  <p class="sub">Every pack ships with a worked US example in USD (the "Fill in example" button). The numbers below come straight from those examples; replace them with the owner's. The first field pilot ran in Brazil.</p>
+  <div class="ex">
+    <figure><img src="../assets/raiox-en.jpg" alt="X-Ray filled in with the US restaurant example" loading="lazy"><figcaption>X-Ray with the US restaurant example: $15,142/month leaking across 9 points, ranked by priority.</figcaption></figure>
+    <figure><img src="../assets/cacador-en.jpg" alt="Margin Hunter with a hotel lead scored" loading="lazy"><figcaption>Hunter in the hotel sector: score, verified signals, potential by number of rooms and a ready outreach message.</figcaption></figure>
+  </div>
+  <div class="grid g3" style="margin-top:22px">
+    <div class="card"><h3>Restaurant · $120k/month</h3><p>11 possible leaks; the example totals $15,142/month (12.6% of revenue), $7,544 of it recoverable. Biggest items: repetitive staff work ($2,858), customers who never come back ($2,808) and delivery apps charging again for regulars ($2,520).</p></div>
+    <div class="card"><h3>Hotel · $150k/month</h3><p>$18,038/month leaking (12.0% of revenue), $9,273 recoverable. Empty rooms in low season ($6,552) lead, then guests who never come back ($3,744) and a front desk quoting by hand ($1,732).</p></div>
+    <div class="card"><h3>Clinic · $80k/month</h3><p>$16,532/month leaking (20.7% of revenue), $7,848 recoverable — mostly slots never booked ($5,400), treatment plans that never start ($3,600) and no-shows ($3,402). Salon and generic-services packs follow the same model.</p></div>
+  </div>
+</div></section>
+
+<section id="roadmap"><div class="wrap">
+  <span class="chip">Roadmap</span>
+  <h2>What exists and what's next</h2>
+  <p class="sub">Current version: 0.5.1 — 15 packs (5 sectors × 3 markets), 60+ automated tests.</p>
+  <div class="phase"><div class="tag">Done</div><div class="d"><strong>X-Ray, Hunter and collectors</strong><span>Restaurant, hotel and appointment services (clinic, salon) for the Global (EN), Latin America (ES) and Brazil (PT) markets; OpenStreetMap and website collectors that work anywhere.</span></div></div>
+  <div class="phase"><div class="tag">Next</div><div class="d"><strong>Recovery dashboard</strong><span>Opens the saved diagnosis, takes the month's numbers and shows before × after for every leak.</span></div></div>
+  <div class="phase"><div class="tag">Next</div><div class="d"><strong>Registry collectors per country</strong><span>Companies House (UK), SIRENE (France), ABN (Australia) and DENUE (Mexico), filtered by industry code and area.</span></div></div>
+  <div class="phase"><div class="tag">Later</div><div class="d"><strong>More niches and a full sales kit in English</strong><span>Gyms, pet shops, auto repair, vacation-rental managers; proposal template, contract and data-processing terms.</span></div></div>
+</div></section>
+
+<footer>
+  <div class="wrap">
+    <div class="pill">Plain HTML + JS</div><div class="pill">Python 3 + Node</div><div class="pill">Open data</div><div class="pill">MIT</div>
+    <p style="margin-top:18px">Margin X-Ray · free and open kit ·
+      <a href="https://github.com/inematds/raio-x-margem">inematds/raio-x-margem</a> ·
+      <a href="https://inema.club">INEMA.CLUB</a></p>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var KEY='raio-x-margem-theme';
+    var b=document.body, t=document.getElementById('themeToggle');
+    if(localStorage.getItem(KEY)==='light'){ b.classList.add('light'); t.textContent='☀️'; }
+    t.addEventListener('click',function(){
+      var light=b.classList.toggle('light');
+      t.textContent=light?'☀️':'🌙';
+      localStorage.setItem(KEY, light?'light':'dark');
+    });
+  })();
+</script>
+</body>
+</html>
