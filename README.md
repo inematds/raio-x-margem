@@ -24,7 +24,7 @@ Setores: **restaurante, hotel/pousada, clínica, salão** (e o modelo genérico 
 3. **Imprima o relatório** (botão *Imprimir relatório / PDF*) e **salve o diagnóstico** (.json) — essa é a base "antes".
 4. **Abra a receita** do vazamento de maior prioridade em [`docs/modulos/`](docs/modulos/).
 5. **Implante** seguindo o checklist da receita (caminho SaaS pronto ou stack própria).
-6. **Meça** todo mês com o critério de "Como vamos medir" do relatório e cobre a recorrência.
+6. **Meça** todo mês no **Painel de Recuperação** (`app/painel.html`): abre o diagnóstico salvo, recebe os números do mês e mostra antes × depois, % da meta, acumulado e bônus só sobre o que é atribuível. Cobre a recorrência.
 
 Abordagem, roteiro da reunião e preço: [`kit-comercial/`](kit-comercial/).
 
@@ -32,7 +32,7 @@ Abordagem, roteiro da reunião e preço: [`kit-comercial/`](kit-comercial/).
 
 | Pasta | Conteúdo |
 |---|---|
-| `app/` | Raio-X (`index.html`) e Caçador (`cacador.html`) |
+| `app/` | Raio-X (`index.html`), Caçador (`cacador.html`) e Painel de Recuperação (`painel.html`) — interface em PT, EN e ES |
 | `coletor/` | Scripts de lista de leads: CNPJ, OpenStreetMap, sites |
 | `setores/` | Pacotes de setor: perguntas, fórmulas, % recuperável, como medir, receitas |
 | `docs/ANALISE.md` | Análise profunda da tese, com números e fontes |
@@ -65,4 +65,4 @@ Nada sai do navegador. Os números do cliente ficam no rascunho local e no `.jso
 
 ---
 
-Projeto aberto do [INEMA.CLUB](https://inema.club) · licença [MIT](LICENSE) · versão 0.5.1
+Projeto aberto do [INEMA.CLUB](https://inema.club) · licença [MIT](LICENSE) · versão 0.6.1

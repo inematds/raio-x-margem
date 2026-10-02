@@ -27,7 +27,7 @@ O objetivo é que **qualquer implantador** (freelancer, agência pequena, consul
 | Receitas (módulos de correção) | 📄 especificados (5, inclui 100% canal próprio) | `docs/modulos/` |
 | Kit comercial | 📄 abordagem + preço (falta proposta modelo, contrato, termo LGPD) | `kit-comercial/` |
 | Termos de uso e alternativas abertas | 📄 lidos na íntegra / verificados | `docs/TERMOS.md`, `docs/ALTERNATIVAS-ABERTAS.md` |
-| Painel de Recuperação | 🔜 `como_medir` já no pacote; falta tela | fase 5 |
+| Painel de Recuperação | ✅ pronto, testado (antes × depois, meta, acumulado, bônus atribuível) | `app/painel.html`, `app/painel-motor.js` |
 | Outros setores / mercados | 🔜 | fase 6 |
 | Guia trilíngue (GitHub Pages) | 🔜 | fase 7 |
 
@@ -102,6 +102,6 @@ Cada mercado: pacote `setores/restaurante.latam.js` / `restaurante.global.js`, c
 | 2 | Raio-X restaurante | ✅ testes de motor + UI em `file://` |
 | 3 | Caçador de Margem: coletor (CNPJ + OSM + site + IA pela assinatura) → pontuação, potencial, abordagem, andamento | ✅ piloto Batel/Curitiba |
 | 4 | Receitas com checklist de implantação passo a passo e SaaS comparados | um implantador novo segue sem perguntar |
-| 5 | Painel de Recuperação: abre o `.json` do diagnóstico, recebe números do mês, mostra antes × depois | 3 meses simulados batem com conta à mão |
+| 5 | Painel de Recuperação: abre o `.json` do diagnóstico, recebe números do mês, mostra antes × depois | ✅ testes com conta à mão (cartão renegociado, recompra migrada, piora, acumulado, bônus) |
 | 6 | Pacotes: hotel, clínica, salão; mercados LATAM e GLOBAL | testes de integridade + 1 caso numérico por pacote |
 | 7 | Guia trilíngue em `guia/` (GitHub Pages) + card no portal | página no ar |

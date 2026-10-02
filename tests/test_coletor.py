@@ -68,6 +68,14 @@ class Busca(unittest.TestCase):
         a = sitios.classificar_resultados({"nome": "Bar do Toninho"}, [{"url": "https://bar-do-toninho-curitiba.br-rest.com/"}])
         self.assertIsNone(a["site"])
 
+    def test_palavra_generica_nao_casa_site(self):
+        a = sitios.classificar_resultados({"nome": "Daam Estetica"}, [{"url": "https://esteticabatel.com.br/"}])
+        self.assertIsNone(a["site"])
+        b = sitios.classificar_resultados({"nome": "Broto & Caetano Estetica Avancada Ltda"}, [{"url": "https://esteticasdobrasil.com.br/"}])
+        self.assertIsNone(b["site"])
+        c = sitios.classificar_resultados({"nome": "Buddha Spa Batel"}, [{"url": "https://buddhaspa.com.br/"}])
+        self.assertEqual(c["site"], "https://buddhaspa.com.br/")
+
     def test_consulta(self):
         self.assertEqual(sitios.consulta_de({"nome": "X", "bairro": "Batel", "cidade": "Curitiba"}), "X Batel Curitiba")
 

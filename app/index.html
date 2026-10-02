@@ -67,7 +67,7 @@
 <header>
   <div>
     <h1 data-i18n-html="rx.titulo">Raio-X de <span>Margem</span></h1>
-    <small><span data-i18n="rx.sub">Onde está indo embora o dinheiro que o cliente já faturou</span> · v<span id="versao"></span> · <select id="seletor-idioma" data-i18n-title="idioma" style="background:var(--painel);color:var(--texto);border:1px solid var(--borda);border-radius:6px;padding:2px 4px;font:inherit"></select> · <select id="seletor-setor" data-i18n-title="setor" style="background:var(--painel);color:var(--texto);border:1px solid var(--borda);border-radius:6px;padding:2px 4px;font:inherit"></select> · <a id="link-cacador" href="cacador.html" style="color:var(--ambar)" data-i18n="rx.cacador">Caçador de leads</a></small>
+    <small><span data-i18n="rx.sub">Onde está indo embora o dinheiro que o cliente já faturou</span> · v<span id="versao"></span> · <select id="seletor-idioma" data-i18n-title="idioma" style="background:var(--painel);color:var(--texto);border:1px solid var(--borda);border-radius:6px;padding:2px 4px;font:inherit"></select> · <select id="seletor-setor" data-i18n-title="setor" style="background:var(--painel);color:var(--texto);border:1px solid var(--borda);border-radius:6px;padding:2px 4px;font:inherit"></select> · <a id="link-cacador" href="cacador.html" style="color:var(--ambar)" data-i18n="rx.cacador">Caçador de leads</a> · <a id="link-painel" href="painel.html" style="color:var(--ambar)" data-i18n="pn.painel">Painel de recuperação</a></small>
   </div>
   <div class="acoes">
     <button id="bt-exemplo" data-i18n="bt.exemplo">Preencher exemplo</button>
@@ -163,6 +163,7 @@
 
   porId('versao').textContent = window.RXM.VERSAO;
   porId('link-cacador').href = 'cacador.html?setor=' + pacote.id;
+  porId('link-painel').href = 'painel.html?lang=' + I.lang;
 
   // ── monta o formulário a partir do pacote ──
   var html = pacote.grupos.map(function (g, i) {

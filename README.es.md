@@ -29,7 +29,7 @@ Detalles del recolector en [`coletor/README.md`](coletor/README.md) (en portugu�
 3. **Imprima el informe** (botón *Imprimir informe / PDF*) y **guarde el diagnóstico** (.json) — esa es la base "antes".
 4. **Abra la receta** de la fuga de mayor prioridad en [`docs/es/modulos/`](docs/es/modulos/).
 5. **Implemente** siguiendo el checklist de la receta (camino SaaS listo o stack propio).
-6. **Mida** cada mes con el criterio de "Cómo vamos a medir" del informe y cobre la mensualidad. Regla práctica para la propuesta: todo sumado no pasa de 1/3 de lo recuperable.
+6. **Mida** cada mes en el **Panel de Recuperación** (`app/painel.html?lang=es`): abre el diagnóstico guardado, recibe los números del mes y muestra antes × después, % de la meta, acumulado y bono solo sobre lo atribuible. Cobre la mensualidad. Regla práctica para la propuesta: todo sumado no pasa de 1/3 de lo recuperable.
 
 Contacto, guion de la reunión y precio: [`kit-comercial/`](kit-comercial/) (en portugués).
 
@@ -37,7 +37,7 @@ Contacto, guion de la reunión y precio: [`kit-comercial/`](kit-comercial/) (en 
 
 | Carpeta | Contenido |
 |---|---|
-| `app/` | Radiografía (`index.html`) y Cazador (`cacador.html`); interfaz en ES con `?lang=es` |
+| `app/` | Radiografía (`index.html`), Cazador (`cacador.html`) y Panel de Recuperación (`painel.html`); interfaz en ES con `?lang=es` |
 | `coletor/` | Scripts de lista de clientes: OpenStreetMap y sitios (más recolectores de registros de Brasil) |
 | `setores/es/` | Paquetes LATAM: restaurante, hotel, servicios, clínica, salón (preguntas, fórmulas, % recuperable, cómo medir, recetas) |
 | `docs/es/modulos/` | Recetas: menú vivo, captación y retención, cobros y pagos, marketing local, canal propio, agenda llena, hotel |
@@ -71,4 +71,4 @@ Nada sale del navegador. Los números del cliente quedan en el borrador local y 
 
 ---
 
-Proyecto abierto de [INEMA.CLUB](https://inema.club) · licencia [MIT](LICENSE) · versión 0.5.1
+Proyecto abierto de [INEMA.CLUB](https://inema.club) · licencia [MIT](LICENSE) · versión 0.6.1

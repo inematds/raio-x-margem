@@ -255,8 +255,8 @@
 
   <div class="step"><div class="b">8</div><div>
     <h3>Measure and bill monthly</h3>
-    <p>The report already includes "how we will measure" for every leak: baseline, metric after and time window. Charge a performance bonus only on what can be attributed (card processing fees, for example).</p>
-<pre><span class="c"># every month: same X-Ray with the new numbers × the .json saved in step 5</span></pre>
+    <p>The report already includes "how we will measure" for every leak: baseline, metric after and time window. Charge a performance bonus only on what can be attributed (card processing fees, for example). The <b>Recovery Dashboard</b> opens the saved diagnosis, takes each month's numbers and shows, leak by leak, how much came back and how far you are from the target.</p>
+<pre><span class="s">app/painel.html?lang=en</span>  →  <span class="k">Open diagnosis</span> (the .json from step 5)  →  <span class="k">Add month</span>  <span class="c"># before × after, % of target, cumulative and bonus</span></pre>
   </div></div>
 
   <div class="card" style="margin-top:22px;border-color:var(--amb)"><h3>⚖️ Within the rules</h3><p>The kit does not scrape Google Maps, Instagram or delivery apps (their terms forbid it), never uses customer contacts passed on by a marketplace and only keeps business data. B2B prospecting rules vary: in the EU, GDPR legitimate interest plus national ePrivacy rules; in the UK, PECR lets you email corporate subscribers but treats sole traders as individuals; in the US, CAN-SPAM covers B2B email (clear opt-out); Canada's CASL is stricter. Messaging the business's own customers needs consent (TCPA in the US, PECR soft opt-in in the UK, GDPR in the EU). Health data is a special category (HIPAA, GDPR): a reminder should not reveal the procedure. Details in <a href="https://github.com/inematds/raio-x-margem/blob/main/docs/TERMOS.md" target="_blank" rel="noopener">docs/TERMOS.md</a> (in Portuguese) and <a href="https://github.com/inematds/raio-x-margem/blob/main/docs/mercados/global-pesquisa-2026-10.md" target="_blank" rel="noopener">docs/mercados/global-pesquisa-2026-10.md</a> (research notes, in Portuguese).</p></div>
@@ -280,9 +280,9 @@
 <section id="roadmap"><div class="wrap">
   <span class="chip">Roadmap</span>
   <h2>What exists and what's next</h2>
-  <p class="sub">Current version: 0.5.1 — 15 packs (5 sectors × 3 markets), 60+ automated tests.</p>
+  <p class="sub">Current version: 0.6.1 — 15 packs (5 sectors × 3 markets), 60+ automated tests.</p>
   <div class="phase"><div class="tag">Done</div><div class="d"><strong>X-Ray, Hunter and collectors</strong><span>Restaurant, hotel and appointment services (clinic, salon) for the Global (EN), Latin America (ES) and Brazil (PT) markets; OpenStreetMap and website collectors that work anywhere.</span></div></div>
-  <div class="phase"><div class="tag">Next</div><div class="d"><strong>Recovery dashboard</strong><span>Opens the saved diagnosis, takes the month's numbers and shows before × after for every leak.</span></div></div>
+  <div class="phase"><div class="tag">Done</div><div class="d"><strong>Recovery dashboard</strong><span>Opens the saved diagnosis, takes each month's numbers and shows before × after per leak, % of target, cumulative recovery and a bonus only on what can be attributed.</span></div></div>
   <div class="phase"><div class="tag">Next</div><div class="d"><strong>Registry collectors per country</strong><span>Companies House (UK), SIRENE (France), ABN (Australia) and DENUE (Mexico), filtered by industry code and area.</span></div></div>
   <div class="phase"><div class="tag">Later</div><div class="d"><strong>More niches and a full sales kit in English</strong><span>Gyms, pet shops, auto repair, vacation-rental managers; proposal template, contract and data-processing terms.</span></div></div>
 </div></section>

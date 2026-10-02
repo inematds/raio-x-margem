@@ -31,13 +31,13 @@ OpenStreetMap boundaries use different `admin_level` values per country: adjust 
 3. **Print the report** (*Print report / PDF*) and **save the diagnosis** (.json) — that is your "before" baseline.
 4. **Open the playbook** for the highest-priority leak in [`docs/en/modulos/`](docs/en/modulos/).
 5. **Implement** it following the playbook's checklist (ready-made SaaS path or your own open-source stack).
-6. **Measure** every month with the report's "How we will measure" criteria and bill the retainer. Rule of thumb: total fees stay below 1/3 of what the X-Ray showed as recoverable.
+6. **Measure** every month in the **Recovery Dashboard** (`app/painel.html?lang=en`): it opens the saved diagnosis, takes the month's numbers and shows before × after, % of target, cumulative recovery and a bonus only on what can be attributed. Bill the retainer. Rule of thumb: total fees stay below 1/3 of what the X-Ray showed as recoverable.
 
 ## What's inside
 
 | Folder | Contents |
 |---|---|
-| `app/` | X-Ray (`index.html`) and Hunter (`cacador.html`), UI in English, Spanish and Portuguese |
+| `app/` | X-Ray (`index.html`), Hunter (`cacador.html`) and Recovery Dashboard (`painel.html`), UI in English, Spanish and Portuguese |
 | `coletor/` | Lead-list scripts: OpenStreetMap, websites, merge (plus national registry collectors for Brazil) |
 | `setores/en/` | Global market packs: restaurant, hotel, appointment services, clinic, salon |
 | `docs/en/modulos/` | Fix playbooks in English: menu, customer acquisition and retention, payments, local marketing, own channel, appointments, hotel direct booking and low season |
@@ -74,4 +74,4 @@ Nothing leaves the browser. The client's numbers stay in the local draft and in 
 
 ---
 
-An open project by [INEMA.CLUB](https://inema.club) · [MIT](LICENSE) license · version 0.5.1
+An open project by [INEMA.CLUB](https://inema.club) · [MIT](LICENSE) license · version 0.6.1

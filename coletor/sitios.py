@@ -27,6 +27,7 @@ import subprocess
 import sys
 import time
 import unicodedata
+import urllib.error
 import urllib.parse
 import urllib.request
 import urllib.robotparser
@@ -55,9 +56,15 @@ def log(msg):
     print(time.strftime("%H:%M:%S"), msg, file=sys.stderr, flush=True)
 
 
+GENERICAS = ("ltda|me|epp|eireli|s|ss|sa|restaurante|bar|lanchonete|gastronomia|cafe|curitiba|batel|estetica|esteticas|"
+             "clinica|clinicas|medica|medicos|servicos|centro|instituto|studio|estudio|salao|beleza|beauty|spa|hair|"
+             "barbearia|odonto|odontologia|dental|saude|hotel|pousada|hostel|do|da|de|dos|das|e|brasil")
+
+
 def chave(s):
     s = unicodedata.normalize("NFD", s or "").encode("ascii", "ignore").decode().lower()
-    s = re.sub(r"\b(ltda|me|epp|restaurante|bar|lanchonete|gastronomia|cafe|curitiba|batel)\b", " ", s)
+    s = re.sub(r"[^a-z0-9]+", " ", s)
+    s = re.sub(rf"\b({GENERICAS})\b", " ", s)
     return re.sub(r"[^a-z0-9]+", "", s)
 
 
@@ -89,10 +96,30 @@ class Cache:
         return v
 
 
-def buscar_firecrawl(consulta, chave_api, cache):
+_ULTIMA_BUSCA = [0.0]
+INTERVALO_BUSCA = 13.0  # s entre buscas; plano gratuito do Firecrawl devolve 429 em rajada
+
+
+def buscar_firecrawl(consulta, chave_api, cache, tentativas=4):
     em_cache = cache.get("busca:" + consulta)
     if em_cache is not None:
         return em_cache, False
+    for t in range(tentativas):
+        espera = INTERVALO_BUSCA - (time.time() - _ULTIMA_BUSCA[0])
+        if espera > 0:
+            time.sleep(espera)
+        _ULTIMA_BUSCA[0] = time.time()
+        try:
+            return _buscar_firecrawl(consulta, chave_api, cache), True
+        except urllib.error.HTTPError as e:
+            if e.code != 429 or t == tentativas - 1:
+                raise
+            recuo = float(e.headers.get("Retry-After") or 20 * (t + 1))
+            log(f"  429 do Firecrawl; nova tentativa em {recuo:.0f}s")
+            time.sleep(recuo)
+
+
+def _buscar_firecrawl(consulta, chave_api, cache):
     req = urllib.request.Request(
         "https://api.firecrawl.dev/v1/search",
         data=json.dumps({"query": consulta, "limit": 8, "lang": "pt", "country": "br"}).encode(),
@@ -103,7 +130,7 @@ def buscar_firecrawl(consulta, chave_api, cache):
     if isinstance(itens, dict):  # formato v2: {"web": [...]}
         itens = itens.get("web", [])
     res = [{"url": i.get("url"), "titulo": i.get("title"), "descricao": i.get("description")} for i in itens if i.get("url")]
-    return cache.put("busca:" + consulta, res), True
+    return cache.put("busca:" + consulta, res)
 
 
 def classificar_resultados(lead, resultados):
@@ -301,6 +328,7 @@ def main():
     ap.add_argument("--limite", type=int, default=30, help="quantos leads processar (ordem do arquivo)")
     ap.add_argument("--buscar", choices=["firecrawl"], help="buscar site/Instagram de quem não tem site")
     ap.add_argument("--max-buscas", type=int, default=30)
+    ap.add_argument("--intervalo-busca", type=float, default=INTERVALO_BUSCA, help="segundos entre buscas (429 no plano gratuito)")
     ap.add_argument("--confirmar", action="store_true", help="sem isto, só mostra a estimativa de crédito")
     ap.add_argument("--env", default=os.path.expanduser("~/projetos/openpcbotv2/.env"))
     ap.add_argument("--ia", choices=["claude", "codex"])
@@ -309,6 +337,7 @@ def main():
     a = ap.parse_args()
 
     usar_setor(a.setor)
+    globals()["INTERVALO_BUSCA"] = a.intervalo_busca
     dados = json.load(open(a.entrada, encoding="utf-8"))
     leads = dados["leads"] if isinstance(dados, dict) else dados
     alvo = leads[: a.limite]
@@ -372,6 +401,23 @@ def main():
                 l["evidencias"][k] = ev.get(k, "")
         if "site" not in l["fontes"]:
             l["fontes"].append("site")
+
+    # Trava: o mesmo site atribuído pela busca a leads de nomes diferentes é suspeito (casou palavra genérica)
+    por_site = {}
+    for l in alvo:
+        if l.get("site") and "busca" in l.get("fontes", []):
+            por_site.setdefault(l["site"], []).append(l)
+    for site, ls in por_site.items():
+        if len({chave(x.get("nome")) for x in ls}) > 1:
+            for l in ls:
+                l["site"] = None
+                for k in ("pedido_proprio", "whatsapp_manual", "fidelidade"):
+                    l["sinais"].pop(k, None)
+                    l["evidencias"].pop(k, None)
+                l["evidencias"]["site"] = f"Site compartilhado por {len(ls)} leads ({site}) — conferir à mão"
+                if "site" in l["fontes"]:
+                    l["fontes"].remove("site")
+            log(f"  site compartilhado descartado: {site} ({len(ls)} leads)")
 
     saida = dict(dados) if isinstance(dados, dict) else {}
     saida["leads"] = leads

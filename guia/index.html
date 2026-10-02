@@ -254,8 +254,8 @@
 
   <div class="step"><div class="b">8</div><div>
     <h3>Meça e cobre a recorrência</h3>
-    <p>O relatório já traz "como vamos medir" de cada vazamento: base antes, métrica depois e janela. Bônus por resultado só sobre o que dá para atribuir (taxa de cartão, por exemplo).</p>
-<pre><span class="c"># a cada mês: mesmo Raio-X com os números novos × o .json salvo no passo 5</span></pre>
+    <p>O relatório já traz "como vamos medir" de cada vazamento: base antes, métrica depois e janela. O <b>Painel de Recuperação</b> abre o diagnóstico salvo, recebe os números de cada mês e mostra, vazamento a vazamento, quanto voltou para o caixa e quanto falta para a meta. Bônus por resultado só sobre o que dá para atribuir (taxa de cartão, por exemplo).</p>
+<pre><span class="s">app/painel.html</span>  →  <span class="k">Abrir diagnóstico</span> (o .json do passo 5)  →  <span class="k">Lançar mês</span>  <span class="c"># antes × depois, % da meta, acumulado e bônus</span></pre>
   </div></div>
 
   <div class="card" style="margin-top:22px;border-color:var(--amb)"><h3>⚖️ Dentro das regras</h3><p>O kit não raspa Google Maps, Instagram nem iFood (os termos proíbem), não usa contato de cliente vindo de marketplace e só guarda dados de empresa (LGPD). Clínica segue o conselho profissional: dentista não anuncia preço nem faz "indique e ganhe". Tudo com trecho e link em <a href="https://github.com/inematds/raio-x-margem/blob/main/docs/TERMOS.md" target="_blank" rel="noopener">docs/TERMOS.md</a>.</p></div>
@@ -279,9 +279,9 @@
 <section id="roadmap"><div class="wrap">
   <span class="chip">Roadmap</span>
   <h2>O que existe e o que vem</h2>
-  <p class="sub">Versão atual: 0.5.1 — 15 pacotes (5 setores × 3 mercados), 60+ testes automáticos.</p>
+  <p class="sub">Versão atual: 0.6.1 — 15 pacotes (5 setores × 3 mercados), 60+ testes automáticos.</p>
   <div class="phase"><div class="tag">Feito</div><div class="d"><strong>Raio-X, Caçador e coletores</strong><span>Restaurante, hotel, serviços com agenda (clínica, salão) em PT/BR, ES/LATAM e EN/GLOBAL; coletores de CNPJ, CNES, Cadastur, OSM e sites.</span></div></div>
-  <div class="phase"><div class="tag">Próximo</div><div class="d"><strong>Painel de recuperação</strong><span>Abre o diagnóstico salvo, recebe os números do mês e mostra antes × depois por vazamento.</span></div></div>
+  <div class="phase"><div class="tag">Feito</div><div class="d"><strong>Painel de recuperação</strong><span>Abre o diagnóstico salvo, recebe os números do mês e mostra antes × depois por vazamento, % da meta, acumulado e bônus só sobre o que é atribuível.</span></div></div>
   <div class="phase"><div class="tag">Próximo</div><div class="d"><strong>Kit comercial completo</strong><span>Proposta modelo, contrato e termo de LGPD.</span></div></div>
   <div class="phase"><div class="tag">Depois</div><div class="d"><strong>Mais nichos e coletores por país</strong><span>Academias, pet shops, oficinas, administradoras de temporada; DENUE (México), Companies House (Reino Unido), SIRENE (França).</span></div></div>
 </div></section>

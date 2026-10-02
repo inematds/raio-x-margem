@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel de Recuperação</title>
+<style>
+  :root {
+    --fundo: #0e0d0b; --painel: #1a1814; --borda: #2e2a23; --texto: #ece6da; --suave: #a59c8c;
+    --ambar: #f2a93b; --ambar-escuro: #b8761a; --verde: #6fcf8e; --vermelho: #ef6f5e;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fundo); color: var(--texto); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { padding: 20px 16px; border-bottom: 1px solid var(--borda); display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+  header h1 { margin: 0; font-size: 22px; } header h1 span { color: var(--ambar); }
+  header small { color: var(--suave); } header small a { color: var(--ambar); }
+  .acoes { display: flex; flex-wrap: wrap; gap: 8px; }
+  button, .botao, select, input { font: inherit; color: var(--texto); }
+  button, .botao { background: var(--painel); border: 1px solid var(--borda); border-radius: 8px; padding: 8px 12px; cursor: pointer; text-decoration: none; display: inline-block; }
+  button:hover, .botao:hover { border-color: var(--ambar); }
+  button.principal, .botao.principal { background: var(--ambar); color: #1a1206; border-color: var(--ambar); font-weight: 600; }
+  select.mini { background: var(--painel); border: 1px solid var(--borda); border-radius: 6px; padding: 2px 4px; }
+  main { max-width: 1100px; margin: 0 auto; padding: 20px 16px; }
+  .cartao { background: var(--painel); border: 1px solid var(--borda); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+  .cartao h2 { margin: 0 0 12px; font-size: 17px; }
+  .vazio { text-align: center; padding: 40px 16px; color: var(--suave); border: 1px dashed var(--borda); border-radius: 12px; }
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .kpi { background: var(--painel); border: 1px solid var(--borda); border-radius: 12px; padding: 14px 16px; }
+  .kpi small { color: var(--suave); display: block; }
+  .kpi b { font-size: 26px; color: var(--ambar); } .kpi b.verde { color: var(--verde); } .kpi b.vermelho { color: var(--vermelho); }
+  .grafico { width: 100%; height: 180px; display: block; }
+  .tabela-rolavel { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 680px; }
+  th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--borda); vertical-align: top; }
+  th { color: var(--suave); font-weight: 500; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+  td.num, th.num { text-align: right; white-space: nowrap; }
+  .suave { color: var(--suave); } .verde { color: var(--verde); } .vermelho { color: var(--vermelho); }
+  .aviso { border-left: 3px solid var(--ambar); padding: 8px 12px; background: rgba(242,169,59,.08); border-radius: 0 8px 8px 0; font-size: 13px; }
+  .meses { display: flex; flex-wrap: wrap; gap: 8px; }
+  .mes { border: 1px solid var(--borda); border-radius: 10px; padding: 8px 10px; font-size: 14px; }
+  .mes button { padding: 2px 8px; font-size: 12px; margin-left: 4px; }
+  .campos { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+  .campo label { display: block; font-size: 12px; color: var(--suave); margin-bottom: 2px; }
+  .campo input { width: 100%; background: var(--fundo); border: 1px solid var(--borda); border-radius: 8px; padding: 7px; }
+  details.grupo { margin-top: 10px; } details.grupo > summary { cursor: pointer; font-weight: 600; }
+  .bonus { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .bonus label { font-size: 13px; color: var(--suave); }
+  .bonus input[type=number] { width: 80px; background: var(--fundo); border: 1px solid var(--borda); border-radius: 8px; padding: 6px; }
+  @media print {
+    :root { --fundo: #fff; --painel: #fff; --borda: #ddd; --texto: #111; --suave: #555; --ambar: #a05a00; }
+    header .acoes, #form-mes, .nao-imprimir { display: none !important; }
+    body { font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1 data-i18n-html="pn.titulo">Painel de <span>Recuperação</span></h1>
+    <small><span data-i18n="pn.sub">Antes × depois, vazamento a vazamento</span> · <select id="seletor-idioma" class="mini" data-i18n-title="idioma"></select> · <a id="link-raiox" href="index.html" data-i18n-html="rx.titulo">Raio-X</a> · <a id="link-cacador" href="cacador.html" data-i18n="rx.cacador">Caçador de leads</a></small>
+  </div>
+  <div class="acoes">
+    <label class="botao principal"><span data-i18n="pn.abrir">Abrir diagnóstico ou acompanhamento (.json)</span><input id="bt-abrir" type="file" accept="application/json,.json" hidden></label>
+    <button id="bt-lancar" data-i18n="pn.lancar" disabled>Lançar mês</button>
+    <button id="bt-salvar" data-i18n="pn.salvar" disabled>Salvar acompanhamento (.json)</button>
+    <button id="bt-imprimir" data-i18n="pn.imprimir">Imprimir / PDF</button>
+  </div>
+</header>
+
+<main>
+  <div id="vazio" class="vazio" data-i18n-html="pn.vazio"></div>
+  <p id="erro" class="aviso" hidden></p>
+
+  <div id="conteudo" hidden>
+    <p class="suave" id="cabecalho"></p>
+    <div class="kpis">
+      <div class="kpi"><small data-i18n="pn.base">Base (antes)</small><b id="k-base">—</b></div>
+      <div class="kpi"><small data-i18n="pn.ultimo">Recuperado no último mês</small><b id="k-ultimo" class="verde">—</b><small id="k-ultimo-meta"></small></div>
+      <div class="kpi"><small data-i18n="pn.acumulado">Acumulado</small><b id="k-acumulado" class="verde">—</b></div>
+      <div class="kpi"><small data-i18n="pn.meses">Meses lançados</small><b id="k-meses">0</b></div>
+    </div>
+
+    <div class="cartao"><svg id="grafico" class="grafico" role="img"></svg></div>
+
+    <div class="cartao nao-imprimir">
+      <div class="meses" id="meses"></div>
+    </div>
+
+    <form id="form-mes" class="cartao" hidden>
+      <div class="campos">
+        <div class="campo"><label data-i18n="pn.mes">Mês</label><input type="month" id="f-mes" required></div>
+        <div class="campo" style="grid-column: span 2"><label data-i18n="pn.obs">Observação</label><input type="text" id="f-obs"></div>
+      </div>
+      <p class="suave" data-i18n="pn.prefill" style="font-size:13px"></p>
+      <div id="f-grupos"></div>
+      <p class="acoes" style="margin-top:14px"><button type="submit" class="principal" data-i18n="pn.salvar_mes">Salvar mês</button><button type="button" id="f-cancelar" data-i18n="pn.cancelar">Cancelar</button></p>
+    </form>
+
+    <div class="cartao">
+      <div class="tabela-rolavel"><table>
+        <thead><tr><th data-i18n="pn.tab.vazamento">Vazamento</th><th class="num" data-i18n="pn.tab.antes">Antes/mês</th><th class="num" data-i18n="pn.tab.agora">Agora/mês</th><th class="num" data-i18n="pn.tab.recuperado">Recuperado</th><th class="num" data-i18n="pn.tab.meta">% da meta</th><th data-i18n="pn.tab.medir">Como medir</th></tr></thead>
+        <tbody id="tabela"></tbody>
+      </table></div>
+      <p class="suave" id="sem-comparacao" style="font-size:13px"></p>
+    </div>
+
+    <div class="cartao">
+      <h2 data-i18n="pn.bonus">Bônus por resultado</h2>
+      <div class="bonus"><label><span data-i18n="pn.bonus_pct">% do bônus</span> <input type="number" id="b-pct" min="0" max="100" step="1" value="15"></label><span id="b-resultado"></span></div>
+      <div class="bonus" id="b-ids" style="margin-top:8px"></div>
+    </div>
+
+    <p class="aviso" data-i18n="pn.aviso"></p>
+  </div>
+</main>
+
+<script src="i18n.js"></script>
+<script src="../setores/_herdar.js"></script>
+<script src="../setores/restaurante.js"></script>
+<script src="../setores/hotel.js"></script>
+<script src="../setores/servicos.js"></script>
+<script src="../setores/clinica.js"></script>
+<script src="../setores/salao.js"></script>
+<script src="../setores/es/restaurante.js"></script>
+<script src="../setores/es/hotel.js"></script>
+<script src="../setores/es/servicos.js"></script>
+<script src="../setores/es/clinica.js"></script>
+<script src="../setores/es/salao.js"></script>
+<script src="../setores/en/restaurante.js"></script>
+<script src="../setores/en/hotel.js"></script>
+<script src="../setores/en/servicos.js"></script>
+<script src="../setores/en/clinica.js"></script>
+<script src="../setores/en/salao.js"></script>
+<script src="motor.js"></script>
+<script src="painel-motor.js"></script>
+<script>
+(function () {
+  var I = window.RXM_I18N, t = I.t, RXP = window.RXP;
+  I.aplicar();
+  var CHAVE = 'rxp:acompanhamento';
+  var porId = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var LOCALE_MOEDA = { BRL: 'pt-BR', MXN: 'es-MX', USD: 'en-US', COP: 'es-CO', ARS: 'es-AR', CLP: 'es-CL', PEN: 'es-PE', GBP: 'en-GB', EUR: 'de-DE' };
+  var acomp = null, pacote = null, dinheiro = null, editando = null;
+  var atribuiveis = ['pagamentos', 'antecipacao'];
+
+  porId('link-raiox').href = 'index.html?lang=' + I.lang;
+  porId('link-cacador').href = 'cacador.html?lang=' + I.lang;
+
+  function salvarLocal() { try { localStorage.setItem(CHAVE, JSON.stringify(acomp)); } catch (e) { /* sem storage */ } }
+
+  function carregar(obj) {
+    var a = RXP.deDiagnostico(obj);
+    var p = (window.RXM_SETORES || {})[a.pacote];
+    if (!p) { porId('erro').hidden = false; porId('erro').textContent = t('pn.erro_pacote', { id: a.pacote }); return; }
+    porId('erro').hidden = true;
+    acomp = a; pacote = p;
+    dinheiro = new Intl.NumberFormat(LOCALE_MOEDA[p.moeda] || I.locale, { style: 'currency', currency: p.moeda, maximumFractionDigits: 0 });
+    ['bt-lancar', 'bt-salvar'].forEach(function (id) { porId(id).disabled = false; });
+    salvarLocal(); desenhar();
+  }
+
+  function pct(n) { return n == null ? '—' : new Intl.NumberFormat(I.locale, { maximumFractionDigits: 0 }).format(n) + '%'; }
+
+  function desenhar() {
+    porId('vazio').hidden = true; porId('conteudo').hidden = false;
+    var cli = acomp.cliente || {};
+    porId('cabecalho').textContent = [cli['cli-nome'], cli['cli-cidade'], pacote.nome + ' · ' + pacote.mercado, t('pn.desde', { d: new Date(acomp.base.data + 'T12:00').toLocaleDateString(I.locale) })].filter(Boolean).join(' · ');
+    var linha = RXP.linhaDoTempo(pacote, acomp);
+    var ultimo = linha[linha.length - 1];
+    var cmp = ultimo ? ultimo.resultado : RXP.comparar(pacote, acomp.base.valores, acomp.base.valores);
+    porId('k-base').textContent = dinheiro.format(cmp.totalAntes);
+    porId('k-ultimo').textContent = ultimo ? dinheiro.format(ultimo.resultado.recuperado) : '—';
+    porId('k-ultimo').className = ultimo && ultimo.resultado.recuperado < 0 ? 'vermelho' : 'verde';
+    porId('k-ultimo-meta').textContent = ultimo && ultimo.resultado.pctMeta != null ? pct(ultimo.resultado.pctMeta) + ' ' + t('pn.meta') : '';
+    porId('k-acumulado').textContent = ultimo ? dinheiro.format(ultimo.acumulado) : '—';
+    porId('k-meses').textContent = linha.length;
+
+    // gráfico: recuperado por mês (barras) + meta (linha tracejada)
+    var svg = porId('grafico'), W = 1000, H = 180, pad = 30;
+    var valores = linha.map(function (x) { return x.resultado.recuperado; });
+    var meta = cmp.meta || 0;
+    var max = Math.max.apply(null, valores.concat([meta, 1]).map(Math.abs));
+    var bw = linha.length ? Math.min(90, (W - 2 * pad) / linha.length - 10) : 0;
+    var y0 = H - pad, esc_ = (H - 2 * pad) / max;
+    var barras = linha.map(function (x, i) {
+      var v = x.resultado.recuperado, h = Math.abs(v) * esc_, xpos = pad + i * ((W - 2 * pad) / linha.length) + 5;
+      return '<rect x="' + xpos + '" y="' + (v >= 0 ? y0 - h : y0) + '" width="' + bw + '" height="' + Math.max(1, h) + '" rx="4" fill="' + (v >= 0 ? 'var(--verde)' : 'var(--vermelho)') + '"><title>' + esc(x.mes) + ': ' + esc(dinheiro.format(v)) + '</title></rect>' +
+        '<text x="' + (xpos + bw / 2) + '" y="' + (H - 8) + '" fill="var(--suave)" font-size="12" text-anchor="middle">' + esc(x.mes) + '</text>';
+    }).join('');
+    var linhaMeta = meta > 0 ? '<line x1="' + pad + '" x2="' + (W - pad) + '" y1="' + (y0 - meta * esc_) + '" y2="' + (y0 - meta * esc_) + '" stroke="var(--ambar)" stroke-dasharray="6 6"/><text x="' + (W - pad) + '" y="' + (y0 - meta * esc_ - 6) + '" fill="var(--ambar)" font-size="12" text-anchor="end">' + esc(dinheiro.format(meta)) + '</text>' : '';
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    svg.setAttribute('aria-label', t('pn.painel'));
+    svg.innerHTML = '<line x1="' + pad + '" x2="' + (W - pad) + '" y1="' + y0 + '" y2="' + y0 + '" stroke="var(--borda)"/>' + linhaMeta + barras;
+
+    porId('meses').innerHTML = linha.length ? linha.map(function (x) {
+      return '<span class="mes"><b>' + esc(x.mes) + '</b> ' + esc(dinheiro.format(x.resultado.recuperado)) + (x.obs ? ' <span class="suave">· ' + esc(x.obs) + '</span>' : '') +
+        '<button data-acao="editar" data-mes="' + esc(x.mes) + '">' + t('pn.editar') + '</button><button data-acao="remover" data-mes="' + esc(x.mes) + '">' + t('pn.remover') + '</button></span>';
+    }).join('') : '<span class="suave">' + t('pn.nenhum_mes') + '</span>';
+
+    porId('tabela').innerHTML = cmp.itens.filter(function (x) { return x.antes !== null; }).sort(function (a, b) { return (b.antes || 0) - (a.antes || 0); }).map(function (x) {
+      var rec = x.recuperado;
+      return '<tr><td><b>' + esc(x.vazamento.nome) + '</b></td><td class="num">' + dinheiro.format(x.antes) + '</td>' +
+        '<td class="num">' + (ultimo && x.agora != null ? dinheiro.format(x.agora) : '—') + '</td>' +
+        '<td class="num ' + (rec > 0 ? 'verde' : rec < 0 ? 'vermelho' : '') + '">' + (ultimo && rec != null ? dinheiro.format(rec) : '—') + '</td>' +
+        '<td class="num">' + (ultimo ? pct(x.pctMeta) : '—') + '</td>' +
+        '<td class="suave" style="font-size:12px">' + esc(x.vazamento.como_medir.metrica) + ' · ' + esc(x.vazamento.como_medir.janela) + '</td></tr>';
+    }).join('');
+    var nomes = {}; pacote.vazamentos.forEach(function (v) { nomes[v.id] = v.nome; });
+    porId('sem-comparacao').textContent = ultimo && cmp.semComparacao.length ? t('pn.sem_comparacao', { lista: cmp.semComparacao.map(function (id) { return nomes[id]; }).join('; ') }) : '';
+
+    porId('b-ids').innerHTML = pacote.vazamentos.map(function (v) {
+      return '<label><input type="checkbox" data-bonus="' + v.id + '"' + (atribuiveis.indexOf(v.id) >= 0 ? ' checked' : '') + '> ' + esc(v.nome) + '</label>';
+    }).join('');
+    atualizarBonus(cmp, !!ultimo);
+  }
+
+  function atualizarBonus(cmp, temMes) {
+    var b = RXP.bonus(cmp, atribuiveis, parseFloat(porId('b-pct').value) || 0);
+    porId('b-resultado').textContent = temMes ? t('pn.bonus_txt', { base: dinheiro.format(b.base), valor: dinheiro.format(b.valor) }) : '';
+  }
+
+  function abrirForm(mes) {
+    editando = mes || null;
+    var existente = (acomp.meses || []).filter(function (m) { return m.mes === mes; })[0];
+    var ordenados = (acomp.meses || []).slice().sort(function (a, b) { return a.mes < b.mes ? -1 : 1; });
+    var ref = existente ? existente.valores : (ordenados.length ? ordenados[ordenados.length - 1].valores : acomp.base.valores);
+    porId('f-mes').value = existente ? existente.mes : RXP.proximoMes(acomp);
+    porId('f-obs').value = existente ? (existente.obs || '') : '';
+    var simbolo = (dinheiro.formatToParts(0).filter(function (x) { return x.type === 'currency'; })[0] || {}).value || '';
+    porId('f-grupos').innerHTML = pacote.grupos.map(function (g, i) {
+      var campos = pacote.entradas.filter(function (e) { return e.grupo === g.id; }).map(function (e) {
+        var un = (e.unidade === 'R$' || e.unidade === 'moeda') ? simbolo : e.unidade;
+        var v = ref[e.id];
+        return '<div class="campo"><label>' + esc(e.rotulo) + ' (' + esc(un) + ')</label><input type="number" step="any" data-entrada="' + e.id + '" value="' + (v == null ? '' : esc(v)) + '"></div>';
+      }).join('');
+      return '<details class="grupo" open><summary>' + esc(g.titulo) + '</summary><div class="campos" style="margin-top:8px">' + campos + '</div></details>';
+    }).join('');
+    porId('form-mes').hidden = false;
+    porId('form-mes').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  porId('form-mes').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var valores = {};
+    document.querySelectorAll('#f-grupos [data-entrada]').forEach(function (i) { valores[i.dataset.entrada] = i.value; });
+    var mes = porId('f-mes').value;
+    acomp.meses = (acomp.meses || []).filter(function (m) { return m.mes !== mes && m.mes !== editando; });
+    acomp.meses.push({ mes: mes, valores: valores, obs: porId('f-obs').value.trim() });
+    porId('form-mes').hidden = true; editando = null;
+    salvarLocal(); desenhar();
+  });
+  porId('f-cancelar').onclick = function () { porId('form-mes').hidden = true; editando = null; };
+  porId('bt-lancar').onclick = function () { abrirForm(null); };
+  porId('meses').addEventListener('click', function (ev) {
+    var b = ev.target.closest('button[data-acao]'); if (!b) return;
+    if (b.dataset.acao === 'editar') abrirForm(b.dataset.mes);
+    else { acomp.meses = acomp.meses.filter(function (m) { return m.mes !== b.dataset.mes; }); salvarLocal(); desenhar(); }
+  });
+  porId('b-pct').addEventListener('input', function () { desenhar(); });
+  porId('b-ids').addEventListener('change', function (ev) {
+    var id = ev.target.dataset.bonus; if (!id) return;
+    atribuiveis = ev.target.checked ? atribuiveis.concat([id]) : atribuiveis.filter(function (x) { return x !== id; });
+    desenhar();
+  });
+  porId('bt-imprimir').onclick = function () { window.print(); };
+  porId('bt-salvar').onclick = function () {
+    var nome = ((acomp.cliente || {})['cli-nome'] || 'cliente').toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(acomp, null, 2)], { type: 'application/json' }));
+    a.download = 'acompanhamento-' + nome + '.json'; a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+  };
+  porId('bt-abrir').onchange = function (ev) {
+    var arq = ev.target.files[0]; if (!arq) return;
+    arq.text().then(function (conteudo) { carregar(JSON.parse(conteudo)); })
+      .catch(function (err) { porId('erro').hidden = false; porId('erro').textContent = t('erro.abrir', { msg: err.message }); });
+    ev.target.value = '';
+  };
+
+  var salvo = null;
+  try { salvo = JSON.parse(localStorage.getItem(CHAVE) || 'null'); } catch (e) { salvo = null; }
+  if (salvo) carregar(salvo);
+})();
+</script>
+</body>
+</html>

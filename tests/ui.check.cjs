@@ -119,6 +119,39 @@ const path = require('path');
     await page.screenshot({ path: path.join(saida, `raio-x-${lang}.png`) });
     await page.close();
   }
+  // ── Painel de Recuperação ──
+  {
+    const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, locale: 'pt-BR' });
+    page.on('pageerror', (e) => erros.push(`painel: ${e.message}`));
+    await page.goto('file://' + path.resolve(__dirname, '..', 'app', 'painel.html'));
+    ok(!(await page.isVisible('#conteudo')), 'painel: deveria abrir vazio');
+    await page.setInputFiles('#bt-abrir', path.join(__dirname, 'fixtures', 'diagnostico-exemplo.json'));
+    await page.waitForSelector('#conteudo:not([hidden])');
+    ok((await page.textContent('#k-base')).replace(/\s/g, ' ') === 'R$ 14.700', `painel: base ${await page.textContent('#k-base')}`);
+    await page.click('#bt-lancar');
+    ok((await page.inputValue('#f-mes')) === '2026-11', 'painel: próximo mês sugerido');
+    await page.fill('[data-entrada="mdr_atual_pct"]', '2.4');
+    await page.fill('[data-entrada="recompra_marketplace_pct"]', '40');
+    await page.fill('#f-obs', 'troca de adquirente');
+    await page.click('#form-mes button[type=submit]');
+    ok((await page.textContent('#k-ultimo')).replace(/\s/g, ' ') === 'R$ 2.880', `painel: recuperado ${await page.textContent('#k-ultimo')}`);
+    ok((await page.textContent('#k-meses')) === '1', 'painel: meses');
+    ok(/R\$\s252/.test(await page.textContent('#b-resultado')), `painel: bônus ${await page.textContent('#b-resultado')}`);
+    ok((await page.$$('#grafico rect')).length === 1, 'painel: gráfico');
+    const larg = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    ok(larg <= 0, `painel: rolagem ${larg}px`);
+    await page.screenshot({ path: path.join(saida, 'painel.png'), fullPage: true });
+    await page.reload();
+    ok((await page.textContent('#k-meses')) === '1', 'painel: acompanhamento não voltou após recarregar');
+    await page.close();
+    const en = await browser.newPage({ viewport: { width: 390, height: 844 } });
+    en.on('pageerror', (e) => erros.push(`painel en: ${e.message}`));
+    await en.goto('file://' + path.resolve(__dirname, '..', 'app', 'painel.html') + '?lang=en');
+    ok(/Recovery/.test(await en.textContent('h1')), 'painel en: título');
+    const largEn = await en.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    ok(largEn <= 0, `painel en celular: rolagem ${largEn}px`);
+    await en.close();
+  }
   await browser.close();
   const tudo = erros.concat(falhas);
   if (tudo.length) { console.error('FALHOU:\n- ' + tudo.join('\n- ')); process.exit(1); }

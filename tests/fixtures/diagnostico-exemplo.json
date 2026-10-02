@@ -1,0 +1,27 @@
+{
+ "pacote": "restaurante",
+ "versaoPacote": "0.2.0",
+ "cliente": {
+  "cli-nome": "Restaurante Teste",
+  "cli-cidade": "Batel"
+ },
+ "valores": {
+  "fat_marketplace": 100000,
+  "recompra_marketplace_pct": 52,
+  "taxa_marketplace_pct": 25,
+  "custo_canal_proprio_pct": 15,
+  "fat_cartao": 210000,
+  "mdr_atual_pct": 3.2,
+  "mdr_referencia_pct": 2.2,
+  "cmv_mes": 47500,
+  "desperdicio_pct": 12,
+  "desperdicio_ref_pct": 4,
+  "clientes_novos_mes": 400,
+  "retorno_atual_pct": 20,
+  "retorno_meta_pct": 35,
+  "ticket_medio": 50,
+  "pedidos_mes_recorrente": 2,
+  "margem_contrib_pct": 60
+ },
+ "salvoEm": "2026-10-02T12:00:00Z"
+}

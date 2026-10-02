@@ -42,6 +42,8 @@ Nota e avaliações do Google ficam para conferência manual: raspar o Google Ma
 - **Só dados da empresa.** O coletor não guarda e-mail, razão social de MEI (costuma ter nome e CPF) nem dados de avaliadores (LGPD).
 - **robots.txt respeitado** na leitura de sites; 1 consulta por vez no Overpass.
 - **Crédito pago só com `--confirmar`.** Sem ele, o script mostra quantas buscas novas faria e o custo estimado.
+- **Intervalo entre buscas** (`--intervalo-busca`, padrão 13 s) e nova tentativa no HTTP 429: o plano gratuito do Firecrawl recusa rajadas.
+- **Site compartilhado é descartado:** se a busca atribuir o mesmo site a leads de nomes diferentes, nenhum fica com ele (evidência "site compartilhado — conferir").
 - Tudo em `dados/` fica fora do git (cache incluso).
 
 ## Código do município

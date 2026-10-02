@@ -254,8 +254,8 @@
 
   <div class="step"><div class="b">8</div><div>
     <h3>Mida y cobre la mensualidad</h3>
-    <p>El informe ya trae "cómo vamos a medir" para cada fuga: base antes, métrica después y ventana. Bono por resultado solo sobre lo que se puede atribuir (la tasa de tarjeta, por ejemplo). Si usa WhatsApp Business Platform, calcule con la tabla oficial de Meta de su país: desde el 01/10/2026 también se cobran los mensajes de servicio arriba de 1,000 al mes.</p>
-<pre><span class="c"># cada mes: la misma Radiografía con los números nuevos × el .json guardado en el paso 5</span></pre>
+    <p>El informe ya trae "cómo vamos a medir" para cada fuga: base antes, métrica después y ventana. Bono por resultado solo sobre lo que se puede atribuir (la tasa de tarjeta, por ejemplo). Si usa WhatsApp Business Platform, calcule con la tabla oficial de Meta de su país: desde el 01/10/2026 también se cobran los mensajes de servicio arriba de 1,000 al mes. El <b>Panel de Recuperación</b> abre el diagnóstico guardado, recibe los números de cada mes y muestra, fuga por fuga, cuánto volvió a la caja y cuánto falta para la meta.</p>
+<pre><span class="s">app/painel.html?lang=es</span>  →  <span class="k">Abrir diagnóstico</span> (el .json del paso 5)  →  <span class="k">Agregar mes</span>  <span class="c"># antes × después, % de la meta, acumulado y bono</span></pre>
   </div></div>
 
   <div class="card" style="margin-top:22px;border-color:var(--amb)"><h3>⚖️ Dentro de las reglas</h3><p>El kit no raspa Google Maps, Instagram ni las apps de delivery (los términos lo prohíben), nunca usa el contacto de clientes que entrega la plataforma y solo guarda datos de empresa. La prospección B2B sigue la ley de cada país: en Colombia los datos corporativos quedan fuera de la Ley 1581; en Argentina se permiten datos de fuentes de acceso público irrestricto, con derecho de exclusión; en México la nueva LFPDPPP (2025) exige aviso de privacidad y opción de oposición; en Chile la Ley 21.719 entra en vigor el 01/12/2026, posiblemente aplazada; en Perú rige el nuevo reglamento desde 2025. Los datos de salud son datos sensibles en toda la región, y en México la publicidad médica puede requerir aviso o permiso de COFEPRIS (dato de proveedor, verifique la norma). Detalles en <a href="https://github.com/inematds/raio-x-margem/blob/main/docs/TERMOS.md" target="_blank" rel="noopener">docs/TERMOS.md</a> (en portugués) y <a href="https://github.com/inematds/raio-x-margem/blob/main/docs/mercados/latam-pesquisa-2026-10.md" target="_blank" rel="noopener">docs/mercados/latam-pesquisa-2026-10.md</a> (notas de investigación, en portugués).</p></div>
@@ -279,9 +279,9 @@
 <section id="roadmap"><div class="wrap">
   <span class="chip">Hoja de ruta</span>
   <h2>Qué existe y qué viene</h2>
-  <p class="sub">Versión actual: 0.5.1 — 15 paquetes (5 sectores × 3 mercados), más de 60 pruebas automáticas.</p>
+  <p class="sub">Versión actual: 0.6.1 — 15 paquetes (5 sectores × 3 mercados), más de 60 pruebas automáticas.</p>
   <div class="phase"><div class="tag">Hecho</div><div class="d"><strong>Radiografía, Cazador y recolectores</strong><span>Restaurante, hotel y servicios con agenda (clínica, salón) en ES/LATAM, EN/GLOBAL y PT/BR; recolector de OpenStreetMap y de sitios para cualquier país; importación de CSV de registros locales.</span></div></div>
-  <div class="phase"><div class="tag">Próximo</div><div class="d"><strong>Panel de recuperación</strong><span>Abre el diagnóstico guardado, recibe los números del mes y muestra antes × después por fuga.</span></div></div>
+  <div class="phase"><div class="tag">Hecho</div><div class="d"><strong>Panel de recuperación</strong><span>Abre el diagnóstico guardado, recibe los números de cada mes y muestra antes × después por fuga, % de la meta, acumulado y bono solo sobre lo atribuible.</span></div></div>
   <div class="phase"><div class="tag">Próximo</div><div class="d"><strong>Recolectores por registro de cada país</strong><span>DENUE de INEGI (México), RNT y RUES (Colombia), SII (Chile) y SUNAT (Perú), directo al formato del Cazador.</span></div></div>
   <div class="phase"><div class="tag">Después</div><div class="d"><strong>Más nichos y kit comercial en español</strong><span>Gimnasios, veterinarias, talleres, administradoras de rentas vacacionales; propuesta modelo, contrato y aviso de privacidad por país.</span></div></div>
 </div></section>
