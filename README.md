@@ -8,6 +8,8 @@
 
 Guia completo (landing + passo a passo): **https://inematds.github.io/raio-x-margem/guia/** · App online: **https://inematds.github.io/raio-x-margem/app/**
 
+🎬 Vídeo: https://www.youtube.com/watch?v=CtEveoP1r0s
+
 **Kit aberto para encontrar onde um negócio perde dinheiro, mostrar em reais, corrigir e provar o que voltou.**
 Setores: **restaurante, hotel/pousada, clínica, salão** (e o modelo genérico "serviços com agenda"), em três mercados: **Brasil (PT), América Latina (ES) e global (EN)**.
 

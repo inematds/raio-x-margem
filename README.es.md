@@ -6,6 +6,8 @@
 
 📖 **Guía:** https://inematds.github.io/raio-x-margem/guia/es/
 
+🎬 Video: https://www.youtube.com/watch?v=CtEveoP1r0s
+
 **Kit abierto para encontrar dónde un pequeño negocio pierde dinero, mostrarlo en su moneda, corregirlo y demostrar cuánto volvió a la caja.**
 Paquetes en español para **América Latina hispana**: restaurante, hotel/posada, servicios con agenda, clínica y salón — en MXN, con México como ejemplo por defecto.
 

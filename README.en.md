@@ -6,6 +6,8 @@
 
 📖 **Guide:** [inematds.github.io/raio-x-margem/guia/en/](https://inematds.github.io/raio-x-margem/guia/en/)
 
+🎬 Video: https://www.youtube.com/watch?v=CtEveoP1r0s
+
 **Open kit to find where a small business is losing money, show it in dollars, fix it and prove what came back.**
 Sectors: restaurants, hotels, clinics, salons and any appointment-based service — with a global market pack in English (USD, US worked example).
 
